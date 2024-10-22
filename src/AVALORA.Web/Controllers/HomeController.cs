@@ -1,4 +1,4 @@
-using AVALORA.Web.Models;
+using AVALORA.Core.Domain.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
