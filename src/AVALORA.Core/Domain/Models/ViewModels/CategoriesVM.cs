@@ -1,4 +1,4 @@
-﻿using AVALORA.Core.Dto.Category;
+﻿using AVALORA.Core.Dto.CategoryDtos;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace AVALORA.Core.Domain.Models.ViewModels;

@@ -3,15 +3,12 @@ using AutoMapper;
 using AVALORA.Core.AutoMapperProfiles;
 using AVALORA.Core.Domain.Models;
 using AVALORA.Core.Domain.RepositoryContracts;
-using AVALORA.Core.Dto.Category;
+using AVALORA.Core.Dto.CategoryDtos;
 using AVALORA.Core.ServiceContracts;
 using AVALORA.Core.Services;
 using FluentAssertions;
 using Moq;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Reflection.Emit;
-using Xunit;
 
 namespace AVALORA.ServiceTests;
 
@@ -420,7 +417,7 @@ public class CategoryServiceTest
     }
 
     [Fact]
-    public async Task RemoveAsync_GivenValidId_ShouldCallRemove()
+    public async Task RemoveAsync_GivenValidId_ShouldCallRemoveOnce()
     {
         // Arrange
         int? id = _fixture.Create<int>();
@@ -458,7 +455,7 @@ public class CategoryServiceTest
     }
 
     [Fact]
-    public async Task RemoveRangeAsync_GivenValidCategoryResponses_ShouldCallRemoveRange()
+    public async Task RemoveRangeAsync_GivenValidCategoryResponses_ShouldCallRemoveRangeOnce()
     {
         // Arrange
         var categoryResponses = _fixture.CreateMany<CategoryResponse>(10).ToList();

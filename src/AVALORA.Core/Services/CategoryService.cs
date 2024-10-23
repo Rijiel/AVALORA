@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using AVALORA.Core.Domain.Models;
 using AVALORA.Core.Domain.RepositoryContracts;
-using AVALORA.Core.Dto.Category;
+using AVALORA.Core.Dto.CategoryDtos;
 using AVALORA.Core.ServiceContracts;
 
 namespace AVALORA.Core.Services;

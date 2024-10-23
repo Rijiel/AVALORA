@@ -1,5 +1,5 @@
 ﻿using AVALORA.Core.Domain.Models.ViewModels;
-using AVALORA.Core.Dto.Category;
+using AVALORA.Core.Dto.CategoryDtos;
 using AVALORA.Core.Helpers;
 using AVALORA.Web.BaseController;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +30,7 @@ public class CategoriesController : BaseController<CategoriesController>
 			// Persist new category to database
 			await ServiceUnitOfWork.CategoryService.AddAsync(categoriesVM.CategoryAddRequest);
 			TempData["Success"] = "Category created successfully";
+			Logger.LogInformation("Category created successfully");
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -46,8 +47,9 @@ public class CategoriesController : BaseController<CategoriesController>
 		CategoryResponse? categoryResponse = await ServiceUnitOfWork.CategoryService.GetByIdAsync(id);
 		if (categoryResponse == null)
 			return NotFound("Category not found.");
+        Logger.LogError($"Category with id {id} not found.");
 
-		return View(Mapper.Map<CategoryUpdateRequest>(categoryResponse));
+        return View(Mapper.Map<CategoryUpdateRequest>(categoryResponse));
 	}
 
 	[HttpPost]
@@ -59,8 +61,9 @@ public class CategoriesController : BaseController<CategoriesController>
 			// Persist updated category to database
 			await ServiceUnitOfWork.CategoryService.UpdateAsync(updateRequest);
 			TempData["Success"] = "Category updated successfully";
+            Logger.LogInformation("Category updated successfully");
 
-			return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));
 		}
 
 		return View(updateRequest);
