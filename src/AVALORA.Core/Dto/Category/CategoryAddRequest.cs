@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AVALORA.Core.Domain.Models.Validations;
+using System.ComponentModel.DataAnnotations;
 
 namespace AVALORA.Core.Dto.Category;
 
 public class CategoryAddRequest
 {
     [Required]
-    public string Name { get; set; } = null!;
+	[RegularExpression(@"^[A-Z][a-zA-Z]+$", ErrorMessage = "Name must start with a capital letter and contain only letters.")]
+	[UniqueCategoryName]
+	public string Name { get; set; } = null!;
 }
 

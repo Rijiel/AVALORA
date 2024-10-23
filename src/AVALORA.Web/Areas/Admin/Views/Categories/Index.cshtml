@@ -1,0 +1,47 @@
+﻿@model CategoriesVM
+@{
+	ViewBag.Title = "Categories";
+}
+
+<div class="mt-5">
+	<h3 class="text-center text-uppercase">Categories</h3>
+
+	<div class="row mt-5 p-5 border">
+		<div class="col-12">
+			<form method="post">
+				<!-- Name -->
+				<div class="form-floating">
+					<input asp-for="CategoryAddRequest.Name" class="form-control" placeholder="" />
+					<label asp-for="CategoryAddRequest.Name" class="form-label text-muted"></label>
+					<span asp-validation-for="CategoryAddRequest.Name" class="text-danger"></span>
+				</div>
+				<!-- Buttons -->
+				<div class="mt-3 row">
+					<div class="col-3">
+						<button type="submit" class="btn btn-primary form-control">Create</button>
+					</div>
+					<div class="col-3">
+						<a class="btn btn-outline-primary form-control" asp-area="Customer" asp-controller="Home" asp-action="Index">Back to Home</a>
+					</div>
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				</div>
+			</form>
+
+			<!-- Categories -->
+			<div class="mt-3">
+				<ul class="list">
+					@foreach (var category in Model.CategoryResponses)
+					{
+						<li>
+							<a asp-action="Edit" asp-route-id="@category.Id">@category.Name</a>
+						</li>
+					}
+				</ul>
+			</div>		
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}
