@@ -1,5 +1,4 @@
 ﻿using AVALORA.Core.Domain.Models;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Microsoft.AspNetCore.Http;
@@ -32,8 +31,9 @@ public class ProductAddRequest
 	public int CategoryId { get; set; }
 
 	[DisplayName("Image Files")]
-	public ICollection<IFormFile>? ImageFiles { get; set; }
+	public IEnumerable<IFormFile>? ImageFiles { get; set; }
 
+	[DisplayName("Product Images")]
 	public ICollection<ProductImage>? ProductImages { get; set; }
 }
 

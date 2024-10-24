@@ -9,16 +9,11 @@ function dataTables() {
             dataSrc: 'data'
         },
         columns: [
-            { data: 'id' },
-            { data: 'name' },
-            { data: 'price' },
-            { data: 'category.name' },
-            {
-                data: 'productImages',
-                render: function (data) {
-                    return data.length;
-                }
-            },
+            { data: 'id', with: '10%' },
+            { data: 'name', with: '25%' },
+            { data: 'price', with: '10%' },
+            { data: 'category.name', with: '20%' },
+            { data: 'productImagesCount', with: '10%' },
             {
                 data: 'id',
                 width: '25%',

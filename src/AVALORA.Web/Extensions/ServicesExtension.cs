@@ -1,7 +1,9 @@
 ﻿using AVALORA.Core.AutoMapperProfiles;
 using AVALORA.Core.Domain.RepositoryContracts;
 using AVALORA.Core.ServiceContracts;
+using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Core.Services;
+using AVALORA.Core.Services.FacadeServices;
 using AVALORA.Infrastructure.DatabaseContext;
 using AVALORA.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +30,7 @@ public static class ServicesExtension
         #region DI
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IServiceUnitOfWork, ServiceUnitOfWork>();
+        services.AddScoped<IProductFacade, ProductFacade>();
         #endregion
 
         return services;

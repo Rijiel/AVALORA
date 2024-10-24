@@ -8,6 +8,6 @@ public class CategoriesVM
     public CategoryAddRequest CategoryAddRequest { get; set; } = null!;
 
     [ValidateNever]
-    public ICollection<CategoryResponse> CategoryResponses { get; set; } = null!;
+    public IEnumerable<CategoryResponse> CategoryResponses { get; set; } = null!;
 }
 

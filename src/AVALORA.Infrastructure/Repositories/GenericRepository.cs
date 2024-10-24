@@ -60,15 +60,6 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     public async Task<TEntity?> GetByIdAsync(object id, bool tracked = false, params string[] includes)
     {
         IQueryable<TEntity> query = _dbSet;
-        TEntity? entity = null;
-
-        // Retrieve entity by Id, handling different Id types, add more types as needed
-        if (id is int intId)        
-            entity = await query.SingleOrDefaultAsync(x => EF.Property<int>(x, "Id") == intId);
-        else if (id is string strId)
-            entity = await query.SingleOrDefaultAsync(x => EF.Property<string>(x, "Id") == strId);
-        else
-            throw new ArgumentException("Invalid id type", nameof(id));
 
         // Disable change tracking for performance when not required
         query = tracked ? query : query.AsNoTracking();
@@ -80,7 +71,13 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
                 query = query.Include(include);
         }
 
-        return entity;
+		// Retrieve entity by Id, handling different Id types, add more types as needed
+		if (id is int intId)
+			return await query.SingleOrDefaultAsync(x => EF.Property<int>(x, "Id") == intId);
+		else if (id is string strId)
+			return await query.SingleOrDefaultAsync(x => EF.Property<string>(x, "Id") == strId);
+		else
+			throw new ArgumentException("Invalid id type", nameof(id));
     }
 
     public void Add(TEntity entity) => _dbSet.Add(entity);

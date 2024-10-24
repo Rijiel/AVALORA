@@ -12,5 +12,6 @@ public class ProductResponse
 	public int CategoryId { get; set; }
 	public Category Category { get; set; } = null!;
 	public ICollection<ProductImage>? ProductImages { get; set; }
+	public int? ProductImagesCount { get; set; }
 }
 

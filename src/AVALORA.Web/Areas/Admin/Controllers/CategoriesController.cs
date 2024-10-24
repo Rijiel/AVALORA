@@ -30,10 +30,11 @@ public class CategoriesController : BaseController<CategoriesController>
 			// Persist new category to database
 			await ServiceUnitOfWork.CategoryService.AddAsync(categoriesVM.CategoryAddRequest);
 			TempData["Success"] = "Category created successfully";
-			Logger.LogInformation("Category created successfully");
 
 			return RedirectToAction(nameof(Index));
 		}
+
+		Logger.LogWarning("Invalid model state. Product not created.");
 
 		// Re-populate category list for re-display on validation failure
 		categoriesVM.CategoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync();
@@ -46,8 +47,10 @@ public class CategoriesController : BaseController<CategoriesController>
 	{
 		CategoryResponse? categoryResponse = await ServiceUnitOfWork.CategoryService.GetByIdAsync(id);
 		if (categoryResponse == null)
+		{
+			Logger.LogError($"Category with id {id} not found.");
 			return NotFound("Category not found.");
-        Logger.LogError($"Category with id {id} not found.");
+		}			
 
         return View(Mapper.Map<CategoryUpdateRequest>(categoryResponse));
 	}
@@ -61,11 +64,11 @@ public class CategoriesController : BaseController<CategoriesController>
 			// Persist updated category to database
 			await ServiceUnitOfWork.CategoryService.UpdateAsync(updateRequest);
 			TempData["Success"] = "Category updated successfully";
-            Logger.LogInformation("Category updated successfully");
 
             return RedirectToAction(nameof(Index));
 		}
 
+		Logger.LogWarning("Invalid model state. Product not created.");
 		return View(updateRequest);
 	}
 

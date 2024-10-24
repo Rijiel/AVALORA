@@ -1,11 +1,12 @@
-﻿using AVALORA.Core.Domain.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using Microsoft.AspNetCore.Http;
 
-namespace AVALORA.Core.Dto.ProductDtos;
+namespace AVALORA.Core.Domain.Models.ViewModels;
 
-public class ProductUpdateRequest
+public class ProductUpsertVM
 {
 	[Required]
 	public int Id { get; set; }
@@ -38,5 +39,7 @@ public class ProductUpdateRequest
 
 	[DisplayName("Product Images")]
 	public ICollection<ProductImage>? ProductImages { get; set; }
-}
 
+	[ValidateNever]
+    public IEnumerable<SelectListItem> Categories { get; set; } = null!;
+}
