@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AVALORA.Core.Domain.Models;
 using AVALORA.Core.Domain.Models.ViewModels;
+using AVALORA.Core.Dto.CartItemDtos;
 using AVALORA.Core.Dto.CategoryDtos;
 using AVALORA.Core.Dto.ProductDtos;
 using AVALORA.Core.Dto.ProductImageDtos;
@@ -33,6 +34,12 @@ public class AutoMapperProfile : Profile
 		CreateMap<ProductImageAddRequest, ProductImage>();
 		CreateMap<ProductImageResponse, ProductImageUpdateRequest>();
 		CreateMap<ProductImageUpdateRequest, ProductImage>();
+
+		// CartItem
+		CreateMap<CartItem, CartItemResponse>().ReverseMap();
+		CreateMap<CartItemAddRequest, CartItem>();
+		CreateMap<CartItemResponse, CartItemUpdateRequest>();
+		CreateMap<CartItemUpdateRequest, CartItem>();
     }
 }
 

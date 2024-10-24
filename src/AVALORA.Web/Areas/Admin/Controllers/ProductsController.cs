@@ -2,6 +2,7 @@
 using AVALORA.Core.Domain.Models.ViewModels;
 using AVALORA.Core.Dto.ProductDtos;
 using AVALORA.Core.Dto.ProductImageDtos;
+using AVALORA.Core.Enums;
 using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.BaseController;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AVALORA.Web.Areas.Admin.Controllers;
 
-[Area(SD.ROLE_ADMIN)]
+[Area(nameof(Role.Admin))]
 [Route("[controller]/[action]")]
 public class ProductsController : BaseController<ProductsController>
 {
@@ -44,7 +45,7 @@ public class ProductsController : BaseController<ProductsController>
 		{
 			var productAddRequest = Mapper.Map<ProductAddRequest>(ProductUpsertVM);
 			await _productFacade.CreateProductAsync(productAddRequest);
-            TempData["Success"] = "Product created successfully.";
+            TempData[SD.TEMPDATA_SUCCESS] = "Product created successfully.";
 
             return RedirectToAction(nameof(Index));
 		}
@@ -82,7 +83,7 @@ public class ProductsController : BaseController<ProductsController>
 			var productUpdateRequest = Mapper.Map<ProductUpdateRequest>(ProductUpsertVM);
 			await _productFacade.UpdateProductAsync(productUpdateRequest);
 
-			TempData["Success"] = "Product updated successfully.";
+			TempData[SD.TEMPDATA_SUCCESS] = "Product updated successfully.";
 		}
 
 		Logger.LogWarning("Invalid model state. Product not created.");
@@ -109,7 +110,7 @@ public class ProductsController : BaseController<ProductsController>
 		try
 		{
 			await _productFacade.DeleteProductAsync(id);
-			TempData["Success"] = "Product deleted successfully.";
+			TempData[SD.TEMPDATA_SUCCESS] = "Product deleted successfully.";
 
 			return Json(new { success = true });
 		}
@@ -127,7 +128,7 @@ public class ProductsController : BaseController<ProductsController>
 		ProductImageResponse? productImageResponse =  await ServiceUnitOfWork.ProductImageService.GetByIdAsync(id);
 
 		await ServiceUnitOfWork.ProductImageService.RemoveAsync(id);
-		TempData["Success"] = "Product image deleted successfully.";
+		TempData[SD.TEMPDATA_SUCCESS] = "Product image deleted successfully.";
 
 		return RedirectToAction(nameof(Edit), new { id = productImageResponse?.ProductId });
 	}

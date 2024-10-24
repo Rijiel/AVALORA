@@ -24,6 +24,10 @@ public class GenericService<TModel, TAddDto, TUpdateDto, TResponseDto> : IGeneri
     }
 
     protected IMapper Mapper => _mapper;
+
+    /// <summary>
+    /// Represents a unit of work for the repository layer, encapsulating access to various repositories.
+    /// </summary>
     protected IUnitOfWork UnitOfWork => _unitOfWork;
 
     public async Task<List<TResponseDto>> GetAllAsync(Expression<Func<TModel, bool>>? filter = null, params string[] includes)

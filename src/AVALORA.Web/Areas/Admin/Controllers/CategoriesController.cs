@@ -1,11 +1,12 @@
 ﻿using AVALORA.Core.Domain.Models.ViewModels;
 using AVALORA.Core.Dto.CategoryDtos;
+using AVALORA.Core.Enums;
 using AVALORA.Core.Helpers;
 using AVALORA.Web.BaseController;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AVALORA.Web.Areas.Admin.Controllers;
-[Area(SD.ROLE_ADMIN)]
+[Area(nameof(Role.Admin))]
 [Route("[controller]/[action]")]
 public class CategoriesController : BaseController<CategoriesController>
 {
@@ -29,7 +30,7 @@ public class CategoriesController : BaseController<CategoriesController>
 		{
 			// Persist new category to database
 			await ServiceUnitOfWork.CategoryService.AddAsync(categoriesVM.CategoryAddRequest);
-			TempData["Success"] = "Category created successfully";
+			TempData[SD.TEMPDATA_SUCCESS] = "Category created successfully";
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -63,7 +64,7 @@ public class CategoriesController : BaseController<CategoriesController>
 		{
 			// Persist updated category to database
 			await ServiceUnitOfWork.CategoryService.UpdateAsync(updateRequest);
-			TempData["Success"] = "Category updated successfully";
+			TempData[SD.TEMPDATA_SUCCESS] = "Category updated successfully";
 
             return RedirectToAction(nameof(Index));
 		}
@@ -81,7 +82,7 @@ public class CategoriesController : BaseController<CategoriesController>
 		{
 			await ServiceUnitOfWork.CategoryService.RemoveAsync(id);
 
-			TempData["Success"] = "Category deleted successfully.";
+			TempData[SD.TEMPDATA_SUCCESS] = "Category deleted successfully.";
 			Logger.LogInformation("Category deleted successfully.");
 
 			// Enable client-side redirect after deletion

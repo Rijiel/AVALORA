@@ -1,0 +1,96 @@
+﻿ @model CartItemAddRequestVM
+@{
+	ViewData["Title"] = "Product Details";
+}
+
+<div class="mt-5">
+	<div class="text-center">
+		<h3 class="text-uppercase">@Model.ProductResponse.Name</h3>
+	</div>
+
+	<div class="row mt-5">
+		<div class="col-12">
+			<form method="post">
+				<input asp-for="ProductResponse.Id" hidden />
+				<input asp-for="@Model.CartItemAddRequest.ProductId" hidden />
+				<input asp-for="CartItemAddRequest.ApplicationUserId" hidden />
+				<div>
+					<a asp-action="Index" class="btn btn-outline-info">Back to home</a>
+				</div>
+
+				<div class="row mt-4">
+					<!-- Left col: ProductImage -->
+					<div class="col-4">
+						<div class="w-75 mx-auto">
+							@if (Model.ProductResponse.ProductImages?.Count > 1)
+							{
+								<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+									<div class="carousel-indicators">
+										@for (int i = 0; i < Model.ProductResponse.ProductImages.Count; i++)
+										{
+											<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(i + 1)"></button>
+										}
+									</div>
+									<div class="carousel-inner">
+										@for (int i = 0; i < Model.ProductResponse.ProductImages.Count; i++)
+										{
+											<div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="5000">
+												<img src="@Model.ProductResponse.ProductImages.ElementAt(i).Path" class="d-block w-100 rounded rounded-4" alt="product image">
+											</div>
+										}
+									</div>
+									<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+										<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">Previous</span>
+									</button>
+									<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+										<span class="carousel-control-next-icon" aria-hidden="true"></span>
+										<span class="visually-hidden">Next</span>
+									</button>
+								</div>
+							}
+							else
+							{
+								<partial name="_ProductImagePartial" model="Model.ProductResponse" />
+							}
+						</div>
+					</div>
+
+					<!-- Right col: Details-->
+					<div class="col-8 ps-5">
+						<div class="mt-4">
+							<div class="d-inline-block">
+								<p class="badge bg-primary pb-2">@Model.ProductResponse.Category.Name</p>
+							</div>
+							<div class="mt-3 lh-sm text-black-50">
+								<p class="mb-2 text-decoration-line-through">List Price: @Model.ProductResponse.ListPrice.ToString("c")</p>
+								<p class="fw-semibold">
+									Discounted price:
+									<span class="text-primary">
+										@Model.ProductResponse.Price.ToString("c")
+									</span>
+								</p>
+							</div>
+							<div class="mt-5 overflow-auto" style="max-height: 20rem">
+								<p>@Html.Raw(Model.ProductResponse.Description)</p>
+							</div>
+							<div class="row mt-5">
+								<div class="col-3">
+									<div class="mt-3 input-group">
+										<div class="input-group-text bg-secondary text-light fw-bold">Count</div>
+										<input asp-for="CartItemAddRequest.Count" type="number" min="1" value="1" class="form-control border-1 text-end pe-2" />
+										<span asp-validation-for="CartItemAddRequest.Count" class="text-danger"></span>
+									</div>
+								</div>
+								<!-- Button -->
+								<div class="my-3 ms-5">
+									<button type="submit" class="btn btn-primary">Add to cart</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

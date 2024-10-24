@@ -1,21 +1,21 @@
 ﻿@{
-	if (TempData["Success"] != null)
+	if (TempData[SD.TEMPDATA_SUCCESS] != null)
 	{
 		<script src="~/lib/jquery/dist/jquery.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 		<script>
-			toastr.success('@TempData["Success"]');
+			toastr.success('@TempData[SD.TEMPDATA_SUCCESS]');
 		</script>
 	}
 
-	if (TempData["Error"] != null)
+	if (TempData[SD.TEMPDATA_ERROR] != null)
 	{
 		<script src="~/lib/jquery/dist/jquery.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 		<script>
-			toastr.error('@TempData["Error"]');
+			toastr.error('@TempData[SD.TEMPDATA_ERROR]');
 		</script>
 	}
 }

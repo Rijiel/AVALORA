@@ -19,6 +19,10 @@ public class BaseController<TController> : Controller where TController : BaseCo
         => _logger ??= HttpContext.RequestServices.GetRequiredService<ILogger<TController>>();
     protected IMapper Mapper
         => _mapper ??= HttpContext.RequestServices.GetRequiredService<IMapper>();
+
+    /// <summary>
+    /// Represents a unit of work for the service layer, encapsulating access to various services.
+    /// </summary>
     protected IServiceUnitOfWork ServiceUnitOfWork
         => _serviceUnitOfWork ??= HttpContext.RequestServices.GetRequiredService<IServiceUnitOfWork>();
 }

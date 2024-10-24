@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ProductResponse>
+@{
+	ViewData["Title"] = "Home";
+}
+
+<div class="row mt-2">
+	@foreach (var product in Model)
+	{
+		<div class="col-3">
+			<div class="card my-2">
+				<div class="card-header border-0">
+					<partial name="_ProductImagePartial" model="product" />
+				</div>
+				<div class="card-body text-center py-2">
+					<p class="mb-1" style="color: darkorange"><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i></p>
+					<p class="mb-1">@product.Name</p>
+					<p class="card-text">
+						 <span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span>
+						 <span class="fw-bold">@product.Price.ToString("c")</span>
+					</p>
+				</div>
+				<div class="card-footer text-center border-0">
+					<a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary w-100 btn-sm">Details</a>
+				</div>
+			</div>
+		</div>
+	}
+</div>

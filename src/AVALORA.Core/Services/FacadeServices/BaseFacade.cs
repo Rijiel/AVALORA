@@ -22,6 +22,10 @@ public class BaseFacade<TService> where TService : BaseFacade<TService>
         => _logger ??= _serviceProvider.GetRequiredService<ILogger<TService>>();
     protected IMapper Mapper
         => _mapper ??= _serviceProvider.GetRequiredService<IMapper>();
+
+    /// <summary>
+    /// Represents a unit of work for the service layer, encapsulating access to various services.
+    /// </summary>
     protected IServiceUnitOfWork ServiceUnitOfWork
         => _serviceUnitOfWork ??= _serviceProvider.GetRequiredService<IServiceUnitOfWork>();
 }

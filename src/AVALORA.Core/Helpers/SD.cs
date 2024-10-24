@@ -5,7 +5,7 @@
 /// </summary>
 public static class SD
 {
-    public const string ROLE_ADMIN = "Admin";
-    public const string ROLE_CUSTOMER = "Customer";
+    public const string TEMPDATA_SUCCESS = "Success";
+	public const string TEMPDATA_ERROR = "Error";
 }
 

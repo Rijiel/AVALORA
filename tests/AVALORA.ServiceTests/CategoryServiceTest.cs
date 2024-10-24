@@ -44,7 +44,8 @@ public class CategoryServiceTest
     {
         // Arrange
         var categories = new List<Category>();
-        _categoryRepositoryMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string[]>())).ReturnsAsync(categories);
+        _categoryRepositoryMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string[]>()))
+            .ReturnsAsync(categories);
 
         // Act
         List<CategoryResponse> result = await _categoryService.GetAllAsync();
@@ -60,7 +61,8 @@ public class CategoryServiceTest
         List<Category> categories = _fixture.CreateMany<Category>(10).ToList();
         var expected = _mapper.Map<List<CategoryResponse>>(categories);
 
-        _categoryRepositoryMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string[]>())).ReturnsAsync(categories);
+        _categoryRepositoryMock.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string[]>()))
+            .ReturnsAsync(categories);
 
         // Act
         List<CategoryResponse> result = await _categoryService.GetAllAsync();
@@ -114,7 +116,7 @@ public class CategoryServiceTest
     {
         // Arrange
         Category? category = null;
-        Expression<Func<Category, bool>> filter = x => x.Name.Contains("Test");
+        Expression<Func<Category, bool>> filter = c => c.Name.Contains("Test");
 
         _categoryRepositoryMock.Setup(x => x.GetAsync(filter, It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(category);
 
@@ -289,8 +291,8 @@ public class CategoryServiceTest
     public async Task UpdateAsync_GivenValidCategoryNameUpdateRequest_ShouldReturnCategoryResponseWithUpdatedName()
     {
         // Arrange
-        var expected = _fixture.Build<Category>().With(x => x.Id, 1).Create();
-        var categoryUpdateRequest = _fixture.Build<CategoryUpdateRequest>().With(x => x.Id, 1).Create();
+        var expected = _fixture.Build<Category>().With(c => c.Id, 1).Create();
+        var categoryUpdateRequest = _fixture.Build<CategoryUpdateRequest>().With(c => c.Id, 1).Create();
 
         _categoryRepositoryMock.Setup(
             x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(expected);
@@ -361,7 +363,7 @@ public class CategoryServiceTest
     public async Task UpdatePartialAsync_GivenValidCategoryUpdateRequestWithNamePropertyParams_ShouldReturnCategoryResponseWithUpdatedName()
     {
         // Arrange
-        var expected = _fixture.Build<Category>().With(x => x.Id, 1).Create();
+        var expected = _fixture.Build<Category>().With(c => c.Id, 1).Create();
         var categoryUpdateRequest = _fixture.Build<CategoryUpdateRequest>().With(x => x.Id, 1).Create();
         var propertyNames = new[] { nameof(Category.Name) };
 
