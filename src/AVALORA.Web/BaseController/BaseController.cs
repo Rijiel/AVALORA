@@ -11,7 +11,19 @@ namespace AVALORA.Web.BaseController;
 /// <typeparam name="TController">Type of the derived controller.</typeparam>
 public class BaseController<TController> : Controller where TController : BaseController<TController>
 {
-    private ILogger<TController>? _logger;
+    /// <summary>
+    /// Gets or sets the success message to be displayed via Toastr.
+    /// </summary>
+	[TempData]
+	public string? SuccessMessage { get; set; }
+
+    /// <summary>
+    /// Gets or sets the error message to be displayed via Toastr.
+    /// </summary>
+	[TempData]
+	public string? ErrorMessage { get; set; }
+
+	private ILogger<TController>? _logger;
     private IMapper? _mapper;
     private IServiceUnitOfWork? _serviceUnitOfWork;
 

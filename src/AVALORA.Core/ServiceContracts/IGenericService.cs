@@ -14,7 +14,7 @@ public interface IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
     /// <param name="filter">An optional filter expression to filter the results.</param>
     /// <param name="includes">An optional list of navigation properties to include in the results.</param>
     /// <returns>A Task that represents the asynchronous operation. The task result contains a list of the generic model type.</returns>
-    Task<List<TResponseDto>> GetAllAsync(Expression<Func<TModel, bool>>? filter = null, params string[] includes);
+    Task<List<TResponseDto>> GetAllAsync(Expression<Func<TModel, bool>>? filter = null, CancellationToken cancellationToken = default, params string[] includes);
 
     /// <summary>
     /// Retrieves a single instance of the generic model type based on the provided filter.
@@ -23,7 +23,7 @@ public interface IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
     /// <param name="includes">An optional list of navigation properties to include in the result.</param>
     /// <param name="tracked">Whether to track the model in the context. Defaults to false.</param>
     /// <returns>A Task that represents the asynchronous operation. The task result contains the found model or null if not found.</returns>
-    Task<TResponseDto?> GetAsync(Expression<Func<TModel, bool>> filter, bool tracked = false, params string[] includes);
+    Task<TResponseDto?> GetAsync(Expression<Func<TModel, bool>> filter, bool tracked = false, CancellationToken cancellationToken = default, params string[] includes);
 
     /// <summary>
     /// Retrieves a single instance of the generic model type based on the provided ID.
@@ -32,7 +32,7 @@ public interface IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
     /// <param name="includes">An optional list of navigation properties to include in the result.</param>
     /// <param name="tracked">Whether to track the model in the context. Defaults to false.</param>
     /// <returns>A Task that represents the asynchronous operation. The task result contains the found model or null if not found.</returns>
-    Task<TResponseDto?> GetByIdAsync(object? id, bool tracked = false, params string[] includes);
+    Task<TResponseDto?> GetByIdAsync(object? id, bool tracked = false, CancellationToken cancellationToken = default, params string[] includes);
 
     /// <summary>
     /// Asynchronously adds a new instance of the generic model type to the repository.

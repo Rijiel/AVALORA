@@ -26,17 +26,21 @@ public interface IProductFacade
     /// <returns>A task representing the asynchronous operation.</returns>
     Task DeleteProductAsync(int? id);
 
-    /// <summary>
-    /// Gets a list of product categories asynchronously.
-    /// </summary>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    Task<IEnumerable<SelectListItem>> GetCategoriesSelectListAsync();
+	/// <summary>
+	/// Gets a list of product categories asynchronously.
+	/// </summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by 
+	/// other objects or threads to receive notice of cancellation.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	Task<IEnumerable<SelectListItem>> GetCategoriesSelectListAsync(CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Gets a count of product images for a given product asynchronously.
-    /// </summary>
-    /// <param name="productId">The ID of the product.</param>
-    /// <returns>A task representing the asynchronous operation. 
-    /// Returns the count of product images.</returns>
-    Task<int> GetProductImageCount(int? productId);
+	/// <summary>
+	/// Gets a count of product images for a given product asynchronously.
+	/// </summary>
+	/// <param name="productId">The ID of the product.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by 
+	/// other objects or threads to receive notice of cancellation.</param>
+	/// <returns>A task representing the asynchronous operation. 
+	/// Returns the count of product images.</returns>
+	Task<int> GetProductImageCount(int? productId, CancellationToken cancellationToken = default);
 }

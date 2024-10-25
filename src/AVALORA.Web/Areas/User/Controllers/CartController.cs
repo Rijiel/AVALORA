@@ -24,7 +24,7 @@ public class CartController : BaseController<CartController>
     public async Task<IActionResult> Index()
 	{
 		List<CartItemResponse> cartItemResponses = await _cartFacade.GetCurrentUserCartItemsAsync(true);
-
+		
 		var cartItemResponsesVM = new CartItemResponsesVM
 		{
 			CartItemResponses = cartItemResponses,
@@ -54,9 +54,15 @@ public class CartController : BaseController<CartController>
 	public async Task<IActionResult> Remove(int? id)
 	{
 		await ServiceUnitOfWork.CartItemService.RemoveAsync(id);
-		TempData[SD.TEMPDATA_SUCCESS] = "Product removed from cart.";
+		SuccessMessage = "Product removed from cart.";
 		Logger.LogInformation($"Removed cart item: {id}");
 
 		return RedirectToAction(nameof(Index));
+	}
+
+	[HttpGet]
+	public Task<IActionResult> Checkout()
+	{
+		return Task.FromResult<IActionResult>(View());
 	}
 }

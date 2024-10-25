@@ -10,13 +10,13 @@ namespace AVALORA.Web.Areas.Admin.Controllers;
 [Route("[controller]/[action]")]
 public class CategoriesController : BaseController<CategoriesController>
 {
-	[HttpGet]
-	public async Task<IActionResult> Index()
+    [HttpGet]
+	public async Task<IActionResult> Index(CancellationToken cancellationToken)
 	{
 		// Provide list of category responses for editing
 		var categoriesVM = new CategoriesVM()
 		{
-			CategoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync()
+			CategoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync(cancellationToken: cancellationToken)
 		};
 
 		return View(categoriesVM);
@@ -24,13 +24,13 @@ public class CategoriesController : BaseController<CategoriesController>
 
 	[HttpPost]
 	[ActionName(nameof(Index))]
-	public async Task<IActionResult> Create(CategoriesVM categoriesVM)
+	public async Task<IActionResult> Create(CategoriesVM categoriesVM, CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
 		{
 			// Persist new category to database
 			await ServiceUnitOfWork.CategoryService.AddAsync(categoriesVM.CategoryAddRequest);
-			TempData[SD.TEMPDATA_SUCCESS] = "Category created successfully";
+			SuccessMessage = "Category created successfully";
 
 			return RedirectToAction(nameof(Index));
 		}
@@ -38,15 +38,15 @@ public class CategoriesController : BaseController<CategoriesController>
 		Logger.LogWarning("Invalid model state. Product not created.");
 
 		// Re-populate category list for re-display on validation failure
-		categoriesVM.CategoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync();
+		categoriesVM.CategoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync(cancellationToken: cancellationToken);
 		return View(categoriesVM);
 	}
 
 	[HttpGet]
 	[Route("{id?}")]
-	public async Task<IActionResult> Edit(int? id)
+	public async Task<IActionResult> Edit(int? id, CancellationToken cancellationToken)
 	{
-		CategoryResponse? categoryResponse = await ServiceUnitOfWork.CategoryService.GetByIdAsync(id);
+		CategoryResponse? categoryResponse = await ServiceUnitOfWork.CategoryService.GetByIdAsync(id, cancellationToken: cancellationToken);
 		if (categoryResponse == null)
 		{
 			Logger.LogError($"Category with id {id} not found.");
@@ -64,7 +64,7 @@ public class CategoriesController : BaseController<CategoriesController>
 		{
 			// Persist updated category to database
 			await ServiceUnitOfWork.CategoryService.UpdateAsync(updateRequest);
-			TempData[SD.TEMPDATA_SUCCESS] = "Category updated successfully";
+			SuccessMessage = "Category updated successfully";
 
             return RedirectToAction(nameof(Index));
 		}
@@ -82,7 +82,7 @@ public class CategoriesController : BaseController<CategoriesController>
 		{
 			await ServiceUnitOfWork.CategoryService.RemoveAsync(id);
 
-			TempData[SD.TEMPDATA_SUCCESS] = "Category deleted successfully.";
+			SuccessMessage = "Category deleted successfully.";
 			Logger.LogInformation("Category deleted successfully.");
 
 			// Enable client-side redirect after deletion

@@ -25,19 +25,22 @@ public class HomeController : BaseController<HomeController>
 	}
 
 	[Route("/")]
-	public async Task<IActionResult> Index()
+	public async Task<IActionResult> Index(CancellationToken cancellationToken)
 	{
-		var productResponses = await ServiceUnitOfWork.ProductService.GetAllAsync(includes: nameof(ProductResponse.ProductImages));
+		var productResponses = await ServiceUnitOfWork.ProductService
+			.GetAllAsync(cancellationToken: cancellationToken, includes: nameof(ProductResponse.ProductImages));
 
 		return View(productResponses);
 	}
 
 	[HttpGet]
 	[Route("{id?}")]
-	public async Task<IActionResult> Details(int? id)
+	public async Task<IActionResult> Details(int? id, CancellationToken cancellationToken)
 	{
 		ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
-			.GetByIdAsync(id, includes: [nameof(ProductResponse.Category), nameof(ProductResponse.ProductImages)]);
+			.GetByIdAsync(id, cancellationToken: cancellationToken, 
+			includes: [nameof(ProductResponse.Category), nameof(ProductResponse.ProductImages)]);
+
 		if (productResponse == null)
 		{
 			Logger.LogWarning("Product not found");
@@ -62,7 +65,7 @@ public class HomeController : BaseController<HomeController>
 	[HttpPost]
 	[Authorize]
 	[Route("{id?}")]
-	public async Task<IActionResult> Details(CartItemAddRequestVM cartItemAddRequestVM)
+	public async Task<IActionResult> Details(CartItemAddRequestVM cartItemAddRequestVM, CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
 		{
@@ -72,7 +75,9 @@ public class HomeController : BaseController<HomeController>
 
 		Logger.LogWarning("Invalid model state");
 		ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
-			.GetByIdAsync(cartItemAddRequestVM.ProductResponse.Id, includes: [nameof(ProductResponse.Category), nameof(ProductResponse.ProductImages)]);
+			.GetByIdAsync(cartItemAddRequestVM.ProductResponse.Id, cancellationToken: cancellationToken, 
+			includes: [nameof(ProductResponse.Category), nameof(ProductResponse.ProductImages)]);
+
 		cartItemAddRequestVM.ProductResponse = productResponse!;
 
 		return View(cartItemAddRequestVM);

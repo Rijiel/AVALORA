@@ -1,9 +1,7 @@
-﻿using AVALORA.Core.Domain.Models;
-using AVALORA.Core.Domain.Models.ViewModels;
+﻿using AVALORA.Core.Domain.Models.ViewModels;
 using AVALORA.Core.Dto.ProductDtos;
 using AVALORA.Core.Dto.ProductImageDtos;
 using AVALORA.Core.Enums;
-using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.BaseController;
 using Microsoft.AspNetCore.Mvc;
@@ -14,24 +12,24 @@ namespace AVALORA.Web.Areas.Admin.Controllers;
 [Route("[controller]/[action]")]
 public class ProductsController : BaseController<ProductsController>
 {
-    private readonly IProductFacade _productFacade;
+	private readonly IProductFacade _productFacade;
 
 	[BindProperty]
 	public ProductUpsertVM ProductUpsertVM { get; set; } = null!;
 
-    public ProductsController(IProductFacade productFacade)
-    {
-        _productFacade = productFacade;
-    }
+	public ProductsController(IProductFacade productFacade)
+	{
+		_productFacade = productFacade;
+	}
 
-    public IActionResult Index() => View();
+	public IActionResult Index() => View();
 
 	[HttpGet]
-	public async Task<IActionResult> Create()
+	public async Task<IActionResult> Create(CancellationToken cancellationToken)
 	{
 		ProductUpsertVM = new ProductUpsertVM()
 		{
-			Categories = await _productFacade.GetCategoriesSelectListAsync()
+			Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken: cancellationToken)
 		};
 
 		return View(ProductUpsertVM);
@@ -39,28 +37,28 @@ public class ProductsController : BaseController<ProductsController>
 
 	[HttpPost]
 	[ActionName(nameof(Create))]
-	public async Task<IActionResult> CreatePOST()
+	public async Task<IActionResult> CreatePOST(CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
 		{
 			var productAddRequest = Mapper.Map<ProductAddRequest>(ProductUpsertVM);
 			await _productFacade.CreateProductAsync(productAddRequest);
-            TempData[SD.TEMPDATA_SUCCESS] = "Product created successfully.";
+			SuccessMessage = "Product created successfully.";
 
-            return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(Index));
 		}
 
 		Logger.LogWarning("Invalid model state. Product not created.");
-		ProductUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync();
-        return View(ProductUpsertVM);
+		ProductUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken: cancellationToken);
+		return View(ProductUpsertVM);
 	}
 
 	[HttpGet]
 	[Route("{id?}")]
-	public async Task<IActionResult> Edit(int? id)
+	public async Task<IActionResult> Edit(int? id, CancellationToken cancellationToken)
 	{
-		ProductResponse? productResponse = 
-			await ServiceUnitOfWork.ProductService.GetByIdAsync(id, includes: nameof(ProductResponse.ProductImages));
+		ProductResponse? productResponse =
+			await ServiceUnitOfWork.ProductService.GetByIdAsync(id, cancellationToken: cancellationToken, includes: nameof(ProductResponse.ProductImages));
 
 		if (productResponse == null)
 		{
@@ -69,7 +67,7 @@ public class ProductsController : BaseController<ProductsController>
 		}
 
 		var productUpsertVM = Mapper.Map<ProductUpsertVM>(productResponse);
-		productUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync();
+		productUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken);
 
 		return View(productUpsertVM);
 	}
@@ -83,7 +81,7 @@ public class ProductsController : BaseController<ProductsController>
 			var productUpdateRequest = Mapper.Map<ProductUpdateRequest>(ProductUpsertVM);
 			await _productFacade.UpdateProductAsync(productUpdateRequest);
 
-			TempData[SD.TEMPDATA_SUCCESS] = "Product updated successfully.";
+			SuccessMessage = "Product updated successfully.";
 		}
 
 		Logger.LogWarning("Invalid model state. Product not created.");
@@ -92,10 +90,10 @@ public class ProductsController : BaseController<ProductsController>
 	}
 
 	#region API CALLS
-	public async Task<JsonResult> GetAll()
+	public async Task<JsonResult> GetAll(CancellationToken cancellationToken)
 	{
 		List<ProductResponse> productResponses = await ServiceUnitOfWork.ProductService
-			.GetAllAsync(includes: [nameof(ProductResponse.Category)]);
+			.GetAllAsync(cancellationToken: cancellationToken, includes: [nameof(ProductResponse.Category)]);
 
 		foreach (var productResponse in productResponses)
 			productResponse.ProductImagesCount = await _productFacade.GetProductImageCount(productResponse.Id);
@@ -110,7 +108,7 @@ public class ProductsController : BaseController<ProductsController>
 		try
 		{
 			await _productFacade.DeleteProductAsync(id);
-			TempData[SD.TEMPDATA_SUCCESS] = "Product deleted successfully.";
+			SuccessMessage = "Product deleted successfully.";
 
 			return Json(new { success = true });
 		}
@@ -123,12 +121,13 @@ public class ProductsController : BaseController<ProductsController>
 	}
 
 	[Route("{id?}")]
-	public async Task<IActionResult> DeleteImage(int? id)
+	public async Task<IActionResult> DeleteImage(int? id, CancellationToken cancellationToken)
 	{
-		ProductImageResponse? productImageResponse =  await ServiceUnitOfWork.ProductImageService.GetByIdAsync(id);
+		ProductImageResponse? productImageResponse = await ServiceUnitOfWork.ProductImageService
+			.GetByIdAsync(id, cancellationToken: cancellationToken);
 
 		await ServiceUnitOfWork.ProductImageService.RemoveAsync(id);
-		TempData[SD.TEMPDATA_SUCCESS] = "Product image deleted successfully.";
+		SuccessMessage = "Product image deleted successfully.";
 
 		return RedirectToAction(nameof(Edit), new { id = productImageResponse?.ProductId });
 	}

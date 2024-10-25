@@ -60,19 +60,19 @@ public class ProductFacade : BaseFacade<ProductFacade>, IProductFacade
 		Logger.LogInformation($"Deleted product: {id} and product images");
 	}
 
-	public async Task<IEnumerable<SelectListItem>> GetCategoriesSelectListAsync()
+	public async Task<IEnumerable<SelectListItem>> GetCategoriesSelectListAsync(CancellationToken cancellationToken = default)
 	{
-		List<CategoryResponse> categoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync();
+		List<CategoryResponse> categoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync(cancellationToken: cancellationToken);
 		return categoryResponses.Select(c => new SelectListItem(c.Name, c.Id.ToString()));
 	}
 
-	public async Task<int> GetProductImageCount(int? productId)
+	public async Task<int> GetProductImageCount(int? productId, CancellationToken cancellationToken = default)
 	{
 		int count = 0;
 		if (productId != null)
 		{
 			IEnumerable<ProductImageResponse> productImageResponses =
-				await ServiceUnitOfWork.ProductImageService.GetAllAsync(p => p.ProductId == productId);
+				await ServiceUnitOfWork.ProductImageService.GetAllAsync(p => p.ProductId == productId, cancellationToken: cancellationToken);
 			count = productImageResponses.Count();
 		}
 

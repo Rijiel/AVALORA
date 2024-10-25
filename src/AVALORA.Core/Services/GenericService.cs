@@ -3,146 +3,152 @@ using AVALORA.Core.Domain.RepositoryContracts;
 using AVALORA.Core.ServiceContracts;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 
 namespace AVALORA.Core.Services;
 
 public class GenericService<TModel, TAddDto, TUpdateDto, TResponseDto> : IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
-    where TModel : class
-    where TAddDto : class
-    where TUpdateDto : class
-    where TResponseDto : class
+	where TModel : class
+	where TAddDto : class
+	where TUpdateDto : class
+	where TResponseDto : class
 {
-    private readonly IGenericRepository<TModel> _repository;
-    private readonly IMapper _mapper;
-    private readonly IUnitOfWork _unitOfWork;
+	private readonly IGenericRepository<TModel> _repository;
+	private readonly IMapper _mapper;
+	private readonly IUnitOfWork _unitOfWork;
 
-    public GenericService(IGenericRepository<TModel> repository, IMapper mapper, IUnitOfWork unitOfWork)
-    {
-        _repository = repository;
-        _mapper = mapper;
-        _unitOfWork = unitOfWork;
-    }
 
-    protected IMapper Mapper => _mapper;
 
-    /// <summary>
-    /// Represents a unit of work for the repository layer, encapsulating access to various repositories.
-    /// </summary>
-    protected IUnitOfWork UnitOfWork => _unitOfWork;
+	public GenericService(IGenericRepository<TModel> repository, IMapper mapper, IUnitOfWork unitOfWork)
+	{
+		_repository = repository;
+		_mapper = mapper;
+		_unitOfWork = unitOfWork;
+	}
 
-    public async Task<List<TResponseDto>> GetAllAsync(Expression<Func<TModel, bool>>? filter = null, params string[] includes)
-    {
-        IEnumerable<TModel> models = await _repository.GetAllAsync(filter, includes);
+	protected IMapper Mapper => _mapper;
 
-        return Mapper.Map<List<TResponseDto>>(models);
-    }
+	/// <summary>
+	/// Represents a unit of work for the repository layer, encapsulating access to various repositories.
+	/// </summary>
+	protected IUnitOfWork UnitOfWork => _unitOfWork;
 
-    public async Task<TResponseDto?> GetAsync(Expression<Func<TModel, bool>> filter, bool tracked = false, params string[] includes)
-    {
-        TModel? model = await _repository.GetAsync(filter, tracked, includes);
+	public async Task<List<TResponseDto>> GetAllAsync(Expression<Func<TModel, bool>>? filter = null, CancellationToken cancellationToken = default, params string[] includes)
+	{
+		IEnumerable<TModel> models = await _repository.GetAllAsync(filter, includes);
+		cancellationToken.ThrowIfCancellationRequested();
 
-        return Mapper.Map<TResponseDto>(model);
-    }
+		return Mapper.Map<List<TResponseDto>>(models);
+	}
 
-    public async Task<TResponseDto?> GetByIdAsync(object? id, bool tracked = false, params string[] includes)
-    {
-        if (id == null)
-            return null;
+	public async Task<TResponseDto?> GetAsync(Expression<Func<TModel, bool>> filter, bool tracked = false, CancellationToken cancellationToken = default, params string[] includes)
+	{
+		TModel? model = await _repository.GetAsync(filter, tracked, includes);
+		cancellationToken.ThrowIfCancellationRequested();
 
-        TModel? model = await _repository.GetByIdAsync(id, tracked, includes);
+		return Mapper.Map<TResponseDto>(model);
+	}
 
-        return Mapper.Map<TResponseDto?>(model);
-    }
+	public async Task<TResponseDto?> GetByIdAsync(object? id, bool tracked = false, CancellationToken cancellationToken = default, params string[] includes)
+	{
+		if (id == null)
+			return null;
 
-    public async Task<TResponseDto> AddAsync(TAddDto? addDto)
-    {
-        ArgumentNullException.ThrowIfNull(addDto);
+		TModel? model = await _repository.GetByIdAsync(id, tracked, includes);
+		cancellationToken.ThrowIfCancellationRequested();
 
-        TModel model = Mapper.Map<TModel>(addDto);
+		return Mapper.Map<TResponseDto?>(model);
+	}
 
-        _repository.Add(model);
-        await UnitOfWork.SaveAsync();
+	public async Task<TResponseDto> AddAsync(TAddDto? addDto)
+	{
+		ArgumentNullException.ThrowIfNull(addDto);
 
-        return Mapper.Map<TResponseDto>(model);
-    }
+		TModel model = Mapper.Map<TModel>(addDto);
 
-    public async Task<List<TResponseDto>> AddRangeAsync(List<TAddDto> addDtos)
-    {
-        List<TModel> models = Mapper.Map<List<TModel>>(addDtos);
+		_repository.Add(model);
+		await UnitOfWork.SaveAsync();
 
-        _repository.AddRange(models);
-        await _unitOfWork.SaveAsync();
+		return Mapper.Map<TResponseDto>(model);
+	}
 
-        return Mapper.Map<List<TResponseDto>>(models);
-    }
+	public async Task<List<TResponseDto>> AddRangeAsync(List<TAddDto> addDtos)
+	{
+		List<TModel> models = Mapper.Map<List<TModel>>(addDtos);
 
-    public async Task<TResponseDto> UpdateAsync(TUpdateDto? updateDto)
-    {
-        ArgumentNullException.ThrowIfNull(updateDto);
+		_repository.AddRange(models);
+		await _unitOfWork.SaveAsync();
 
-        PropertyInfo? propertyInfo = updateDto.GetType().GetProperty("Id")
-            ?? throw new KeyNotFoundException($"{nameof(TModel)} does not have an Id property");
-        object id = propertyInfo.GetValue(updateDto)!;
+		return Mapper.Map<List<TResponseDto>>(models);
+	}
 
-        TModel? modelFromDb = await _repository.GetByIdAsync(id, tracked: true)
-            ?? throw new KeyNotFoundException($"{nameof(TModel)} with id {id} not found");
+	public async Task<TResponseDto> UpdateAsync(TUpdateDto? updateDto)
+	{
+		ArgumentNullException.ThrowIfNull(updateDto);
 
-        Mapper.Map(updateDto, modelFromDb);
-        
-        await _unitOfWork.SaveAsync();
+		PropertyInfo? propertyInfo = updateDto.GetType().GetProperty("Id")
+			?? throw new KeyNotFoundException($"{nameof(TModel)} does not have an Id property");
+		object id = propertyInfo.GetValue(updateDto)!;
 
-        return Mapper.Map<TResponseDto>(modelFromDb);
-    }
+		TModel? modelFromDb = await _repository.GetByIdAsync(id, tracked: true)
+			?? throw new KeyNotFoundException($"{nameof(TModel)} with id {id} not found");
 
-    public async Task<TResponseDto> UpdatePartialAsync(TUpdateDto? updateDto, params string[] propertyNames)
-    {
-        ArgumentNullException.ThrowIfNull(updateDto);
+		Mapper.Map(updateDto, modelFromDb);
 
-        if (propertyNames.Length == 0)
-            throw new ArgumentException("At least one property name must be provided");
+		await _unitOfWork.SaveAsync();
 
-        PropertyInfo? propertyInfo = updateDto.GetType().GetProperty("Id")
-            ?? throw new ArgumentException($"{nameof(TModel)} does not have an Id property");
-        object id = propertyInfo.GetValue(updateDto)!;
+		return Mapper.Map<TResponseDto>(modelFromDb);
+	}
 
-        TModel? modelFromDb = await _repository.GetByIdAsync(id, tracked: true)
-            ?? throw new KeyNotFoundException($"{nameof(TModel)} with id {id} not found");
+	public async Task<TResponseDto> UpdatePartialAsync(TUpdateDto? updateDto, params string[] propertyNames)
+	{
+		ArgumentNullException.ThrowIfNull(updateDto);
 
-        foreach (string propertyName in propertyNames)
-        {
-            PropertyInfo? modelFromDbProperty = modelFromDb.GetType().GetProperty(propertyName);
-            if (modelFromDbProperty != null)
-            {
-                PropertyInfo? updateDtoProperty = updateDto.GetType().GetProperty(propertyName);
-                if (updateDtoProperty != null)                
-                    modelFromDbProperty.SetValue(modelFromDb, updateDtoProperty.GetValue(updateDto));                
-            }
-        }
+		if (propertyNames.Length == 0)
+			throw new ArgumentException("At least one property name must be provided");
 
-        await _unitOfWork.SaveAsync();
+		PropertyInfo? propertyInfo = updateDto.GetType().GetProperty("Id")
+			?? throw new ArgumentException($"{nameof(TModel)} does not have an Id property");
+		object id = propertyInfo.GetValue(updateDto)!;
 
-        return Mapper.Map<TResponseDto>(modelFromDb);
-    }
+		TModel? modelFromDb = await _repository.GetByIdAsync(id, tracked: true)
+			?? throw new KeyNotFoundException($"{nameof(TModel)} with id {id} not found");
 
-    public async Task RemoveAsync(object? id)
-    {
-        ArgumentNullException.ThrowIfNull(id);
+		foreach (string propertyName in propertyNames)
+		{
+			PropertyInfo? modelFromDbProperty = modelFromDb.GetType().GetProperty(propertyName);
+			if (modelFromDbProperty != null)
+			{
+				PropertyInfo? updateDtoProperty = updateDto.GetType().GetProperty(propertyName);
+				if (updateDtoProperty != null)
+					modelFromDbProperty.SetValue(modelFromDb, updateDtoProperty.GetValue(updateDto));
+			}
+		}
 
-        TModel? modelFromDb = await _repository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException($"{nameof(TModel)} with id {id} not found");
+		await _unitOfWork.SaveAsync();
 
-        _repository.Remove(modelFromDb);
-        await _unitOfWork.SaveAsync();
-    }
+		return Mapper.Map<TResponseDto>(modelFromDb);
+	}
 
-    public async Task RemoveRangeAsync(IEnumerable<TResponseDto>? responseDtos)
-    {
-        ArgumentNullException.ThrowIfNull(responseDtos);
+	public async Task RemoveAsync(object? id)
+	{
+		ArgumentNullException.ThrowIfNull(id);
 
-        List<TModel> models = Mapper.Map<List<TModel>>(responseDtos);
+		TModel? modelFromDb = await _repository.GetByIdAsync(id)
+			?? throw new KeyNotFoundException($"{nameof(TModel)} with id {id} not found");
 
-        _repository.RemoveRange(models);
-        await _unitOfWork.SaveAsync();
-    }
+		_repository.Remove(modelFromDb);
+		await _unitOfWork.SaveAsync();
+	}
+
+	public async Task RemoveRangeAsync(IEnumerable<TResponseDto>? responseDtos)
+	{
+		ArgumentNullException.ThrowIfNull(responseDtos);
+
+		List<TModel> models = Mapper.Map<List<TModel>>(responseDtos);
+
+		_repository.RemoveRange(models);
+		await _unitOfWork.SaveAsync();
+	}
 }
 

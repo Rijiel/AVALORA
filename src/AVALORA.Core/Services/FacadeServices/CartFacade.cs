@@ -79,15 +79,15 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 		await ServiceUnitOfWork.CartItemService.UpdateAsync(cartItemUpdateRequest);
 	}
 
-	public async Task<List<CartItemResponse>> GetCurrentUserCartItemsAsync(bool includeImages = false)
+	public async Task<List<CartItemResponse>> GetCurrentUserCartItemsAsync(bool includeImages = false, CancellationToken cancellationToken = default)
 	{
 		string userId = UserHelper.GetCurrentUserId(_contextAccessor)!;
 		IEnumerable<CartItemResponse> cartItemResponses = 
-			await ServiceUnitOfWork.CartItemService.GetAllAsync(c => c.ApplicationUserId == userId);
+			await ServiceUnitOfWork.CartItemService.GetAllAsync(c => c.ApplicationUserId == userId, cancellationToken: cancellationToken);
 
 		if (includeImages)
 		{
-			IEnumerable<ProductImageResponse> productImageResponses = await ServiceUnitOfWork.ProductImageService.GetAllAsync();
+			IEnumerable<ProductImageResponse> productImageResponses = await ServiceUnitOfWork.ProductImageService.GetAllAsync(cancellationToken: cancellationToken);
 			var productImages = Mapper.Map<IEnumerable<ProductImage>>(productImageResponses);
 
 			foreach (var cartItemResponse in cartItemResponses)
