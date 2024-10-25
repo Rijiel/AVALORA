@@ -1,7 +1,4 @@
 using AVALORA.Web.Extensions;
-using AVALORA.Infrastructure.DatabaseContext;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

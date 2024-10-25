@@ -1,6 +1,7 @@
-﻿using AVALORA.Core.Domain.Models.ViewModels;
+﻿using AVALORA.Core.Domain.Models;
 using AVALORA.Core.Dto.CartItemDtos;
 using AVALORA.Core.Dto.ProductDtos;
+using AVALORA.Core.Dto.ProductImageDtos;
 using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using Microsoft.AspNetCore.Http;
@@ -39,7 +40,8 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 		}
 
 		// Only add count if item is already in cart
-		CartItemResponse? existingCartItemResponse = await ServiceUnitOfWork.CartItemService.GetAsync(c => c.ApplicationUserId == userId && c.ProductId == productResponse.Id);
+		CartItemResponse? existingCartItemResponse = await ServiceUnitOfWork.CartItemService
+			.GetAsync(c => c.ApplicationUserId == userId && c.ProductId == productResponse.Id);
 		if (existingCartItemResponse != null)
 		{
 			await UpdateCartItemQuantityAsync(existingCartItemResponse.Id, cartItemAddRequest.Count, controller);
@@ -75,6 +77,25 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 
 		Logger.LogInformation($"Updated cart item {cartItemResponse.Id} quantity: {quantity}");
 		await ServiceUnitOfWork.CartItemService.UpdateAsync(cartItemUpdateRequest);
+	}
+
+	public async Task<List<CartItemResponse>> GetCurrentUserCartItemsAsync(bool includeImages = false)
+	{
+		string userId = UserHelper.GetCurrentUserId(_contextAccessor)!;
+		IEnumerable<CartItemResponse> cartItemResponses = 
+			await ServiceUnitOfWork.CartItemService.GetAllAsync(c => c.ApplicationUserId == userId);
+
+		if (includeImages)
+		{
+			IEnumerable<ProductImageResponse> productImageResponses = await ServiceUnitOfWork.ProductImageService.GetAllAsync();
+			var productImages = Mapper.Map<IEnumerable<ProductImage>>(productImageResponses);
+
+			foreach (var cartItemResponse in cartItemResponses)
+				cartItemResponse.Product.ProductImages = productImages
+					.Where(p => p.ProductId == cartItemResponse.ProductId).ToList();
+		}
+
+		return cartItemResponses.ToList();
 	}
 }
 

@@ -14,15 +14,17 @@ public class ApplicationUserUpdateRequest
     public string Name { get; set; } = null!;
 
     [Required]
-    public string Email { get; set; } = null!;
-
+	[EmailAddress]
     [StringLength(50)]
+	public string Email { get; set; } = null!;
+
+	[StringLength(50)]
     public string? Address { get; set; }
 
     [Required]
     [Phone]
     [StringLength(15)]
-    [Display(Name = "Phone Number")]
+    [DisplayName("Phone Number")]
     public string PhoneNumber { get; set; } = null!;
 }
 

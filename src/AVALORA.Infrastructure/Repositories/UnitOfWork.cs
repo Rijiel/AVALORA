@@ -15,6 +15,9 @@ public class UnitOfWork : IUnitOfWork
     public IProductImageRepository ProductImages { get; private set; }
     public IApplicationUserRepository ApplicationUsers { get; private set; }
     public ICartItemRepository CartItems { get; private set; }
+    public IOrderHeaderRepository OrderHeaders { get; private set; }
+    public IOrderSummaryRepository OrderSummaries { get; private set; }
+    public IOrderSummaryItemRepository OrderSummaryItems { get; private set; }
 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
@@ -25,6 +28,9 @@ public class UnitOfWork : IUnitOfWork
         ProductImages = new ProductImageRepository(_dbContext);
         ApplicationUsers = new ApplicationUserRepository(_dbContext);
         CartItems = new CartItemRepository(_dbContext);
+        OrderHeaders = new OrderHeaderRepository(_dbContext);
+		OrderSummaries = new OrderSummaryRepository(_dbContext);
+		OrderSummaryItems = new OrderSummaryItemRepository(_dbContext);
     }
 
     public async Task SaveAsync()

@@ -10,5 +10,8 @@ public interface IServiceUnitOfWork
     public IProductImageService ProductImageService { get; }
     public IApplicationUserService ApplicationUserService { get; }
     public ICartItemService CartItemService { get; }
+    public IOrderHeaderSevice OrderHeaderSevice { get; }
+    public IOrderSummaryService OrderSummaryService { get; }
+    public IOrderSummaryItemService OrderSummaryItemService { get; }
 }
 

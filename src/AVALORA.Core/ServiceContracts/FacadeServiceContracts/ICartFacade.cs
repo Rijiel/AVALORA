@@ -15,7 +15,6 @@ public interface ICartFacade
 	/// Returns a TempData message for sucessful operation.</returns>
 	Task AddToCartAsync(CartItemAddRequest? cartItemAddRequest, Controller controller);
 
-
 	/// <summary>
 	/// Updates the quantity of a cart item in the database asynchronously.
 	/// </summary>
@@ -25,5 +24,12 @@ public interface ICartFacade
 	/// <returns>A task representing the asynchronous operation. 
 	/// Returns a TempData message for successful operation.</returns>
 	Task UpdateCartItemQuantityAsync(int? cartItemId, int quantity, Controller controller);
+
+	/// <summary>
+	/// Retrieves the cart items of the current user asynchronously.
+	/// </summary>
+	/// <param name="includeImages">Optional parameter to include images in the response. Defaults to false.</param>
+	/// <returns>A task representing the asynchronous operation, containing a list of CartItemResponse objects.</returns>
+	Task<List<CartItemResponse>> GetCurrentUserCartItemsAsync(bool includeImages = false);
 }
 

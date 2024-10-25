@@ -10,6 +10,9 @@ public interface IUnitOfWork
     public IProductImageRepository ProductImages { get; }
     public IApplicationUserRepository ApplicationUsers { get; }
     public ICartItemRepository CartItems { get; }
+    public IOrderHeaderRepository OrderHeaders { get; }
+    public IOrderSummaryRepository OrderSummaries { get; }
+    public IOrderSummaryItemRepository OrderSummaryItems { get; }
 
     /// <summary>
     /// Saves changes made in the unit of work asynchronously.

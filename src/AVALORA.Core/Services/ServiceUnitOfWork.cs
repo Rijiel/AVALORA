@@ -15,6 +15,9 @@ public class ServiceUnitOfWork : IServiceUnitOfWork
     public IProductImageService ProductImageService { get; private set; }
     public IApplicationUserService ApplicationUserService { get; private set; }
     public ICartItemService CartItemService { get; private set; }
+    public IOrderHeaderSevice OrderHeaderSevice { get; private set; }
+    public IOrderSummaryService OrderSummaryService { get; private set; }
+    public IOrderSummaryItemService OrderSummaryItemService { get; private set; }
 
     public ServiceUnitOfWork(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment)
     {
@@ -23,6 +26,9 @@ public class ServiceUnitOfWork : IServiceUnitOfWork
 		ProductImageService = new ProductImageService(unitOfWork.ProductImages, mapper, unitOfWork, webHostEnvironment);
         ApplicationUserService = new ApplicationUserService(unitOfWork.ApplicationUsers, mapper, unitOfWork);
         CartItemService = new CartItemService(unitOfWork.CartItems, mapper, unitOfWork);
+        OrderHeaderSevice = new OrderHeaderSevice(unitOfWork.OrderHeaders, mapper, unitOfWork);
+		OrderSummaryService = new OrderSummaryService(unitOfWork.OrderSummaries, mapper, unitOfWork);
+		OrderSummaryItemService = new OrderSummaryItemService(unitOfWork.OrderSummaryItems, mapper, unitOfWork);
     }
 }
 
