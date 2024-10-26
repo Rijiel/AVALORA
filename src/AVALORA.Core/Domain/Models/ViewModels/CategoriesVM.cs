@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AVALORA.Core.Domain.Models.ViewModels;
 
+/// <summary>
+/// View model for managing categories, containing add request and response collection.
+/// </summary>
 public class CategoriesVM
 {
     [Required]

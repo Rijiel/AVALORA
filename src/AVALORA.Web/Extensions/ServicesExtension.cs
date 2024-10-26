@@ -13,23 +13,30 @@ namespace AVALORA.Web.Extensions;
 
 public static class ServicesExtension
 {
-    /// <summary>
-    /// Configure startup <see cref="Program"/> services.
-    /// </summary>
-    /// <param name="services">Collection of services to configure.</param>
-    /// <param name="cfg">Configuration provider.</param>
-    /// <returns></returns>
-    public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration cfg)
-    {
-        services.AddControllersWithViews();
-        services.AddRazorPages();
+	/// <summary>
+	/// Configure startup <see cref="Program"/> services.
+	/// </summary>
+	/// <param name="services">Collection of services to configure.</param>
+	/// <param name="cfg">Configuration provider.</param>
+	/// <returns></returns>
+	public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration cfg)
+	{
+		services.AddControllersWithViews();
+		services.AddRazorPages();
 
-        services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(cfg.GetConnectionString("DefaultConnection")));
+		services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(cfg.GetConnectionString("DefaultConnection")));
 
 		services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
-        services.Configure<IdentityOptions>(options =>
-        {
+		services.AddSession(options =>
+		{
+			options.IdleTimeout = TimeSpan.FromMinutes(30);
+			options.Cookie.IsEssential = true;
+			options.Cookie.HttpOnly = true; // Make the cookie accessible only via HTTP
+		});
+
+		services.Configure<IdentityOptions>(options =>
+		{
 			options.Password.RequireDigit = false;
 			options.Password.RequireLowercase = false;
 			options.Password.RequireNonAlphanumeric = false;
@@ -45,13 +52,14 @@ public static class ServicesExtension
 
 		services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
-        #region DI
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IServiceUnitOfWork, ServiceUnitOfWork>();
-        services.AddScoped<IProductFacade, ProductFacade>();
-        services.AddScoped<ICartFacade, CartFacade>();
-        #endregion
+		#region DI
+		services.AddScoped<IUnitOfWork, UnitOfWork>();
+		services.AddScoped<IServiceUnitOfWork, ServiceUnitOfWork>();
+		services.AddScoped<IProductFacade, ProductFacade>();
+		services.AddScoped<ICartFacade, CartFacade>();
+		services.AddScoped<IOrderFacade, OrderFacade>();
+		#endregion
 
-        return services;
-    }
+		return services;
+	}
 }

@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AVALORA.Core.Domain.Models.Validations;
 
+/// <summary>
+/// Custom validation attribute to ensure a tracking number is unique.
+/// </summary>
 public class UniqueTrackingNumberAttribute : ValidationAttribute
 {
 	protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

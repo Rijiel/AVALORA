@@ -85,6 +85,7 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 		IEnumerable<CartItemResponse> cartItemResponses = 
 			await ServiceUnitOfWork.CartItemService.GetAllAsync(c => c.ApplicationUserId == userId, cancellationToken: cancellationToken);
 
+		// Retrieve product images if requested
 		if (includeImages)
 		{
 			IEnumerable<ProductImageResponse> productImageResponses = await ServiceUnitOfWork.ProductImageService.GetAllAsync(cancellationToken: cancellationToken);
@@ -95,7 +96,16 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 					.Where(p => p.ProductId == cartItemResponse.ProductId).ToList();
 		}
 
+		Logger.LogInformation($"Retrieved cart items for user: {userId}");
 		return cartItemResponses.ToList();
+	}
+
+	public async Task ClearCartItemsAsync(Controller controller, CancellationToken cancellationToken = default)
+	{
+		List<CartItemResponse> cartItemResponses = await GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
+		await ServiceUnitOfWork.CartItemService.RemoveRangeAsync(cartItemResponses);
+
+		Logger.LogInformation($"Cleared cart for user: {UserHelper.GetCurrentUserId(_contextAccessor)}");
 	}
 }
 

@@ -1,0 +1,104 @@
+﻿@model CheckoutVM
+@{
+	ViewData["Title"] = "Order Summary";
+}
+
+<div class="mt-5">
+	<div class="d-flex justify-content-between">
+		<h3 class="text-uppercase fs-4">Order Summary</h3>
+		<a asp-action="Index" class="btn btn-outline-info">Back to cart</a>
+	</div>
+	<div class="row mt-5">
+		<div class="col-12">
+			<form method="post">
+				<input asp-for="ApplicationUserId" hidden />
+				<input asp-for="EstimatedFromDate" hidden />
+				<input asp-for="EstimatedToDate" hidden />
+				<input asp-for="TotalPrice" hidden />
+				<div class="row">
+					<!-- Shipping Details -->
+					<div class="col-6">
+						<h4>Shipping Details:</h4>
+						<div class="mt-4">
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Name:</p>
+								</div>
+								<div class="col-9">
+									<input asp-for="Name" class="form-control" />
+									<span asp-validation-for="Name" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Phone:</p>
+								</div>
+								<div class="col-9">
+									<input asp-for="PhoneNumber" class="form-control" />
+									<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Address:</p>
+								</div>
+								<div class="col-9">
+									<input asp-for="Address" class="form-control" />
+									<span asp-validation-for="Address" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Email:</p>
+								</div>
+								<div class="col-9">
+									<input asp-for="Email" class="form-control" />
+									<span asp-validation-for="Email" class="text-danger"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- Order Summary -->
+					<div class="col-6">
+						<div class="ms-5">
+							<h4>Order Summary:</h4>
+							<div class="mt-4">
+								<ul class="list-group">
+									@if (Model.CartItemResponses != null && Model.CartItemResponses.Any())
+									{
+										foreach (var cart in Model.CartItemResponses)
+										{
+											<li class="list-group-item d-flex justify-content-between">
+												<div>
+													<h6 class="my-0">@cart.Product.Name</h6>
+													<small class="text-muted">Quantity: @cart.Count</small>
+												</div>
+												<span class="text-muted">@cart.Product.Price.ToString("c")</span>
+											</li>
+										}
+									}									
+									<!-- Total -->
+									<li class="list-group-item d-flex justify-content-between">
+										<small class="fw-semibold">Total (USD)</small>
+										<strong>@Model.TotalPrice.ToString("c")</strong>
+									</li>
+								</ul>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="mt-5">
+					<hr />
+					<div class="d-flex justify-content-between">
+						<small class="text-danger">
+							Estimate Arrival Date:
+							<span class="fw-semibold">@Model.EstimatedFromDate.ToShortDateString() - @Model.EstimatedToDate.ToShortDateString()</span>
+						</small>
+						<button type="submit" class="btn btn-primary">Place Order</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

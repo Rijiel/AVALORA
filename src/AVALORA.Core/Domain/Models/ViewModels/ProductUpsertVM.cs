@@ -6,6 +6,9 @@ using System.ComponentModel;
 
 namespace AVALORA.Core.Domain.Models.ViewModels;
 
+/// <summary>
+/// View model for inserting and updating products, containing product details and metadata.
+/// </summary>
 public class ProductUpsertVM
 {
 	[Required]

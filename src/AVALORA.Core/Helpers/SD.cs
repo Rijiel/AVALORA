@@ -7,5 +7,6 @@ public static class SD
 {
     public const string TEMPDATA_SUCCESS = "SuccessMessage";
 	public const string TEMPDATA_ERROR = "ErrorMessage";
+	public const string TEMPDATA_ORDERID = "OrderHeaderId";
 }
 
