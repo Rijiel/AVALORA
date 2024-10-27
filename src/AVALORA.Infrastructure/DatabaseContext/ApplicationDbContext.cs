@@ -19,6 +19,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<OrderHeader> OrderHeaders { get; set; }
     public DbSet<OrderSummaryItem> OrderSummaryItems { get; set; }
     public DbSet<OrderSummary> OrderSummaries { get; set; }
+    public DbSet<ProductReview> ProductReviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

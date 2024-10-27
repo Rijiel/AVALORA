@@ -19,6 +19,7 @@ public class ServiceUnitOfWork : IServiceUnitOfWork
     public IOrderHeaderSevice OrderHeaderSevice { get; private set; }
     public IOrderSummaryService OrderSummaryService { get; private set; }
     public IOrderSummaryItemService OrderSummaryItemService { get; private set; }
+    public IProductReviewService ProductReviewService { get; private set; }
 
     public ServiceUnitOfWork(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, UserManager<IdentityUser> userManager)
     {
@@ -30,6 +31,7 @@ public class ServiceUnitOfWork : IServiceUnitOfWork
         OrderHeaderSevice = new OrderHeaderSevice(unitOfWork.OrderHeaders, mapper, unitOfWork, userManager);
 		OrderSummaryService = new OrderSummaryService(unitOfWork.OrderSummaries, mapper, unitOfWork);
 		OrderSummaryItemService = new OrderSummaryItemService(unitOfWork.OrderSummaryItems, mapper, unitOfWork);
+		ProductReviewService = new ProductReviewService(unitOfWork.ProductReviews, mapper, unitOfWork);
     }
 }
 

@@ -13,6 +13,7 @@ public interface IUnitOfWork
     public IOrderHeaderRepository OrderHeaders { get; }
     public IOrderSummaryRepository OrderSummaries { get; }
     public IOrderSummaryItemRepository OrderSummaryItems { get; }
+    public IProductReviewRepository ProductReviews { get; }
 
     /// <summary>
     /// Saves changes made in the unit of work asynchronously.

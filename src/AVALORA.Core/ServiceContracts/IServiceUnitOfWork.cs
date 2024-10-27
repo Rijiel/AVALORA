@@ -13,5 +13,6 @@ public interface IServiceUnitOfWork
     public IOrderHeaderSevice OrderHeaderSevice { get; }
     public IOrderSummaryService OrderSummaryService { get; }
     public IOrderSummaryItemService OrderSummaryItemService { get; }
+    public IProductReviewService ProductReviewService { get; }
 }
 

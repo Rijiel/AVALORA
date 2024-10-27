@@ -9,6 +9,7 @@ using AVALORA.Core.Dto.OrderSummaryDtos;
 using AVALORA.Core.Dto.OrderSummaryItemDtos;
 using AVALORA.Core.Dto.ProductDtos;
 using AVALORA.Core.Dto.ProductImageDtos;
+using AVALORA.Core.Dto.ProductReviewDtos;
 
 namespace AVALORA.Core.AutoMapperProfiles;
 
@@ -93,6 +94,12 @@ public class AutoMapperProfile : Profile
 		CreateMap<ApplicationUserResponse, OrderHeaderAddRequest>()
 			.ForMember(dest => dest.ApplicationUserId, opt => opt.MapFrom(src => src.Id));
 		CreateMap<ApplicationUserResponse, OrderHeaderUpdateRequest>();
+
+		// ProductReview
+		CreateMap<ProductReview, ProductReviewResponse>().ReverseMap();
+		CreateMap<ProductReviewAddRequest, ProductReview>();
+		CreateMap<ProductReviewResponse, ProductReviewUpdateRequest>();
+		CreateMap<ProductReviewUpdateRequest, ProductReview>();
     }
 }
 

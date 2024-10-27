@@ -18,6 +18,7 @@ public class UnitOfWork : IUnitOfWork
     public IOrderHeaderRepository OrderHeaders { get; private set; }
     public IOrderSummaryRepository OrderSummaries { get; private set; }
     public IOrderSummaryItemRepository OrderSummaryItems { get; private set; }
+    public IProductReviewRepository ProductReviews { get; private set; }
 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
@@ -31,6 +32,7 @@ public class UnitOfWork : IUnitOfWork
         OrderHeaders = new OrderHeaderRepository(_dbContext);
 		OrderSummaries = new OrderSummaryRepository(_dbContext);
 		OrderSummaryItems = new OrderSummaryItemRepository(_dbContext);
+		ProductReviews = new ProductReviewRepository(_dbContext);
     }
 
     public async Task SaveAsync()

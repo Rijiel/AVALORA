@@ -1,19 +1,30 @@
-﻿ @model CartItemAddRequestVM
+﻿@using AVALORA.Core.Services
+@model ProductDetailsVM
 @{
 	ViewData["Title"] = "Product Details";
+
+	var pager = new Pager();
+	int pageNo = 0;
+
+	if (ViewBag.Pager != null)
+	{
+		pager = ViewBag.Pager;
+		pageNo = pager.CurrentPage;
+	}
 }
 
 <div class="mt-5">
 	<div class="text-center">
-		<h3 class="text-uppercase">@Model.ProductResponse.Name</h3>
+		<h3 class="text-uppercase">@Model.CartItemAddRequestVM.ProductResponse.Name</h3>
 	</div>
 
 	<div class="row mt-5">
 		<div class="col-12">
-			<form method="post">
-				<input asp-for="ProductResponse.Id" hidden />
-				<input asp-for="@Model.CartItemAddRequest.ProductId" hidden />
-				<input asp-for="CartItemAddRequest.ApplicationUserId" hidden />
+			@using (Html.BeginForm("Details", "Home", FormMethod.Post))
+			{
+				<input asp-for="CartItemAddRequestVM.ProductResponse.Id" hidden />
+				<input asp-for="CartItemAddRequestVM.CartItemAddRequest.ProductId" hidden />
+				<input asp-for="CartItemAddRequestVM.CartItemAddRequest.ApplicationUserId" hidden />
 				<div>
 					<a asp-action="Index" class="btn btn-outline-info">Back to home</a>
 				</div>
@@ -22,20 +33,20 @@
 					<!-- Left col: ProductImage -->
 					<div class="col-4">
 						<div class="w-75 mx-auto">
-							@if (Model.ProductResponse.ProductImages?.Count > 1)
+							@if (Model.CartItemAddRequestVM.ProductResponse.ProductImages?.Count > 1)
 							{
 								<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
 									<div class="carousel-indicators">
-										@for (int i = 0; i < Model.ProductResponse.ProductImages.Count; i++)
+										@for (int i = 0; i < Model.CartItemAddRequestVM.ProductResponse.ProductImages.Count; i++)
 										{
 											<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(i + 1)"></button>
 										}
 									</div>
 									<div class="carousel-inner">
-										@for (int i = 0; i < Model.ProductResponse.ProductImages.Count; i++)
+										@for (int i = 0; i < Model.CartItemAddRequestVM.ProductResponse.ProductImages.Count; i++)
 										{
 											<div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="5000">
-												<img src="@Model.ProductResponse.ProductImages.ElementAt(i).Path" class="d-block w-100 rounded rounded-4" alt="product image">
+												<img src="@Model.CartItemAddRequestVM.ProductResponse.ProductImages.ElementAt(i).Path" class="d-block w-100 rounded rounded-4" alt="product image">
 											</div>
 										}
 									</div>
@@ -51,7 +62,7 @@
 							}
 							else
 							{
-								<partial name="_ProductImagePartial" model="Model.ProductResponse" />
+								<partial name="_ProductImagePartial" model="Model.CartItemAddRequestVM.ProductResponse" />
 							}
 						</div>
 					</div>
@@ -60,26 +71,26 @@
 					<div class="col-8 ps-5">
 						<div class="mt-4">
 							<div class="d-inline-block">
-								<p class="badge bg-primary pb-2">@Model.ProductResponse.Category.Name</p>
+								<p class="badge bg-primary pb-2">@Model.CartItemAddRequestVM.ProductResponse.Category.Name</p>
 							</div>
 							<div class="mt-3 lh-sm text-black-50">
-								<p class="mb-2 text-decoration-line-through">List Price: @Model.ProductResponse.ListPrice.ToString("c")</p>
+								<p class="mb-2 text-decoration-line-through">List Price: @Model.CartItemAddRequestVM.ProductResponse.ListPrice.ToString("c")</p>
 								<p class="fw-semibold">
 									Discounted price:
 									<span class="text-primary">
-										@Model.ProductResponse.Price.ToString("c")
+										@Model.CartItemAddRequestVM.ProductResponse.Price.ToString("c")
 									</span>
 								</p>
 							</div>
 							<div class="mt-5 overflow-auto" style="max-height: 20rem">
-								<p>@Html.Raw(Model.ProductResponse.Description)</p>
+								<p>@Html.Raw(Model.CartItemAddRequestVM.ProductResponse.Description)</p>
 							</div>
 							<div class="row mt-5">
 								<div class="col-3">
 									<div class="mt-3 input-group">
 										<div class="input-group-text bg-secondary text-light fw-bold">Count</div>
-										<input asp-for="CartItemAddRequest.Count" type="number" min="1" value="1" class="form-control border-1 text-end pe-2" />
-										<span asp-validation-for="CartItemAddRequest.Count" class="text-danger"></span>
+										<input asp-for="CartItemAddRequestVM.CartItemAddRequest.Count" type="number" min="1" value="1" class="form-control border-1 text-end pe-2" />
+										<span asp-validation-for="CartItemAddRequestVM.CartItemAddRequest.Count" class="text-danger"></span>
 									</div>
 								</div>
 								<!-- Button -->
@@ -90,7 +101,61 @@
 						</div>
 					</div>
 				</div>
-			</form>
+			}
+
+			<!-- Product Reviews -->
+			<div class="row mt-5">
+				<div class="col-12">
+					<h4 class="text-uppercase">Product Reviews</h4>
+				</div>
+				<div class="col-12">
+					@using (Html.BeginForm("AddReview", "Home", FormMethod.Post))
+					{
+						var productReviewAddRequest = Model.ProductReviewVM.ProductReviewAddRequest;
+
+						<input asp-for="@productReviewAddRequest.ProductId" hidden />
+						<input asp-for="@productReviewAddRequest.DatePosted" hidden />
+
+						<input asp-for="@productReviewAddRequest.Rating" class="form-control form-range" type="range" min="0" max="5" />
+						<span asp-validation-for="@productReviewAddRequest.Rating" class="text-danger"></span>
+
+						<textarea asp-for="@productReviewAddRequest.Comment" class="form-control" rows="3"></textarea>
+						<span asp-validation-for="@productReviewAddRequest.Comment" class="text-danger"></span>
+						<div>
+							<button type="submit" class="btn btn-primary">Add Review</button>
+						</div>
+					}
+
+					<!-- All Reviews -->
+					<div class="mt-5">
+						@if (Model.ProductReviewVM.ProductReviewResponses?.Count() > 0)
+						{
+							<div>
+								@foreach (var review in Model.ProductReviewVM.ProductReviewResponses)
+								{
+									<partial name="_ProductReviewPartial" model="review" />
+								}
+							</div>
+						}
+					</div>
+
+					<!-- Pagination -->
+					<div class="container">
+						@if (pager.TotalPages > 0)
+						{
+							<ul class="pagination justify-content-end">
+								@for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+								{
+									<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+										<a href="/Home/Details/@(Model.CartItemAddRequestVM.ProductResponse.Id)?page=@pge" 
+										class="page-link">@pge</a>
+									</li>
+								}
+							</ul>
+						}
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
