@@ -1,7 +1,14 @@
 ﻿@model ProductReviewResponse
 
 <div class="my-2">
-	<strong>John Doe</strong>
+	@if (!String.IsNullOrEmpty(Model.UserName))
+	{
+		<strong>@Model.UserName</strong>
+	}
+	else
+	{
+		<strong>Anonymous</strong>
+	}
 	<small class="text-muted mb-0 d-block">@Model.DatePosted.ToString("d")</small>
 	<div style="color: orange">
 		@for (int i = 0; i < Model.Rating; i++)
@@ -13,7 +20,10 @@
 			<span class="bi bi-star"></span>
 		}
 	</div>
-	<input asp-for="@Model.Comment" class="form-control my-3" rows="3" disabled />
+	@if (!String.IsNullOrEmpty(Model.Comment))
+	{
+		<input asp-for="@Model.Comment" class="form-control my-3" rows="3" disabled />
+	}
 </div>
 
 

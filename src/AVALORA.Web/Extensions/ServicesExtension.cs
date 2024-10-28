@@ -6,6 +6,7 @@ using AVALORA.Core.Services;
 using AVALORA.Core.Services.FacadeServices;
 using AVALORA.Infrastructure.DatabaseContext;
 using AVALORA.Infrastructure.Repositories;
+using FoolProof.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,6 +52,7 @@ public static class ServicesExtension
 		});
 
 		services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+		services.AddFoolProof();
 
 		#region DI
 		services.AddScoped<IUnitOfWork, UnitOfWork>();

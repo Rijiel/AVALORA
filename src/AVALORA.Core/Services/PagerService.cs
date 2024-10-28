@@ -1,6 +1,8 @@
-﻿namespace AVALORA.Core.Services;
+﻿using AVALORA.Core.ServiceContracts;
 
-public class Pager
+namespace AVALORA.Core.Services;
+
+public class PagerService : IPagerService
 {
     public int TotalItems { get; private set; }
     public int CurrentPage { get; private set; }
@@ -10,12 +12,7 @@ public class Pager
     public int StartPage { get; private set; }
     public int EndPage { get; private set; }
 
-    public Pager()
-    {
-        
-    }
-
-    public Pager(int totalItems, int page, int pageSize = 10)
+    public void SetValues(int totalItems, int page, int pageSize = 10)
     {
         int totalPages = (int)Math.Ceiling((decimal)totalItems/(decimal)pageSize);
         int currentPage = page;
@@ -45,5 +42,22 @@ public class Pager
 		StartPage = startPage;
 		EndPage = endPage;
     }
+
+    public List<TModel> GetPagedItems<TModel>(List<TModel> items, int page, int pageSize = 10) 
+        where TModel : class
+	{
+		if (page < 1)
+			page = 1;
+
+        int totalItems = items.Count();
+        int recSkip = (page - 1) * pageSize;
+
+		SetValues(totalItems, page, pageSize);
+
+		return items
+            .Skip(recSkip)
+            .Take(pageSize)
+            .ToList();
+	}
 }
 

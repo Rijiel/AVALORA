@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using FoolProof.Core;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,6 +19,7 @@ public class Product
 
 	[Required]
 	[Range(1, 5000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+	[LessThan(nameof(Price), ErrorMessage = "Value for {0} must be less than {1}.")]
 	[DataType(DataType.Currency)]
 	[DisplayName("List Price")]
 	public double ListPrice { get; set; }
@@ -36,5 +38,10 @@ public class Product
     public ICollection<ProductImage>? ProductImages { get; set; }
 
 	public ICollection<ProductReview>? ProductReviews { get; set; }
+
+	[Range(0, 5)]
+	[Column(TypeName = "decimal(18, 2)")]
+	[DisplayName("Total Rating")]
+	public decimal TotalRating { get; set; }
 }
 

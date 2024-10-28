@@ -20,18 +20,20 @@ public class ServiceUnitOfWork : IServiceUnitOfWork
     public IOrderSummaryService OrderSummaryService { get; private set; }
     public IOrderSummaryItemService OrderSummaryItemService { get; private set; }
     public IProductReviewService ProductReviewService { get; private set; }
+	public IPagerService PagerService { get; private set; }
 
-    public ServiceUnitOfWork(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, UserManager<IdentityUser> userManager)
+	public ServiceUnitOfWork(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment)
     {
         CategoryService = new CategoryService(unitOfWork.Categories, mapper, unitOfWork);
         ProductService = new ProductService(unitOfWork.Products, mapper, unitOfWork);
 		ProductImageService = new ProductImageService(unitOfWork.ProductImages, mapper, unitOfWork, webHostEnvironment);
         ApplicationUserService = new ApplicationUserService(unitOfWork.ApplicationUsers, mapper, unitOfWork);
         CartItemService = new CartItemService(unitOfWork.CartItems, mapper, unitOfWork);
-        OrderHeaderSevice = new OrderHeaderSevice(unitOfWork.OrderHeaders, mapper, unitOfWork, userManager);
+        OrderHeaderSevice = new OrderHeaderSevice(unitOfWork.OrderHeaders, mapper, unitOfWork);
 		OrderSummaryService = new OrderSummaryService(unitOfWork.OrderSummaries, mapper, unitOfWork);
 		OrderSummaryItemService = new OrderSummaryItemService(unitOfWork.OrderSummaryItems, mapper, unitOfWork);
 		ProductReviewService = new ProductReviewService(unitOfWork.ProductReviews, mapper, unitOfWork);
+		PagerService = new PagerService();
     }
 }
 

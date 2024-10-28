@@ -12,6 +12,9 @@ public class ProductResponse
 	public int CategoryId { get; set; }
 	public Category Category { get; set; } = null!;
 	public ICollection<ProductImage>? ProductImages { get; set; }
+	public ICollection<ProductReview>? ProductReviews { get; set; }
 	public int? ProductImagesCount { get; set; }
+	public decimal TotalRating { get; set; }
+	public int RatingsCount { get; set; }
 }
 

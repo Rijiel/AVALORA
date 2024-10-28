@@ -1,4 +1,6 @@
-﻿namespace AVALORA.Core.Domain.RepositoryContracts;
+﻿using AVALORA.Core.ServiceContracts;
+
+namespace AVALORA.Core.Domain.RepositoryContracts;
 
 /// <summary>
 /// Defines the unit of work for the repository layer.

@@ -82,11 +82,12 @@ public class ProductsController : BaseController<ProductsController>
 			await _productFacade.UpdateProductAsync(productUpdateRequest);
 
 			SuccessMessage = "Product updated successfully.";
+			return RedirectToAction(nameof(Index));
 		}
 
 		Logger.LogWarning("Invalid model state. Product not created.");
 
-		return RedirectToAction(nameof(Index));
+		return View(ProductUpsertVM);
 	}
 
 	#region API CALLS

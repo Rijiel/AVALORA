@@ -13,7 +13,7 @@ public interface IOrderHeaderSevice : IGenericService<OrderHeader, OrderHeaderAd
 	/// <param name="addRequest">The order header add request.</param>
 	/// <param name="contextAccessor">The HTTP context accessor.</param>
 	/// <returns>The order header add request with default values set.</returns>
-	OrderHeaderAddRequest SetOrderHeaderDefaults(OrderHeaderAddRequest addRequest, IHttpContextAccessor contextAccessor);
+	OrderHeaderAddRequest SetOrderHeaderDefaults(OrderHeaderAddRequest addRequest);
 
 	/// <summary>
 	/// Updates the status of an order.

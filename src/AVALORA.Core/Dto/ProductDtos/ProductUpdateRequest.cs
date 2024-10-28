@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Microsoft.AspNetCore.Http;
+using FoolProof.Core;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AVALORA.Core.Dto.ProductDtos;
 
@@ -20,6 +22,7 @@ public class ProductUpdateRequest
 
 	[Required]
 	[Range(1, 5000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+	[LessThan(nameof(Price), ErrorMessage = "{0} must be less than the {1}.")]
 	[DataType(DataType.Currency)]
 	[DisplayName("List Price")]
 	public double ListPrice { get; set; }
@@ -38,5 +41,10 @@ public class ProductUpdateRequest
 
 	[DisplayName("Product Images")]
 	public ICollection<ProductImage>? ProductImages { get; set; }
+
+	[Range(0, 5)]
+	[Column(TypeName = "decimal(18, 2)")]
+	[DisplayName("Total Rating")]
+	public decimal TotalRating { get; set; }
 }
 

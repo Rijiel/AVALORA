@@ -45,7 +45,7 @@ public class OrderFacade : BaseFacade<OrderFacade>, IOrderFacade
 		OrderSummaryAddRequest orderSummaryAddRequest, Controller controller, CancellationToken cancellationToken = default)
 	{
 		// Populate order header properties
-		orderHeaderAddRequest = ServiceUnitOfWork.OrderHeaderSevice.SetOrderHeaderDefaults(orderHeaderAddRequest, _contextAccessor);
+		orderHeaderAddRequest = ServiceUnitOfWork.OrderHeaderSevice.SetOrderHeaderDefaults(orderHeaderAddRequest);
 
 		OrderHeaderResponse orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderSevice.AddAsync(orderHeaderAddRequest);
 

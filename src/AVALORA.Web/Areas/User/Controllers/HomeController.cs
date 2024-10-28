@@ -1,3 +1,4 @@
+using AVALORA.Core.Domain.Models;
 using AVALORA.Core.Domain.Models.ViewModels;
 using AVALORA.Core.Dto.CartItemDtos;
 using AVALORA.Core.Dto.ProductDtos;
@@ -5,9 +6,9 @@ using AVALORA.Core.Dto.ProductReviewDtos;
 using AVALORA.Core.Enums;
 using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
-using AVALORA.Core.Services;
 using AVALORA.Web.BaseController;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -19,11 +20,13 @@ public class HomeController : BaseController<HomeController>
 {
 	private readonly ICartFacade _cartFacade;
 	private readonly IHttpContextAccessor _contextAccessor;
+	private readonly UserManager<IdentityUser> _userManager;
 
-	public HomeController(ICartFacade cartFacade, IHttpContextAccessor contextAccessor)
+	public HomeController(ICartFacade cartFacade, IHttpContextAccessor contextAccessor, UserManager<IdentityUser> userManager)
 	{
 		_cartFacade = cartFacade;
 		_contextAccessor = contextAccessor;
+		_userManager = userManager;
 	}
 
 	[Route("/")]
@@ -41,34 +44,24 @@ public class HomeController : BaseController<HomeController>
 	{
 		ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
 			.GetByIdAsync(id, cancellationToken: cancellationToken,
-			includes: [nameof(ProductResponse.Category), nameof(ProductResponse.ProductImages)]);
-
+			includes: [nameof(ProductResponse.Category), nameof(ProductResponse.ProductImages), nameof(ProductResponse.ProductReviews)]);		
 		if (productResponse == null)
 		{
 			Logger.LogWarning("Product not found");
 			return NotFound();
 		}
 
-		// Prevent negative pages
-		const int pageSize = 5;
-		if (page < 1)
-			page = 1;
+		productResponse.TotalRating = await ServiceUnitOfWork.ProductService.GetTotalRatingAsync(productResponse.Id, cancellationToken);
 
-		var productReviewResponses = await ServiceUnitOfWork.ProductReviewService.GetAllAsync(p => p.ProductId == productResponse.Id, cancellationToken: cancellationToken);
+		List<ProductReviewResponse> productReviewResponses = await ServiceUnitOfWork.ProductReviewService
+			.GetAllAsync(p => p.ProductId == productResponse.Id, cancellationToken: cancellationToken);
 
-		int recsCount = productReviewResponses.Count();
+		List<ProductReviewResponse> pagedProductReviewResponses = ServiceUnitOfWork.PagerService
+			.GetPagedItems(productReviewResponses, page, pageSize: 3);
 
-		var pager = new Pager(recsCount, page, pageSize);
+		ViewBag.Pager = ServiceUnitOfWork.PagerService;
 
-		int recSkip = (page - 1) * pageSize;
-
-		var data = productReviewResponses
-			.Skip(recSkip)
-			.Take(pager.PageSize)
-			.ToList();
-
-		ViewBag.Pager = pager;
-
+		// Use CartItemAddRequestVM to combine CartItemAddRequest and product responses
 		var cartItemAddRequestVM = new CartItemAddRequestVM()
 		{
 			ProductResponse = productResponse,
@@ -81,17 +74,19 @@ public class HomeController : BaseController<HomeController>
 			}
 		};
 
+		// Use ProductReviewVM to combine ProductReviewAddRequest and product review responses
 		var productReviewVM = new ProductReviewVM()
 		{
 			ProductReviewAddRequest = new ProductReviewAddRequest()
 			{
 				ProductId = productResponse.Id,
-				DatePosted = DateTime.Now
+				DatePosted = DateTime.Now,
+				UserName = _userManager.GetUserName(User)!
 			},
-			ProductReviewResponses = data
+			ProductReviewResponses = pagedProductReviewResponses
 		};
 
-		// Use ProductDetailsVM to combine CartItemAddRequestVM and product reviews
+		// Use ProductDetailsVM to combine CartItemAddRequestVM and ProductReviewVM
 		var productDetailsVM = new ProductDetailsVM()
 		{
 			CartItemAddRequestVM = cartItemAddRequestVM,
@@ -130,6 +125,16 @@ public class HomeController : BaseController<HomeController>
 		if (ModelState.IsValid)
 		{
 			await ServiceUnitOfWork.ProductReviewService.AddAsync(productReviewAddRequest);
+
+			// Update Product total rating and ratings count
+			var productUpdateRequest = new ProductUpdateRequest()
+			{
+				Id = productReviewAddRequest.ProductId,
+				TotalRating = await ServiceUnitOfWork.ProductService
+					.GetTotalRatingAsync(productReviewAddRequest.ProductId, cancellationToken)
+			};
+
+			await ServiceUnitOfWork.ProductService.UpdatePartialAsync(productUpdateRequest, nameof(Product.TotalRating));
 			SuccessMessage = "Review added, thanks!";
 			Logger.LogInformation($"Added review for product: {productReviewAddRequest.ProductId}");
 		}

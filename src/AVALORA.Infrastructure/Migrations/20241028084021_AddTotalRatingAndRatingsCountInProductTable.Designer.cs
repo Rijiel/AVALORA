@@ -4,6 +4,7 @@ using AVALORA.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AVALORA.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241028084021_AddTotalRatingAndRatingsCountInProductTable")]
+    partial class AddTotalRatingAndRatingsCountInProductTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,6 +248,9 @@ namespace AVALORA.Infrastructure.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<decimal>("RatingsCount")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.Property<decimal>("TotalRating")
                         .HasColumnType("decimal(18, 2)");
 
@@ -263,6 +269,7 @@ namespace AVALORA.Infrastructure.Migrations
                             ListPrice = 90.0,
                             Name = "Product 1",
                             Price = 100.0,
+                            RatingsCount = 0m,
                             TotalRating = 0m
                         },
                         new
@@ -273,6 +280,7 @@ namespace AVALORA.Infrastructure.Migrations
                             ListPrice = 45.5,
                             Name = "Product 2",
                             Price = 60.0,
+                            RatingsCount = 0m,
                             TotalRating = 0m
                         },
                         new
@@ -283,6 +291,7 @@ namespace AVALORA.Infrastructure.Migrations
                             ListPrice = 79.989999999999995,
                             Name = "Product 3",
                             Price = 85.989999999999995,
+                            RatingsCount = 0m,
                             TotalRating = 0m
                         });
                 });
@@ -329,11 +338,6 @@ namespace AVALORA.Infrastructure.Migrations
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 

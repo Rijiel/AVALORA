@@ -138,7 +138,9 @@ public class ProductImageServiceTest
 
 		var imageFiles = new List<IFormFile>() { fileMock.Object };
 
-		var product = _fixture.Build<Product>().With(p => p.ProductImages, null as List<ProductImage>).Create();
+		var product = _fixture.Build<Product>()
+			.With(p => p.ProductImages, null as List<ProductImage>)
+			.With(p => p.ProductReviews, null as List<ProductReview>).Create();
 		_unitOfWorkMock.Setup(x => x.Products.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(product);
 
 		// Act
@@ -167,7 +169,9 @@ public class ProductImageServiceTest
 
 		_webHostEnvironmentMock.Setup(w => w.WebRootPath).Returns(Path.GetTempPath());
 
-		var product = _fixture.Build<Product>().With(p => p.ProductImages, null as List<ProductImage>).Create();
+		var product = _fixture.Build<Product>()
+			.With(p => p.ProductImages, null as List<ProductImage>)
+			.With(p => p.ProductReviews, null as List<ProductReview>).Create();
 		_unitOfWorkMock.Setup(x => x.Products.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(product);
 
 		// Act
