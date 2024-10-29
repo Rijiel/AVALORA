@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using FoolProof.Core;
+using AVALORA.Core.Enums;
 
 namespace AVALORA.Core.Domain.Models.ViewModels;
 
@@ -38,6 +39,9 @@ public class ProductUpsertVM
 	[Required(ErrorMessage = "Please select a category")]
 	[DisplayName("Category")]
 	public int CategoryId { get; set; }
+
+	[Required]
+	public List<Color> Colors { get; set; } = [Color.None];
 
 	[DisplayName("Image Files")]
 	public IEnumerable<IFormFile>? ImageFiles { get; set; }

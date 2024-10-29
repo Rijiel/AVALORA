@@ -100,6 +100,27 @@
 							<div class="mt-5 overflow-auto" style="max-height: 20rem">
 								<p>@Html.Raw(Model.CartItemAddRequestVM.ProductResponse.Description)</p>
 							</div>
+							<!-- Colors -->
+							@if(Model.CartItemAddRequestVM.ProductResponse.Colors.FirstOrDefault() != Color.None)
+							{
+								<div class="my-2 row">
+									@{
+										var colors = Model.CartItemAddRequestVM.ProductResponse.Colors;
+									}
+									<label class="form-label text-muted small opacity-75">Available Colors:</label>
+									<div class="col-2">
+										@for (int i = 0; i < colors.Count; i++)
+										{
+											<div class="d-inline-block mx-1">
+												<input type="radio" class="btn-check" asp-for="CartItemAddRequestVM.CartItemAddRequest.Color"
+													   id="color@(i)" value="@colors[i]" autocomplete="off" />
+												<label for="color@(i)" class="color-option @colors[i].ToString().ToLower()" title="@colors[i]"></label>
+											</div>
+										}
+									</div>
+									<span asp-validation-for="CartItemAddRequestVM.CartItemAddRequest.Color" class="text-danger"></span>
+								</div>
+							}							
 							<div class="row mt-5">
 								<div class="col-3">
 									<div class="mt-3 input-group">

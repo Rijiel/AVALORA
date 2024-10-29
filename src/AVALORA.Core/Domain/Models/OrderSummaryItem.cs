@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AVALORA.Core.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AVALORA.Core.Domain.Models;
@@ -22,5 +23,8 @@ public class OrderSummaryItem
 
 	[ForeignKey(nameof(OrderSummaryId))]
 	public OrderSummary? OrderSummary { get; set; }
+
+	[Required(ErrorMessage = "Please specify your preferred color")]
+	public Color Color { get; set; }
 }
 

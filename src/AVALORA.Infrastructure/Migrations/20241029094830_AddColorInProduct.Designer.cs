@@ -4,6 +4,7 @@ using AVALORA.Infrastructure.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AVALORA.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241029094830_AddColorInProduct")]
+    partial class AddColorInProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,9 +36,6 @@ namespace AVALORA.Infrastructure.Migrations
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Color")
-                        .HasColumnType("int");
 
                     b.Property<int>("Count")
                         .HasColumnType("int");
@@ -204,9 +204,6 @@ namespace AVALORA.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Color")
-                        .HasColumnType("int");
-
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
@@ -269,7 +266,7 @@ namespace AVALORA.Infrastructure.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            Colors = "[4,1]",
+                            Colors = "[3,0]",
                             Description = "This is a test product.",
                             ListPrice = 90.0,
                             Name = "Product 1",
@@ -280,7 +277,7 @@ namespace AVALORA.Infrastructure.Migrations
                         {
                             Id = 2,
                             CategoryId = 2,
-                            Colors = "[8,5,6]",
+                            Colors = "[7,4,5]",
                             Description = "This is a test product.",
                             ListPrice = 45.5,
                             Name = "Product 2",
@@ -291,7 +288,7 @@ namespace AVALORA.Infrastructure.Migrations
                         {
                             Id = 3,
                             CategoryId = 3,
-                            Colors = "[2]",
+                            Colors = "[1]",
                             Description = "This is a test product.",
                             ListPrice = 79.989999999999995,
                             Name = "Product 3",

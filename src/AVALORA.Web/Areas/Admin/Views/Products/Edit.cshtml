@@ -55,6 +55,21 @@
 					</div>
 					<span asp-validation-for="Description" class="text-danger"></span>
 				</div>
+				<!-- Colors -->
+				<div class="my-2 row">
+					<label class="form-label text-muted small opacity-75">Available Colors:</label>
+					<div class="col-2">
+						@for (int i = 1; i < Enum.GetValues(typeof(Color)).Length; i++)
+						{
+							Color color = (Color)Enum.GetValues(typeof(Color)).GetValue(i)!;
+							bool isChecked = Model.Colors.Contains(color);
+							<div class="d-inline-block mx-1">
+								<input type="checkbox" class="btn-check" name="colors" id="color@(i)" value="@color" checked="@isChecked" autocomplete="off" />
+								<label for="color@(i)" class="color-option @color.ToString().ToLower()"></label>
+							</div>
+						}
+					</div>
+				</div>
 				<!-- Buttons -->
 				<div class="mt-3 row">
 					<div class="col-3">

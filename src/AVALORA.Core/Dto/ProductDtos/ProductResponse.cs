@@ -1,4 +1,5 @@
 ﻿using AVALORA.Core.Domain.Models;
+using AVALORA.Core.Enums;
 
 namespace AVALORA.Core.Dto.ProductDtos;
 
@@ -15,6 +16,6 @@ public class ProductResponse
 	public ICollection<ProductReview>? ProductReviews { get; set; }
 	public int? ProductImagesCount { get; set; }
 	public decimal TotalRating { get; set; }
-	public int RatingsCount { get; set; }
+	public List<Color> Colors { get; set; } = null!;
 }
 

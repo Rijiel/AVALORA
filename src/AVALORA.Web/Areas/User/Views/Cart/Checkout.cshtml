@@ -71,7 +71,12 @@
 											<li class="list-group-item d-flex justify-content-between">
 												<div>
 													<h6 class="my-0">@cart.Product.Name</h6>
-													<small class="text-muted">Quantity: @cart.Count</small>
+													<div class="my-0">
+														<small>Color: @cart.Color</small>
+													</div>
+													<div>
+														<small class="text-muted">Quantity: @cart.Count</small>
+													</div>
 												</div>
 												<span class="text-muted">@cart.Product.Price.ToString("c")</span>
 											</li>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AVALORA.Core.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace AVALORA.Core.Dto.OrderSummaryItemDtos;
 
@@ -13,5 +14,8 @@ public class OrderSummaryItemAddRequest
 
 	[Required]
 	public int OrderSummaryId { get; set; }
+
+    [Required(ErrorMessage = "Please specify your preferred color")]
+	public Color Color { get; set; }
 }
 

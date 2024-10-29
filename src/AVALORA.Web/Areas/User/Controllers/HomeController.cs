@@ -28,14 +28,34 @@ public class HomeController : BaseController<HomeController>
 		_contextAccessor = contextAccessor;
 		_userManager = userManager;
 	}
-
 	[Route("/")]
-	public async Task<IActionResult> Index(CancellationToken cancellationToken)
+	[Route("/Home/Index")]
+	public async Task<IActionResult> Index(CancellationToken cancellationToken, 
+		[FromQuery] int page = 1,[FromQuery] string? search = null)
 	{
 		var productResponses = await ServiceUnitOfWork.ProductService
-			.GetAllAsync(cancellationToken: cancellationToken, includes: nameof(ProductResponse.ProductImages));
+			.GetAllAsync(cancellationToken: cancellationToken,
+			includes: nameof(ProductResponse.ProductImages));
 
-		return View(productResponses);
+		// Populate total rating
+		foreach(var product in productResponses)
+			product.TotalRating = await ServiceUnitOfWork.ProductService
+				.GetTotalRatingAsync(product.Id, cancellationToken);
+
+		// Search implementation
+		if (!String.IsNullOrEmpty(search)) 
+			productResponses = productResponses
+				.Where(p => p.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase)).ToList();
+
+		// Paging implementation
+		List<ProductResponse> pagedProductResponses = ServiceUnitOfWork.PagerService
+			.GetPagedItems(productResponses, page, pageSize: 3);
+		ViewBag.Pager = ServiceUnitOfWork.PagerService;
+		ViewBag.Search = search;
+
+		Logger.LogInformation($"Loaded {pagedProductResponses.Count} products");
+
+		return View(pagedProductResponses);
 	}
 
 	[HttpGet]
@@ -44,7 +64,10 @@ public class HomeController : BaseController<HomeController>
 	{
 		ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
 			.GetByIdAsync(id, cancellationToken: cancellationToken,
-			includes: [nameof(ProductResponse.Category), nameof(ProductResponse.ProductImages), nameof(ProductResponse.ProductReviews)]);		
+			includes: [nameof(ProductResponse.Category), 
+				nameof(ProductResponse.ProductImages),
+				nameof(ProductResponse.ProductReviews)]);
+
 		if (productResponse == null)
 		{
 			Logger.LogWarning("Product not found");
@@ -99,7 +122,8 @@ public class HomeController : BaseController<HomeController>
 	[HttpPost]
 	[Authorize]
 	[Route("{id?}")]
-	public async Task<IActionResult> Details(CartItemAddRequestVM cartItemAddRequestVM, CancellationToken cancellationToken)
+	[ActionName(nameof(Details))]
+	public async Task<IActionResult> AddToCart(CartItemAddRequestVM cartItemAddRequestVM, CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
 		{

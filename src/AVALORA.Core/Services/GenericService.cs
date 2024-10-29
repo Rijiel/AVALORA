@@ -145,7 +145,7 @@ public class GenericService<TModel, TAddDto, TUpdateDto, TResponseDto> : IGeneri
 	{
 		ArgumentNullException.ThrowIfNull(responseDtos);
 
-		List<TModel> models = Mapper.Map<List<TModel>>(responseDtos);
+		IEnumerable<TModel> models = Mapper.Map<IEnumerable<TModel>>(responseDtos);
 
 		_repository.RemoveRange(models);
 		await _unitOfWork.SaveAsync();

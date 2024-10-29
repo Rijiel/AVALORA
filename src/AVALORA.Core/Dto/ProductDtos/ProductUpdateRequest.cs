@@ -4,6 +4,7 @@ using System.ComponentModel;
 using Microsoft.AspNetCore.Http;
 using FoolProof.Core;
 using System.ComponentModel.DataAnnotations.Schema;
+using AVALORA.Core.Enums;
 
 namespace AVALORA.Core.Dto.ProductDtos;
 
@@ -36,15 +37,18 @@ public class ProductUpdateRequest
 	[DisplayName("Category")]
 	public int CategoryId { get; set; }
 
+	[Range(0, 5)]
+	[Column(TypeName = "decimal(18, 2)")]
+	[DisplayName("Total Rating")]
+	public decimal TotalRating { get; set; }
+
+	[Required]
+	public List<Color> Colors { get; set; } = [Color.None];
+
 	[DisplayName("Image Files")]
 	public IEnumerable<IFormFile>? ImageFiles { get; set; }
 
 	[DisplayName("Product Images")]
 	public ICollection<ProductImage>? ProductImages { get; set; }
-
-	[Range(0, 5)]
-	[Column(TypeName = "decimal(18, 2)")]
-	[DisplayName("Total Rating")]
-	public decimal TotalRating { get; set; }
 }
 

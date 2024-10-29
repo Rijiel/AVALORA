@@ -1,22 +1,35 @@
 ﻿@model IEnumerable<ProductResponse>
 @{
 	ViewData["Title"] = "Home";
+
+	var pager = ViewBag.Pager as PagerService;
 }
 
-<div class="row mt-2">
+<div class="row mt-2">	
 	@foreach (var product in Model)
 	{
+		int totalStars = (int)product.TotalRating;
+
 		<div class="col-3">
 			<div class="card my-2">
 				<div class="card-header border-0">
 					<partial name="_ProductImagePartial" model="product" />
 				</div>
 				<div class="card-body text-center py-2">
-					<p class="mb-1" style="color: darkorange"><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i></p>
+					<p class="mb-1" style="color: darkorange">
+						@for (int i = 0; i < totalStars; i++)
+						{
+							<i class="bi bi-star-fill"></i>
+						}
+						@for (int i = totalStars; i < 5; i++)
+						{
+							<i class="bi bi-star"></i>
+						}
+					</p>
 					<p class="mb-1">@product.Name</p>
 					<p class="card-text">
-						 <span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span>
-						 <span class="fw-bold">@product.Price.ToString("c")</span>
+						<span class="text-decoration-line-through">@product.ListPrice.ToString("c")</span>
+						<span class="fw-bold">@product.Price.ToString("c")</span>
 					</p>
 				</div>
 				<div class="card-footer text-center border-0">
@@ -25,4 +38,18 @@
 			</div>
 		</div>
 	}
+	<!-- Pagination -->
+	<div class="container">
+		@if (pager!.TotalPages > 0)
+		{
+			<ul class="pagination justify-content-end">
+				@for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+				{
+					<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+						<a href="/Home/Index?page=@pge&search=@ViewBag.Search" class="page-link">@pge</a>
+					</li>
+				}
+			</ul>
+		}
+	</div>
 </div>

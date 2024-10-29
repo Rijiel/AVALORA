@@ -39,9 +39,11 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 			throw new KeyNotFoundException("Product not found");
 		}
 
-		// Only add count if item is already in cart
+		// Only add count if item is already in cart and of the same color
 		CartItemResponse? existingCartItemResponse = await ServiceUnitOfWork.CartItemService
-			.GetAsync(c => c.ApplicationUserId == userId && c.ProductId == productResponse.Id);
+			.GetAsync(c => c.ApplicationUserId == userId 
+			&& c.ProductId == productResponse.Id 
+			&& c.Color == cartItemAddRequest.Color);
 		if (existingCartItemResponse != null)
 		{
 			await UpdateCartItemQuantityAsync(existingCartItemResponse.Id, cartItemAddRequest.Count, controller);
@@ -76,6 +78,7 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 		}
 
 		Logger.LogInformation($"Updated cart item {cartItemResponse.Id} quantity: {quantity}");
+		controller.TempData[SD.TEMPDATA_SUCCESS] = "Item quantity updated";
 		await ServiceUnitOfWork.CartItemService.UpdateAsync(cartItemUpdateRequest);
 	}
 
@@ -84,11 +87,12 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 		string userId = UserHelper.GetCurrentUserId(_contextAccessor)!;
 		IEnumerable<CartItemResponse> cartItemResponses = 
 			await ServiceUnitOfWork.CartItemService.GetAllAsync(c => c.ApplicationUserId == userId, cancellationToken: cancellationToken);
-
+		
 		// Retrieve product images if requested
 		if (includeImages)
 		{
-			IEnumerable<ProductImageResponse> productImageResponses = await ServiceUnitOfWork.ProductImageService.GetAllAsync(cancellationToken: cancellationToken);
+			IEnumerable<ProductImageResponse> productImageResponses = await ServiceUnitOfWork.ProductImageService
+				.GetAllAsync(cancellationToken: cancellationToken);
 			var productImages = Mapper.Map<IEnumerable<ProductImage>>(productImageResponses);
 
 			foreach (var cartItemResponse in cartItemResponses)
@@ -102,7 +106,12 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 
 	public async Task ClearCartItemsAsync(Controller controller, CancellationToken cancellationToken = default)
 	{
-		List<CartItemResponse> cartItemResponses = await GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
+		IEnumerable<CartItemResponse> cartItemResponses = await GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
+
+		// Remove auto included products to prevent database error
+		foreach (var cartItemResponse in cartItemResponses)
+			cartItemResponse.Product = null!;
+
 		await ServiceUnitOfWork.CartItemService.RemoveRangeAsync(cartItemResponses);
 
 		Logger.LogInformation($"Cleared cart for user: {UserHelper.GetCurrentUserId(_contextAccessor)}");
