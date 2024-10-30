@@ -45,6 +45,10 @@
 						</li>
 					</ul>
 					<form asp-area="@Role.User" asp-controller="Home" asp-action="Index" class="d-flex" method="get">
+						@if(!String.IsNullOrEmpty(ViewBag.Category))
+						{
+							<input type="hidden" name="category" value="@ViewBag.Category" />
+						}
 						<input type="search" name="search" id="search" class="" placeholder="Search" aria-label="Search" />
 						<button type="submit" class="btn btn-outline-success">Search</button>
 					</form>

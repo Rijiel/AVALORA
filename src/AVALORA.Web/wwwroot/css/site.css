@@ -37,7 +37,7 @@ body {
     display: inline-block;
 }
 
-    .color-option.white {
+    .color-option.bg-white {
         border: 1px solid #858585;
     }
 
@@ -46,42 +46,103 @@ input[type="radio"]:checked + .color-option {
     border: 2px solid #7d1a1a;
 }
 
-.yellow {
+.bg-yellow {
     background-color: var(--bs-yellow);
 }
 
-.green {
+.bg-green {
     background-color: var(--bs-green);
 }
 
-.blue {
+.bg-blue {
     background-color: var(--bs-blue);
 }
 
-.pink {
+.bg-pink {
     background-color: var(--bs-pink);
 }
 
-.black {
+.bg-black {
     background-color: var(--bs-black);
 }
 
-.white {
+.bg-white {
     background-color: var(--bs-white);
 }
 
-.red {
+.bg-red {
     background-color: var(--bs-red);
 }
 
-.gray {
+.bg-gray {
     background-color: var(--bs-gray);
 }
 
-.purple {
+.bg-purple {
     background-color: var(--bs-purple);
 }
 
-.orange {
+.bg-orange {
     background-color: var(--bs-orange);
 }
+
+.text-yellow {
+    color: var(--bs-yellow);
+}
+
+.text-green {
+    color: var(--bs-green);
+}
+
+.text-blue {
+    color: var(--bs-blue);
+}
+
+.text-pink {
+    color: var(--bs-pink);
+}
+
+.text-black {
+    color: var(--bs-black);
+}
+
+.text-white {
+    color: var(--bs-white);
+}
+
+.text-red {
+    color: var(--bs-red);
+}
+
+.text-gray {
+    color: var(--bs-gray);
+}
+
+.text-purple {
+    color: var(--bs-purple);
+}
+
+.text-orange {
+    color: var(--bs-orange);
+}
+
+.badge-sm {
+    --bs-badge-padding-x: 10px;
+    --bs-badge-padding-y: 5px;
+    --bs-badge-font-size: 0.75rem;
+    --bs-badge-font-weight: 400;
+    --bs-badge-color: #fff;
+    --bs-badge-border-radius: 4px;
+    display: inline-block;
+    padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x);
+    font-size: var(--bs-badge-font-size);
+    font-weight: var(--bs-badge-font-weight);
+    line-height: 0.5;
+    color: var(--bs-badge-color);
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: var(--bs-badge-border-radius);
+    height: 1rem;
+}
+

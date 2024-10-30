@@ -1,0 +1,16 @@
+﻿@model ProductResponse
+
+@{
+	int totalStars = (int)Model.TotalRating;
+}
+
+<p class="text-orange m-0">
+	@for (int i = 0; i < totalStars; i++)
+	{
+		<i class="bi bi-star-fill"></i>
+	}
+	@for (int i = totalStars; i < 5; i++)
+	{
+		<i class="bi bi-star"></i>
+	}
+</p>

@@ -30,32 +30,61 @@ public class HomeController : BaseController<HomeController>
 	}
 	[Route("/")]
 	[Route("/Home/Index")]
-	public async Task<IActionResult> Index(CancellationToken cancellationToken, 
-		[FromQuery] int page = 1,[FromQuery] string? search = null)
+	public async Task<IActionResult> Index(CancellationToken cancellationToken,[FromQuery] string? category = null, 
+		[FromQuery] string? color = null, [FromQuery] int page = 1,[FromQuery] string? search = null)
 	{
+		// Use unflitered product responses for sidebar
 		var productResponses = await ServiceUnitOfWork.ProductService
 			.GetAllAsync(cancellationToken: cancellationToken,
-			includes: nameof(ProductResponse.ProductImages));
+			includes: [nameof(ProductResponse.ProductImages), nameof(ProductResponse.Category)]);
 
 		// Populate total rating
 		foreach(var product in productResponses)
 			product.TotalRating = await ServiceUnitOfWork.ProductService
 				.GetTotalRatingAsync(product.Id, cancellationToken);
 
+		// Separate filtered products for searching, filtering and paging
+		var filteredProducts = productResponses;
+
+		// Filter by category
+		if (!String.IsNullOrEmpty(category))
+			filteredProducts = filteredProducts
+				.Where(p => p.Category?.Name == category).ToList();
+
+		// Filter by color
+		if (!String.IsNullOrEmpty(color))
+			filteredProducts = filteredProducts
+				.Where(p => p.Colors.Contains(Enum.Parse<Color>(color))).ToList();
+
 		// Search implementation
-		if (!String.IsNullOrEmpty(search)) 
-			productResponses = productResponses
+		if (!String.IsNullOrEmpty(search))
+			filteredProducts = filteredProducts
 				.Where(p => p.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase)).ToList();
 
 		// Paging implementation
 		List<ProductResponse> pagedProductResponses = ServiceUnitOfWork.PagerService
-			.GetPagedItems(productResponses, page, pageSize: 3);
+			.GetPagedItems(filteredProducts, page, pageSize: 12);
 		ViewBag.Pager = ServiceUnitOfWork.PagerService;
+		ViewBag.Category = category;
+		ViewBag.Color = color;
 		ViewBag.Search = search;
 
 		Logger.LogInformation($"Loaded {pagedProductResponses.Count} products");
 
-		return View(pagedProductResponses);
+		// Get category counts ordered by number of products having the category name
+		var categoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync(cancellationToken: cancellationToken);
+		var categoryCounts = categoryResponses.OrderByDescending(c => productResponses.Count(p => p.CategoryId == c.Id))
+			.ToDictionary(c => c.Name, c => productResponses.Count(p => p.CategoryId == c.Id));
+
+		// Use ProductsCategoriesVM to combine ProductResponses and CategoryResponses with total products per category
+		var productsCategoriesVM = new ProductsCategoriesVM
+		{
+			ProductResponses = productResponses,
+			FilteredProducts = pagedProductResponses,
+			CategoryCounts = categoryCounts
+		};
+
+		return View(productsCategoriesVM);
 	}
 
 	[HttpGet]

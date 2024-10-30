@@ -1,8 +1,11 @@
-﻿using AVALORA.Core.Dto.ProductReviewDtos;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AVALORA.Core.Domain.Models.ViewModels;
 
+/// <summary>
+/// View model for product details, containing cart item add request view model 
+/// and product review view model.
+/// </summary>
 public class ProductDetailsVM
 {
     [Required]

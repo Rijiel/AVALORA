@@ -24,12 +24,11 @@ public class ProductUpsertVM
 	[StringLength(200)]
 	public string Description { get; set; } = null!;
 
-	[Required]
-	[Range(1, 5000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+	[Range(0, 5000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
 	[LessThan(nameof(Price), ErrorMessage = "{0} must be less than the {1}.")]
 	[DataType(DataType.Currency)]
 	[DisplayName("List Price")]
-	public double ListPrice { get; set; }
+	public double? ListPrice { get; set; } = 0;
 
 	[Required]
 	[Range(1, 5000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]

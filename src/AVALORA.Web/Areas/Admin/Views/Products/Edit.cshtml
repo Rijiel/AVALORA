@@ -22,7 +22,7 @@
 				</div>
 				<!-- List Price -->
 				<div class="form-floating my-2">
-					<input type="number" min="1" asp-for="ListPrice" class="form-control" placeholder="" />
+					<input type="number" asp-for="ListPrice" class="form-control" placeholder="" />
 					<label asp-for="ListPrice" class="form-label text-muted"></label>
 					<span asp-validation-for="ListPrice" class="text-danger"></span>
 				</div>
@@ -65,7 +65,7 @@
 							bool isChecked = Model.Colors.Contains(color);
 							<div class="d-inline-block mx-1">
 								<input type="checkbox" class="btn-check" name="colors" id="color@(i)" value="@color" checked="@isChecked" autocomplete="off" />
-								<label for="color@(i)" class="color-option @color.ToString().ToLower()"></label>
+								<label for="color@(i)" class="color-option bg-@color.ToString().ToLower()" title="@color"></label>
 							</div>
 						}
 					</div>
