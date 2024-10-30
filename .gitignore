@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /src/AVALORA.Web/Areas/Admin/Views/Products
 /src/AVALORA.Web/wwwroot/images/products
+/src/AVALORA.Web/appsettings.json
