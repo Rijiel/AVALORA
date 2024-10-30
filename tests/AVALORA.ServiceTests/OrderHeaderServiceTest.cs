@@ -22,7 +22,7 @@ public class OrderHeaderServiceTest
 
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IOrderHeaderRepository _orderHeaderRepository;
-	private readonly IOrderHeaderSevice _orderHeaderService;
+	private readonly IOrderHeaderService _orderHeaderService;
 
 	public OrderHeaderServiceTest()
 	{
@@ -35,7 +35,7 @@ public class OrderHeaderServiceTest
 		_unitOfWork = _unitOfWorkMock.Object;
 		_orderHeaderRepository = _orderHeaderRepositoryMock.Object;
 
-		_orderHeaderService = new OrderHeaderSevice(_orderHeaderRepository, _mapper, _unitOfWork);
+		_orderHeaderService = new OrderHeaderService(_orderHeaderRepository, _mapper, _unitOfWork);
 	}
 
 	#region SetOrderHeaderDefaults
@@ -89,7 +89,7 @@ public class OrderHeaderServiceTest
 
 		// Act
 		var result = await _orderHeaderService.UpdateOrderStatusAsync(id, orderStatus);
-		
+
 		// Assert
 		result.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.ShippingDate));
 		result.ShippingDate.Should().NotBe((default));
@@ -115,6 +115,61 @@ public class OrderHeaderServiceTest
 		// Assert
 		result.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.ShippingDate));
 		result.ShippingDate.Should().NotBe((default));
+	}
+	#endregion
+
+	#region UpdatePaymentStatusAsync
+	[Fact]
+	public async Task UpdatePaymentStatusAsync_GivenInvalidId_ShouldThrowKeyNotFoundException()
+	{
+		// Arrange
+		int? id = _fixture.Create<int>();
+		string paymentId = _fixture.Create<string>();
+
+		// Act
+		Func<Task> result = async () => await _orderHeaderService.UpdatePaymentIdAsync(id, paymentId);
+
+		// Assert
+		await result.Should().ThrowAsync<KeyNotFoundException>();
+	}
+
+	[Fact]
+	public async Task UpdatePaymentStatusAsync_GivenEmptyPaymentId_ShouldThrowArgumentNullException()
+	{
+		// Arrange
+		int? id = _fixture.Create<int>();
+		string? paymentId = String.Empty;
+		OrderHeader orderHeader = _fixture.Build<OrderHeader>().With(o => o.ApplicationUser, null as ApplicationUser).Create();
+
+		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(orderHeader);
+
+		// Act
+		Func<Task> result = async () => await _orderHeaderService.UpdatePaymentIdAsync(id, paymentId);
+
+		// Assert
+		await result.Should().ThrowAsync<ArgumentNullException>();
+	}
+
+	[Fact]
+	public async Task UpdatePaymentStatusAsync_GivenValidArguments_ShouldReturnResponseWithUpdatedPaymentStatus()
+	{
+		// Arrange
+		int? id = _fixture.Create<int>();
+		string paymentId = _fixture.Create<string>();
+		OrderHeader orderHeader = _fixture.Build<OrderHeader>().With(o => o.ApplicationUser, null as ApplicationUser).Create();
+		OrderHeaderResponse expected = _mapper.Map<OrderHeaderResponse>(orderHeader);
+		expected.PaymentID = paymentId;
+		expected.PaymentDate = DateTime.Now;
+		expected.PaymentDueDate = null;
+
+		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(orderHeader);
+
+		// Act
+		var result = await _orderHeaderService.UpdatePaymentIdAsync(id, paymentId);
+
+		// Assert
+		result.Should().BeEquivalentTo(expected, x => x.Excluding(o => o.PaymentDate));
+		result.PaymentDate.Should().NotBe((default));
 	}
 	#endregion
 }

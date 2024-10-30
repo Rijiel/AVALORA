@@ -17,8 +17,6 @@ public class GenericService<TModel, TAddDto, TUpdateDto, TResponseDto> : IGeneri
 	private readonly IMapper _mapper;
 	private readonly IUnitOfWork _unitOfWork;
 
-
-
 	public GenericService(IGenericRepository<TModel> repository, IMapper mapper, IUnitOfWork unitOfWork)
 	{
 		_repository = repository;

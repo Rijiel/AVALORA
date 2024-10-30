@@ -1,0 +1,21 @@
+﻿@model OrderSummaryResponse
+@{
+	ViewBag.Title = "Complete Payment";
+}
+
+<div class="row mt-5">
+	<div class="col-4 mx-auto">
+		<h2 class="text-center">Complete your order</h2>
+		<div class="my-4">
+			<div class="">Total Amount($)</div>
+			<input asp-for="TotalPrice" id="totalAmount" class="form-control" disabled />
+		</div>
+		<div id="notification-container"></div>
+		<div id="paypal-button-container"></div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="https://www.paypal.com/sdk/js?client-id=@(ViewBag.ClientID)&currency=USD"></script>
+	<script src="~/js/paypal.js"></script>
+}

@@ -1,5 +1,7 @@
 ﻿using AVALORA.Core.AutoMapperProfiles;
+using AVALORA.Core.Domain.Models;
 using AVALORA.Core.Domain.RepositoryContracts;
+using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Core.Services;
@@ -53,6 +55,10 @@ public static class ServicesExtension
 
 		services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 		services.AddFoolProof();
+
+		services.Configure<PaypalSettings>(config => cfg.GetSection("Paypal").Bind(config));
+		services.AddHttpClient<IPaymentService, PaymentService>(client 
+			=> client.Timeout = TimeSpan.FromMinutes(2));
 
 		#region DI
 		services.AddScoped<IUnitOfWork, UnitOfWork>();

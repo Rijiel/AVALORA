@@ -1,0 +1,11 @@
+﻿@{
+	string query = Context.Request.Query["status"].ToString();
+	if (String.IsNullOrEmpty(query))
+		query = "All";
+
+	string btnActive = "active btn-primary";
+	string btnOutline = "btn-outline-primary";
+}
+
+<a asp-action="Index" asp-route-status="@ViewBag.Status"
+   class="btn @(query == @ViewBag.Status ? btnActive : btnOutline)">@ViewBag.Name</a>

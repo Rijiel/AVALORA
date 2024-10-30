@@ -13,7 +13,7 @@ public class UniqueTrackingNumberAttribute : ValidationAttribute
 	{
 		var serviceUnitOfWork = validationContext.GetRequiredService<IServiceUnitOfWork>();
 
-		if (serviceUnitOfWork.OrderHeaderSevice.GetAsync(c => c.TrackingNumber == (string?)value).GetAwaiter().GetResult() != null)
+		if (serviceUnitOfWork.OrderHeaderService.GetAsync(c => c.TrackingNumber == (string?)value).GetAwaiter().GetResult() != null)
 			return new ValidationResult("Please enter a unique tracking number.");
 
 		return ValidationResult.Success;

@@ -14,7 +14,9 @@ public class OrderHeaderResponse
 	public string Email { get; set; } = null!;
 	public PaymentStatus PaymentStatus { get; set; }
 	public OrderStatus OrderStatus { get; set; }
-	public DateTime OrderDate { get; set; }
+    public string? PaymentStatusDescription { get; set; }
+	public string? OrderStatusDescription { get; set; }
+    public DateTime OrderDate { get; set; }
 	public DateTime EstimatedFromDate { get; set; }
 	public DateTime EstimatedToDate { get; set; }
 	public DateTime? ShippingDate { get; set; }

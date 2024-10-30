@@ -1,4 +1,6 @@
-﻿namespace AVALORA.Core.Helpers;
+﻿using AVALORA.Core.Enums;
+
+namespace AVALORA.Core.Helpers;
 
 /// <summary>
 /// Static class holding application-wide constants.
@@ -8,5 +10,7 @@ public static class SD
     public const string TEMPDATA_SUCCESS = "SuccessMessage";
 	public const string TEMPDATA_ERROR = "ErrorMessage";
 	public const string TEMPDATA_ORDERID = "OrderHeaderId";
+
+	public const string PAYMENT_CLIENT = "PaymentService";
 }
 

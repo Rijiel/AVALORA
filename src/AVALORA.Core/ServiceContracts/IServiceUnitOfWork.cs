@@ -10,10 +10,11 @@ public interface IServiceUnitOfWork
     public IProductImageService ProductImageService { get; }
     public IApplicationUserService ApplicationUserService { get; }
     public ICartItemService CartItemService { get; }
-    public IOrderHeaderSevice OrderHeaderSevice { get; }
+    public IOrderHeaderService OrderHeaderService { get; }
     public IOrderSummaryService OrderSummaryService { get; }
     public IOrderSummaryItemService OrderSummaryItemService { get; }
     public IProductReviewService ProductReviewService { get; }
     public IPagerService PagerService { get; }
+    public IPaymentService PaymentService { get; }
 }
 

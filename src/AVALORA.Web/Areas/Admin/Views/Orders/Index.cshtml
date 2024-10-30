@@ -1,0 +1,49 @@
+﻿@{
+	ViewBag.Title = "Orders";
+
+	Dictionary<string, string> buttonDictionary = new()
+	{
+		{"In Process", OrderStatus.Processing.ToString() },
+		{"Payment Pending", PaymentStatus.Pending.ToString() },
+		{"Completed", OrderStatus.Shipped.ToString() },
+		{"Approved", OrderStatus.Approved.ToString() },
+		{"All", "All" },
+	};
+}
+
+<div class="mt-5">
+	<h3 class="text-center text-uppercase">Order List</h3>
+
+	<div class="row mt-5">
+		<div class="col-12">
+			<div class="d-flex justify-content-end">
+				<div class="btn-group">
+					@foreach (var (name, status) in buttonDictionary)
+					{
+						@await Html.PartialAsync("_StatusButtonPartial", new ViewDataDictionary(ViewData) { { "Name", name }, { "Status", status } })
+					}
+				</div>
+			</div>
+
+			<table id="dataTable" class="table table-bordered table-hover mt-3">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Phone Number</th>
+						<th>Email</th>
+						<th>Address</th>
+						<th>Status</th>
+						<th>Order Date</th>
+						<th>Total Price</th>
+						<th>Options</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="~/js/order_datatable.js"></script>
+}

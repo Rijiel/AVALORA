@@ -4,13 +4,12 @@ using AVALORA.Core.Domain.RepositoryContracts;
 using AVALORA.Core.Dto.OrderHeaderDtos;
 using AVALORA.Core.Enums;
 using AVALORA.Core.ServiceContracts;
-using Microsoft.AspNetCore.Http;
 
 namespace AVALORA.Core.Services;
 
-public class OrderHeaderSevice : GenericService<OrderHeader, OrderHeaderAddRequest, OrderHeaderUpdateRequest, OrderHeaderResponse>, IOrderHeaderSevice
+public class OrderHeaderService : GenericService<OrderHeader, OrderHeaderAddRequest, OrderHeaderUpdateRequest, OrderHeaderResponse>, IOrderHeaderService
 {
-	public OrderHeaderSevice(IOrderHeaderRepository repository, IMapper mapper, IUnitOfWork unitOfWork) : base(repository, mapper, unitOfWork)
+	public OrderHeaderService(IOrderHeaderRepository repository, IMapper mapper, IUnitOfWork unitOfWork) : base(repository, mapper, unitOfWork)
     {
 	}
 
@@ -24,7 +23,7 @@ public class OrderHeaderSevice : GenericService<OrderHeader, OrderHeaderAddReque
 		return addRequest;
 	}
 
-	public async Task<OrderHeaderResponse> UpdateOrderStatusAsync(int? id, OrderStatus status, PaymentStatus? paymentStatus = null, CancellationToken cancellationToken = default)
+	public async Task<OrderHeaderResponse> UpdateOrderStatusAsync(int? id, OrderStatus status, PaymentStatus? paymentStatus = null)
 	{
 		OrderHeaderResponse? orderHeaderResponse = await GetByIdAsync(id)
 			?? throw new KeyNotFoundException("Order header not found.");
@@ -37,6 +36,24 @@ public class OrderHeaderSevice : GenericService<OrderHeader, OrderHeaderAddReque
 		if (paymentStatus != null)
 			orderHeaderResponse.PaymentStatus = paymentStatus.Value;
 		
+		var orderHeaderUpdateRequest = Mapper.Map<OrderHeaderUpdateRequest>(orderHeaderResponse);
+		await UpdateAsync(orderHeaderUpdateRequest);
+
+		return orderHeaderResponse;
+	}
+
+	public async Task<OrderHeaderResponse> UpdatePaymentIdAsync(int? id, string? paymentId)
+	{
+		if (String.IsNullOrEmpty(paymentId))
+			throw new ArgumentNullException();
+
+		OrderHeaderResponse? orderHeaderResponse = await GetByIdAsync(id)
+			?? throw new KeyNotFoundException("Order not found.");
+
+		orderHeaderResponse.PaymentID = paymentId;
+		orderHeaderResponse.PaymentDate = DateTime.Now;
+		orderHeaderResponse.PaymentDueDate = null;
+
 		var orderHeaderUpdateRequest = Mapper.Map<OrderHeaderUpdateRequest>(orderHeaderResponse);
 		await UpdateAsync(orderHeaderUpdateRequest);
 

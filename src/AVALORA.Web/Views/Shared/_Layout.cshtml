@@ -27,7 +27,7 @@
 							<a class="nav-link text-dark" asp-area="@Role.User" asp-controller="Home" asp-action="Index">Home</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="@Role.User" asp-controller="Home" asp-action="Privacy">Privacy</a>
+							<a class="nav-link text-dark" asp-area="@Role.Admin" asp-controller="Orders" asp-action="Index">Orders</a>
 						</li>
 						<!-- Admin Dropdown -->
 						<li class="nav-item dropdown">
@@ -35,7 +35,7 @@
 							<div class="dropdown-menu">
 								<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Categories" asp-action="Index">Categories</a>
 								<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Products" asp-action="Index">Products</a>
-								<div class="dropdown-divider"></div>
+								@* <div class="dropdown-divider"></div> *@
 							</div>
 						</li>
 						<li class="nav-item">
