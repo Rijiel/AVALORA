@@ -29,6 +29,7 @@ public class ApplicationDbContext : IdentityDbContext
         modelBuilder.Entity<Category>().HasIndex(c => c.Name).IsUnique();
         modelBuilder.Entity<OrderHeader>().HasIndex(o => o.TrackingNumber).IsUnique();
         modelBuilder.Entity<CartItem>().Navigation(e => e.Product).AutoInclude();
+        modelBuilder.Entity<OrderSummaryItem>().Navigation(e => e.Product).AutoInclude();
         #endregion
 
         modelBuilder.ApplyConfiguration(new CategoriesSeedConfiguration());

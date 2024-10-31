@@ -12,5 +12,6 @@ public class OrderSummaryItemResponse
 	public int OrderSummaryId { get; set; }
 	public OrderSummary? OrderSummary { get; set; }
 	public Color Color { get; set; }
+    public double TotalPrice { get; set; }
 }
 

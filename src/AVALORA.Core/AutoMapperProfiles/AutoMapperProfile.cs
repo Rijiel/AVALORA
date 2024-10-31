@@ -46,6 +46,9 @@ public class AutoMapperProfile : Profile
 		CreateMap<OrderHeaderResponse, OrderHeaderUpdateRequest>();
 		CreateMap<OrderHeaderUpdateRequest, OrderHeader>();
 
+		// OrderHeader - OrderHeaderValidatorDTO
+        CreateMap<OrderHeaderResponse, OrderHeaderValidatorDTO>().ReverseMap();
+
 		// OrderHeader - CheckoutVM
 		CreateMap<OrderHeaderResponse, CheckoutVM>().ReverseMap();
 		CreateMap<CheckoutVM, OrderHeaderAddRequest>().ReverseMap();

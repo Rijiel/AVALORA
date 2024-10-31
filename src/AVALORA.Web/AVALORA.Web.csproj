@@ -11,7 +11,6 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\User\Data\" />
     <Folder Include="Areas\User\Models\" />
-    <Folder Include="Middleware\" />
   </ItemGroup>
 
   <ItemGroup>

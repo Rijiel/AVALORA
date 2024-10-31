@@ -3,6 +3,7 @@ using AVALORA.Core.Dto.CartItemDtos;
 using AVALORA.Core.Dto.OrderHeaderDtos;
 using AVALORA.Core.Dto.OrderSummaryDtos;
 using AVALORA.Core.Enums;
+using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.BaseController;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ public class CartController : BaseController<CartController>
 	private readonly IOrderFacade _orderFacade;
 	private readonly IHttpContextAccessor _contextAccessor;
 
-	public CartController(ICartFacade cartFacade, IOrderFacade orderFacade, IHttpContextAccessor contextAccessor)
+    public CartController(ICartFacade cartFacade, IOrderFacade orderFacade, IHttpContextAccessor contextAccessor)
 	{
 		_cartFacade = cartFacade;
 		_orderFacade = orderFacade;
@@ -85,7 +86,7 @@ public class CartController : BaseController<CartController>
 		return View(checkoutVM);
 	}
 
-	[HttpPost]
+    [HttpPost]
 	public async Task<IActionResult> Checkout(CheckoutVM checkoutVM, CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
@@ -97,6 +98,7 @@ public class CartController : BaseController<CartController>
 				orderSummaryAddRequest, this, cancellationToken);
 
 			// Redirect to payment gateway
+			TempData[SD.TEMPDATA_CLEARCART] = true;
 			return RedirectToAction("Index", "Payment", new { id = orderHeaderResponse.Id });
 		}
 

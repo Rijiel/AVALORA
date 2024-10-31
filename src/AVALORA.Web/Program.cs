@@ -1,4 +1,5 @@
 using AVALORA.Web.Extensions;
+using BookShop.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,5 +24,7 @@ app.UseSession();
 
 app.MapControllers();
 app.MapRazorPages();
+
+app.UseDataSeedMiddleware();
 
 app.Run();

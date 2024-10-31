@@ -1,15 +1,16 @@
 ﻿using AVALORA.Core.AutoMapperProfiles;
 using AVALORA.Core.Domain.Models;
 using AVALORA.Core.Domain.RepositoryContracts;
-using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Core.Services;
 using AVALORA.Core.Services.FacadeServices;
 using AVALORA.Infrastructure.DatabaseContext;
+using AVALORA.Infrastructure.DbInitializer;
 using AVALORA.Infrastructure.Repositories;
 using FoolProof.Core;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace AVALORA.Web.Extensions;
@@ -29,7 +30,7 @@ public static class ServicesExtension
 
 		services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(cfg.GetConnectionString("DefaultConnection")));
 
-		services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+		services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 		services.AddSession(options =>
 		{
@@ -66,6 +67,8 @@ public static class ServicesExtension
 		services.AddScoped<IProductFacade, ProductFacade>();
 		services.AddScoped<ICartFacade, CartFacade>();
 		services.AddScoped<IOrderFacade, OrderFacade>();
+		services.AddScoped<IEmailSender, EmailSender>();
+		services.AddScoped<IDbInitializer, DbInitializer>();
 		#endregion
 
 		return services;

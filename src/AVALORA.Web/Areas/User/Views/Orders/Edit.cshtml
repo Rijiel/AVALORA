@@ -1,0 +1,220 @@
+﻿@inject IHttpContextAccessor accessor
+@model OrderVM
+@{
+	ViewData["Title"] = "Order Summary";
+
+	string orderStatus = Model.OrderHeaderResponse.OrderStatus.ToString();
+	string paymentStatus = Model.OrderHeaderResponse.PaymentStatus.ToString();
+	var userId = UserHelper.GetCurrentUserId(accessor);
+	bool isAdmin = User.IsInRole(Role.Admin.ToString());
+
+	bool orderApproved = orderStatus == OrderStatus.Approved.ToString();
+	bool orderProcessing = orderStatus == OrderStatus.Processing.ToString();
+	bool orderShipped = orderStatus == OrderStatus.Shipped.ToString();
+	bool orderPending = orderStatus == OrderStatus.Pending.ToString();
+	bool orderCancelled = orderStatus == OrderStatus.Cancelled.ToString();
+	bool paymentPending = paymentStatus == PaymentStatus.Pending.ToString();
+	bool paymentApproved = paymentStatus == PaymentStatus.Approved.ToString();
+	bool paymentDelayed = paymentStatus == PaymentStatus.DelayedPayment.ToString();
+	bool paymentCancelled = paymentStatus == PaymentStatus.Cancelled.ToString();
+
+	bool isReadOnly = !isAdmin || orderCancelled;
+}
+
+<div class="mt-5">
+	<div class="d-flex justify-content-between">
+		<h3 class="text-uppercase fs-4">Order Summary</h3>
+		<a asp-action="Index" class="btn btn-outline-info">Back to Orders</a>
+	</div>
+	<div class="row mt-5">
+		<div class="col-12">
+			<form method="post">
+				<input asp-for="OrderHeaderResponse.Id" hidden />
+				<input asp-for="OrderHeaderResponse.ApplicationUserId" hidden />
+				<input asp-for="OrderHeaderResponse.OrderStatus" hidden />
+				<div class="row">
+					<!-- Shipping Details -->
+					<div class="col-6">
+						<h4>Pickup Details:</h4>
+						<div class="mt-4">
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Name:</p>
+								</div>
+								<div class="col-9">
+									<input asp-for="OrderHeaderResponse.Name" class="form-control" readonly="@isReadOnly" />
+									<span asp-validation-for="OrderHeaderResponse.Name" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Phone:</p>
+								</div>
+								<div class="col-9">
+									<input asp-for="OrderHeaderResponse.PhoneNumber" class="form-control" readonly="@isReadOnly" />
+									<span asp-validation-for="OrderHeaderResponse.PhoneNumber" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Address:</p>
+								</div>
+								<div class="col-9">
+									<input asp-for="OrderHeaderResponse.Address" class="form-control" readonly="@isReadOnly" />
+									<span asp-validation-for="OrderHeaderResponse.Address" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Email:</p>
+								</div>
+								<div class="col-9">
+									<input asp-for="OrderHeaderResponse.Email" class="form-control" readonly="@isReadOnly" />
+									<span asp-validation-for="OrderHeaderResponse.Email" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Order Date:</p>
+								</div>
+								<div class="col-9">
+									<input value="@Model.OrderHeaderResponse.OrderDate.ToLongDateString()" class="form-control" readonly />
+									<span asp-validation-for="OrderHeaderResponse.OrderDate" class="text-danger"></span>
+								</div>
+							</div>
+							@if (orderProcessing || orderShipped || orderCancelled)
+							{
+								<div class="row mt-3">
+									<div class="col-3 align-self-center">
+										<p class="my-0">Carrier:</p>
+									</div>
+									<div class="col-9">
+										<input asp-for="OrderHeaderResponse.Carrier" class="form-control" readonly="@isReadOnly" />
+										<span asp-validation-for="OrderHeaderResponse.Carrier" class="text-danger"></span>
+									</div>
+								</div>
+								<div class="row mt-3">
+									<div class="col-3 align-self-center">
+										<p class="my-0">Tracking Number:</p>
+									</div>
+									<div class="col-9">
+										<input asp-for="OrderHeaderResponse.TrackingNumber" class="form-control" readonly="@isReadOnly" />
+										<span asp-validation-for="OrderHeaderResponse.TrackingNumber" class="text-danger"></span>
+									</div>
+								</div>
+							}
+							@if (orderShipped || orderCancelled)
+							{
+								<div class="row mt-3">
+									<div class="col-3 align-self-center">
+										<p class="my-0">Shipping Date:</p>
+									</div>
+									<div class="col-9">
+										<input value="@(Model.OrderHeaderResponse.ShippingDate != null ? Model.OrderHeaderResponse.ShippingDate.Value.ToLongDateString() : null)" class="form-control" readonly />
+										<span asp-validation-for="OrderHeaderResponse.ShippingDate" class="text-danger"></span>
+									</div>
+								</div>
+							}
+							@if (paymentApproved || orderCancelled)
+							{
+								<div class="row mt-3">
+									<div class="col-3 align-self-center">
+										<p class="my-0">Payment ID:</p>
+									</div>
+									<div class="col-9">
+										<input asp-for="OrderHeaderResponse.PaymentID" class="form-control" readonly />
+										<span asp-validation-for="OrderHeaderResponse.PaymentID" class="text-danger"></span>
+									</div>
+								</div>
+							}
+							@if (paymentPending || paymentDelayed || paymentCancelled || orderCancelled)
+							{
+								<div class="row mt-3">
+									<div class="col-3 align-self-center">
+										<p class="my-0">Payment Due Date:</p>
+									</div>
+									<div class="col-9">
+										<input value="@(Model.OrderHeaderResponse.PaymentDueDate != null ? Model.OrderHeaderResponse.PaymentDueDate.Value.ToLongDateString() : null)" class="form-control" readonly />
+										<span asp-validation-for="OrderHeaderResponse.PaymentDueDate" class="text-danger"></span>
+									</div>
+								</div>
+							}
+							<div class="row mt-3">
+								<div class="col-3 align-self-center">
+									<p class="my-0">Payment Status:</p>
+								</div>
+								<div class="col-9">
+									<input asp-for="OrderHeaderResponse.PaymentStatus" class="form-control" readonly />
+									<span asp-validation-for="OrderHeaderResponse.PaymentStatus" class="text-danger"></span>
+								</div>
+							</div>
+							@if (isAdmin && (!orderCancelled && !orderShipped))
+							{
+								<div class="row mt-3">
+									<div class="">
+										<button type="submit" asp-action="UpdateDetails" class="btn btn-dark form-control">Update Order Details</button>
+									</div>
+								</div>
+							}
+						</div>
+					</div>
+					<!-- Order Summary -->
+					<div class="col-6">
+						<div class="ms-5">
+							<h4>Order Summary:</h4>
+							<div class="mt-4">
+								<h6 class="text-uppercase text-center d-block border border-primary text-primary rounded py-2">Order Status - @Model.OrderHeaderResponse.OrderStatus</h6>
+
+								<ul class="list-group mt-1">
+									@foreach (var item in Model.OrderSummaryResponse!.OrderSummaryItems)
+									{
+										<li class="list-group-item d-flex justify-content-between">
+											<div>
+												<h6 class="my-0">@item.Product?.Name</h6>
+												<small class="text-muted d-block">Price: @item.Product?.Price.ToString("c")</small>
+												<small class="text-muted d-block">Quantity: @item.Count</small>
+											</div>
+											<span class="text-muted">@item.TotalPrice.ToString("c")</span>
+										</li>
+									}
+									<!-- Total -->
+									<li class="list-group-item d-flex justify-content-between align-middle fs-5 bg-primary text-light">
+										<p class="mb-0">TOTAL</p>
+										<p class="mb-0">@Model.OrderSummaryResponse.TotalPrice.ToString("c")</p>
+									</li>
+								</ul>
+								<div class="mt-2">
+									@if ((orderPending || (paymentCancelled && !orderCancelled) || (orderShipped && paymentDelayed)) && Model.OrderHeaderResponse.ApplicationUserId == userId)
+									{
+										<a asp-action="Pay" asp-route-id="@Model.OrderHeaderResponse.Id" class="btn btn-success form-control my-1">Pay Now</a>
+									}
+									@if (isAdmin)
+									{
+										@if (orderApproved)
+										{
+											<a asp-action="Process" asp-route-id="@Model.OrderHeaderResponse.Id" 
+											class="btn btn-primary form-control my-1">Start Processing</a>
+										}
+										@if (orderProcessing)
+										{
+											<button type="submit" asp-action="Ship" class="btn btn-primary form-control my-1">Ship Order</button>
+										}
+									}
+									@if (!orderCancelled && !orderShipped)
+									{
+										<a onclick="CancelOrder(@Model.OrderHeaderResponse.Id)" class="btn btn-danger form-control my-1">Cancel Order</a>
+									}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/order_cancel.js"></script>
+}
