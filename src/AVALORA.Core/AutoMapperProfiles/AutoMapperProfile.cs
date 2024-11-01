@@ -98,6 +98,9 @@ public class AutoMapperProfile : Profile
 			.ForMember(dest => dest.ApplicationUserId, opt => opt.MapFrom(src => src.Id));
 		CreateMap<ApplicationUserResponse, OrderHeaderUpdateRequest>();
 
+		// ApplicationUser - ApplicationUserRoleVM
+		CreateMap<ApplicationUserResponse, ApplicationUserRoleVM>().ReverseMap();
+
 		// ProductReview
 		CreateMap<ProductReview, ProductReviewResponse>().ReverseMap();
 		CreateMap<ProductReviewAddRequest, ProductReview>();

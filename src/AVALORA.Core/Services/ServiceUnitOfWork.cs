@@ -25,12 +25,12 @@ public class ServiceUnitOfWork : IServiceUnitOfWork
     public IPaymentService PaymentService { get; private set; }
 
 	public ServiceUnitOfWork(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, 
-        IHttpClientFactory httpClientFactory)
+        IHttpClientFactory httpClientFactory, RoleManager<IdentityRole> roleManager)
     {
         CategoryService = new CategoryService(unitOfWork.Categories, mapper, unitOfWork);
         ProductService = new ProductService(unitOfWork.Products, mapper, unitOfWork);
 		ProductImageService = new ProductImageService(unitOfWork.ProductImages, mapper, unitOfWork, webHostEnvironment);
-        ApplicationUserService = new ApplicationUserService(unitOfWork.ApplicationUsers, mapper, unitOfWork);
+        ApplicationUserService = new ApplicationUserService(unitOfWork.ApplicationUsers, mapper, unitOfWork, roleManager);
         CartItemService = new CartItemService(unitOfWork.CartItems, mapper, unitOfWork);
         OrderHeaderService = new OrderHeaderService(unitOfWork.OrderHeaders, mapper, unitOfWork);
 		OrderSummaryService = new OrderSummaryService(unitOfWork.OrderSummaries, mapper, unitOfWork);

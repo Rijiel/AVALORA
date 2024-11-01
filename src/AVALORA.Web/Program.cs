@@ -1,5 +1,5 @@
 using AVALORA.Web.Extensions;
-using BookShop.Web.Middleware;
+using AVALORA.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 

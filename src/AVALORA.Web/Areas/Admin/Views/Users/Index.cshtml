@@ -1,0 +1,32 @@
+﻿@{
+	ViewBag.Title = "Users";
+}
+
+<div class="mt-5">
+	<h3 class="text-center text-uppercase">User List</h3>
+
+	<div class="row mt-5">
+		<div class="col-12">
+			<div class="text-end">
+				<a asp-action="Create" class="btn btn-primary">Create New User</a>
+			</div>
+
+			<table id="dataTable" class="table table-bordered table-hover mt-3">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Address</th>
+						<th>Phone Number</th>
+						<th>Role</th>
+						<th>Options</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="~/js/user_datatable.js"></script>
+}

@@ -181,8 +181,14 @@ namespace AVALORA.Web.Areas.Identity.Pages.Account
 					}
 					else
 					{
-						await _signInManager.SignInAsync(user, isPersistent: false);
-						return LocalRedirect(returnUrl);
+						// Do not sign in when created by admin
+						if (!User.Identity.IsAuthenticated)
+						{
+							await _signInManager.SignInAsync(user, isPersistent: false);
+							return LocalRedirect(returnUrl);
+						}
+						
+						return RedirectToAction("Index", "Users", new { area = Role.Admin.ToString() });
 					}
 				}
 				foreach (var error in result.Errors)
