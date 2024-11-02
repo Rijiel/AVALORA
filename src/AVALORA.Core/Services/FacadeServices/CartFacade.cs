@@ -53,6 +53,8 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 		await ServiceUnitOfWork.CartItemService.AddAsync(cartItemAddRequest);
 		Logger.LogInformation($"Added product: {cartItemAddRequest.ProductId} to cart");
 		controller.TempData[SD.TEMPDATA_SUCCESS] = "Item added to cart";
+
+		UpdateCartSessionCount(controller, +1);
 	}
 
 	public async Task UpdateCartItemQuantityAsync(int? cartItemId, int quantity, Controller controller)
@@ -73,6 +75,8 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 			await ServiceUnitOfWork.CartItemService.RemoveAsync(cartItemResponse.Id);
 			Logger.LogInformation($"Removed cart item: {cartItemResponse.Id}");
 			controller.TempData[SD.TEMPDATA_SUCCESS] = "Item removed from cart";
+
+			UpdateCartSessionCount(controller, -1);
 
 			return;
 		}
@@ -115,6 +119,17 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 		await ServiceUnitOfWork.CartItemService.RemoveRangeAsync(cartItemResponses);
 
 		Logger.LogInformation($"Cleared cart for user: {UserHelper.GetCurrentUserId(_contextAccessor)}");
+
+		UpdateCartSessionCount(controller, 0);
+	}
+
+	public void UpdateCartSessionCount(Controller controller, int quantity)
+	{
+		if (controller.HttpContext.Session.GetInt32(SD.SESSION_CART).HasValue)
+		{
+			int currentCount = controller.HttpContext.Session.GetInt32(SD.SESSION_CART)!.Value;
+			controller.HttpContext.Session.SetInt32(SD.SESSION_CART, currentCount + quantity);
+		}
 	}
 }
 

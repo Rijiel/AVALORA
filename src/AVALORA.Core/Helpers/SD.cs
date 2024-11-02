@@ -13,5 +13,7 @@ public static class SD
 	public const string TEMPDATA_CLEARCART = "ClearCart";
 
 	public const string PAYMENT_CLIENT = "PaymentService";
+
+	public const string SESSION_CART = "CartCount";
 }
 

@@ -4,11 +4,13 @@ using AVALORA.Core.Dto.ProductImageDtos;
 using AVALORA.Core.Enums;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.BaseController;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AVALORA.Web.Areas.Admin.Controllers;
 
 [Area(nameof(Role.Admin))]
+[Authorize(Roles = nameof(Role.Admin))]
 [Route("[controller]/[action]")]
 public class ProductsController : BaseController<ProductsController>
 {
@@ -110,12 +112,14 @@ public class ProductsController : BaseController<ProductsController>
 		{
 			await _productFacade.DeleteProductAsync(id);
 			SuccessMessage = "Product deleted successfully.";
+			Logger.LogInformation($"Product {id} deleted successfully.");
 
 			return Json(new { success = true });
 		}
 		catch (Exception e)
 		{
-			TempData["Error"] = e.Message;
+			ErrorMessage = e.Message;
+			Logger.LogError(e.Message);
 
 			return Json(new { success = false });
 		}

@@ -1,5 +1,4 @@
-﻿using AVALORA.Core.Domain.Models;
-using AVALORA.Core.Domain.Models.ViewModels;
+﻿using AVALORA.Core.Domain.Models.ViewModels;
 using AVALORA.Core.Dto.ApplicationUserDtos;
 using AVALORA.Core.Enums;
 using AVALORA.Core.Helpers;
@@ -10,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AVALORA.Web.Areas.Admin.Controllers;
 
-[Authorize]
 [Area(nameof(Role.Admin))]
+[Authorize(Roles = nameof(Role.Admin))]
 [Route("[controller]/[action]")]
 public class UsersController : BaseController<UsersController>
 {

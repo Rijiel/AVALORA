@@ -5,6 +5,7 @@ using AVALORA.Core.Enums;
 using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.BaseController;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Text.Json.Nodes;
@@ -12,6 +13,7 @@ using System.Text.Json.Nodes;
 namespace AVALORA.Web.Areas.User.Controllers;
 
 [Area(nameof(Role.User))]
+[Authorize]
 [Route("[controller]/[action]")]
 public class PaymentController : BaseController<PaymentController>
 {

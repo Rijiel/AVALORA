@@ -44,8 +44,10 @@ function Delete(url) {
             $.ajax({
                 url: url,
                 type: 'DELETE',
-                success: function () {
-                    location.reload(true);
+                success: function (data) {
+                    if (data) {
+                        location.reload(true);
+                    }
                 }
             })
         }

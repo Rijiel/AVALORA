@@ -1,12 +1,13 @@
 ﻿using AVALORA.Core.Domain.Models.ViewModels;
 using AVALORA.Core.Dto.CategoryDtos;
 using AVALORA.Core.Enums;
-using AVALORA.Core.Helpers;
 using AVALORA.Web.BaseController;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AVALORA.Web.Areas.Admin.Controllers;
 [Area(nameof(Role.Admin))]
+[Authorize(Roles = nameof(Role.Admin))]
 [Route("[controller]/[action]")]
 public class CategoriesController : BaseController<CategoriesController>
 {
@@ -80,18 +81,24 @@ public class CategoriesController : BaseController<CategoriesController>
 	{
 		try
 		{
-			await ServiceUnitOfWork.CategoryService.RemoveAsync(id);
+			// Disable deletion if category is associated with any product
+			if (await ServiceUnitOfWork.ProductService.GetAsync(x => x.CategoryId == id) == null)
+			{
+				await ServiceUnitOfWork.CategoryService.RemoveAsync(id);
 
-			SuccessMessage = "Category deleted successfully.";
-			Logger.LogInformation("Category deleted successfully.");
+				SuccessMessage = "Category deleted successfully.";
+				Logger.LogInformation("Category deleted successfully.");
 
-			// Enable client-side redirect after deletion
-			return Json(new { success = true, redirectUrl = Url.Action(nameof(Index)) });
+				// Enable client-side redirect after deletion
+				return Json(new { success = true, redirectUrl = Url.Action(nameof(Index)) });
+			}
+
+			throw new Exception("Category is associated with one or more products.");
 		}
 		catch (Exception e)
 		{
-			TempData["Error"] = e.Message;
-			Logger.LogInformation(e.Message);
+			ErrorMessage = e.Message;
+			Logger.LogError(e.Message);
 
 			return Json(new { success = false });
 		}

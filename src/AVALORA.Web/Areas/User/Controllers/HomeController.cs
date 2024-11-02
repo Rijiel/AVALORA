@@ -29,9 +29,8 @@ public class HomeController : BaseController<HomeController>
 		_userManager = userManager;
 	}
 	[Route("/")]
-	[Route("/Home/Index")]
-	public async Task<IActionResult> Index(CancellationToken cancellationToken,[FromQuery] string? category = null, 
-		[FromQuery] string? color = null, [FromQuery] int page = 1,[FromQuery] string? search = null)
+	public async Task<IActionResult> Index(CancellationToken cancellationToken, [FromQuery] string? category = null,
+		[FromQuery] string? color = null, [FromQuery] int page = 1, [FromQuery] string? search = null)
 	{
 		// Use unflitered product responses for sidebar
 		var productResponses = await ServiceUnitOfWork.ProductService
@@ -39,7 +38,7 @@ public class HomeController : BaseController<HomeController>
 			includes: [nameof(ProductResponse.ProductImages), nameof(ProductResponse.Category)]);
 
 		// Populate total rating
-		foreach(var product in productResponses)
+		foreach (var product in productResponses)
 			product.TotalRating = await ServiceUnitOfWork.ProductService
 				.GetTotalRatingAsync(product.Id, cancellationToken);
 
@@ -93,7 +92,7 @@ public class HomeController : BaseController<HomeController>
 	{
 		ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
 			.GetByIdAsync(id, cancellationToken: cancellationToken,
-			includes: [nameof(ProductResponse.Category), 
+			includes: [nameof(ProductResponse.Category),
 				nameof(ProductResponse.ProductImages),
 				nameof(ProductResponse.ProductReviews)]);
 

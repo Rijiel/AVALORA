@@ -19,7 +19,7 @@
 				<input asp-for="CartItemAddRequestVM.CartItemAddRequest.ProductId" hidden />
 				<input asp-for="CartItemAddRequestVM.CartItemAddRequest.ApplicationUserId" hidden />
 				<div>
-					<a asp-action="Index" class="btn btn-outline-info">Back to home</a>
+					<a asp-action="Index" class="btn btn-outline-secondary">Back to home</a>
 				</div>
 
 				<div class="row mt-4">
@@ -67,7 +67,7 @@
 					<div class="col-8 ps-5">
 						<div class="mt-4">
 							<div class="d-inline-block">
-								<p class="badge bg-primary pb-2">@product.Category.Name</p>
+								<p class="badge bg-danger pb-2">@product.Category.Name</p>
 							</div>
 							<div class="d-flex align-items-center">
 								<div class="d-inline-block">

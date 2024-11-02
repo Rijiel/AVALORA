@@ -13,7 +13,12 @@
 				url: url,
 				type: 'DELETE',
 				success: function (data) {
-					window.location.href = data.redirectUrl;
+					if (data.success) {
+						window.location.href = data.redirectUrl;
+					}
+					else {
+						location.reload(true);
+					}
 				}
 			})
 		}

@@ -41,5 +41,13 @@ public interface ICartFacade
 	/// or threads to receive notice of cancellation. Defaults to default.</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
 	Task ClearCartItemsAsync(Controller controller, CancellationToken cancellationToken = default);
+
+	/// <summary>
+	/// Updates the cart session count asynchronously.
+	/// </summary>
+	/// <param name="controller">The controller instance to get and send the session count.</param>
+	/// <param name="quantity">The new quantity of the cart item.</param>
+	/// <returns>A task representing the asynchronous operation.</returns>
+	void UpdateCartSessionCount(Controller controller, int quantity);
 }
 

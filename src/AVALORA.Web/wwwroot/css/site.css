@@ -8,6 +8,12 @@ html {
     }
 }
 
+:root, [data-bs-theme=light] {
+    --bs-primary-rgb: 131, 110, 93;
+    --bs-secondary-rgb: 81, 156, 138;
+    --bs-danger-rgb: 155, 96, 97;
+}
+
 .btn {
     border-radius: var(--bs-border-radius-pill);
 }
@@ -17,7 +23,7 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #8a6f5bff;
 }
 
 html {
@@ -28,6 +34,104 @@ html {
 body {
     margin-bottom: 60px;
 }
+
+/* Custom Bootstrap Colors */
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #c8a081;
+    --bs-btn-border-color: #c8a081;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #c8a081d7;
+    --bs-btn-hover-border-color: #c8a081d7;
+    --bs-btn-focus-shadow-rgb: 117,153,255;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #b29075ff;
+    --bs-btn-active-border-color: #b29075ff;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #8a6f5bff;
+    --bs-btn-disabled-border-color: #8a6f5bff;
+}
+
+.btn-danger {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #8B4545;
+    --bs-btn-border-color: #8B4545;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #8b4545d9;
+    --bs-btn-hover-border-color: #8b4545d9;
+    --bs-btn-focus-shadow-rgb: 117,153,255;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #653131ff;
+    --bs-btn-active-border-color: #653131ff;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #4e2626ff;
+    --bs-btn-disabled-border-color: #4e2626ff;
+}
+
+.btn-secondary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #519C8A;
+    --bs-btn-border-color: #519C8A;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #519c8ae1;
+    --bs-btn-hover-border-color: #519c8ae1;
+    --bs-btn-focus-shadow-rgb: 117,153,255;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #478677;
+    --bs-btn-active-border-color: #478677;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #37675b;
+    --bs-btn-disabled-border-color: #37675b;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #c8a081;
+    --bs-btn-border-color: #c8a081;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #c8a081d7;
+    --bs-btn-hover-border-color: #c8a081d7;
+    --bs-btn-focus-shadow-rgb: 93,135,255;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #b29075ff;
+    --bs-btn-active-border-color: #b29075ff;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    --bs-btn-disabled-color: #8a6f5bff;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #8a6f5bff;
+    --bs-gradient: none
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: #519C8A;
+    --bs-btn-border-color: #519C8A;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #519c8ae1;
+    --bs-btn-hover-border-color: #519c8ae1;
+    --bs-btn-focus-shadow-rgb: 93,135,255;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #478677;
+    --bs-btn-active-border-color: #478677;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    --bs-btn-disabled-color: #37675b;
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: #37675b;
+    --bs-gradient: none
+}
+
+.pagination {
+    --bs-pagination-active-bg: #519C8A;
+    --bs-pagination-active-border-color: #519C8A;
+    --bs-pagination-color: #519c8ae1;
+    --bs-pagination-hover-color: #519c8ae1;
+    --bs-pagination-focus-color: #37675b;
+}
+
+
+
 
 .color-option {
     width: 25px;
@@ -41,7 +145,7 @@ body {
         border: 1px solid #858585;
     }
 
-input[type="checkbox"]:checked + .color-option, 
+input[type="checkbox"]:checked + .color-option,
 input[type="radio"]:checked + .color-option {
     border: 2px solid #7d1a1a;
 }
@@ -127,7 +231,7 @@ input[type="radio"]:checked + .color-option {
 }
 
 .badge-sm {
-    --bs-badge-padding-x: 10px;
+    --bs-badge-padding-x: 6px;
     --bs-badge-padding-y: 5px;
     --bs-badge-font-size: 0.75rem;
     --bs-badge-font-weight: 400;
@@ -146,3 +250,23 @@ input[type="radio"]:checked + .color-option {
     height: 1rem;
 }
 
+.cart-badge {
+    bottom: 6px;
+    --bs-badge-padding-x: 3px;
+    --bs-badge-padding-y: 3px;
+    height: 0.8rem;
+    --bs-badge-font-size: 0.65rem;
+}
+
+.nav-link {
+    font-size: 0.9rem;
+}
+
+.ms-nav {
+    margin-left: 7rem;
+}
+
+.navbar-nav > li {
+    padding-left: 15px;
+    padding-right: 15px;
+}

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 namespace AVALORA.Web.Areas.User.Controllers;
 
 [Area(nameof(Role.User))]
+[Authorize]
 [Route("[controller]/[action]")]
 public class OrdersController : BaseController<OrdersController>
 {

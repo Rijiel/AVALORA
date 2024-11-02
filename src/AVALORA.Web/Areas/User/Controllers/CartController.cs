@@ -6,11 +6,13 @@ using AVALORA.Core.Enums;
 using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.BaseController;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AVALORA.Web.Areas.User.Controllers;
 
 [Area(nameof(Role.User))]
+[Authorize]
 [Route("[controller]/[action]")]
 public class CartController : BaseController<CartController>
 {
@@ -61,6 +63,8 @@ public class CartController : BaseController<CartController>
 		await ServiceUnitOfWork.CartItemService.RemoveAsync(id);
 		SuccessMessage = "Product removed from cart.";
 		Logger.LogInformation($"Removed cart item: {id}");
+
+		_cartFacade.UpdateCartSessionCount(this, -1);
 
 		return RedirectToAction(nameof(Index));
 	}

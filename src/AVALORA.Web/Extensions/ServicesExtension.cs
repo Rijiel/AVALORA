@@ -54,6 +54,12 @@ public static class ServicesExtension
 			options.Lockout.MaxFailedAccessAttempts = 3;
 		});
 
+		services.ConfigureApplicationCookie(config =>
+		{
+			config.LoginPath = "/Identity/Account/Login";
+			config.AccessDeniedPath = "/Identity/Account/Login";
+		});
+
 		services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 		services.AddFoolProof();
 
