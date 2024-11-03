@@ -1,9 +1,9 @@
 ﻿@model ProductResponse
 @if (Model.ProductImages?.Count() > 0)
 {
-	<img src="@Model.ProductImages.FirstOrDefault()!.Path" class="w-100 rounded rounded-3 mt-2" />
+	<img src="@Model.ProductImages.FirstOrDefault()!.Path" class="w-100 rounded mt-2 @ViewBag.CustomClass" />
 }
 else
 {
-	<img src="https://www.placehold.co/500x600/png" class="w-100 rounded rounded-3 mt-2" />
+	<img src="https://www.placehold.co/500x600/png" class="w-100 rounded mt-2 @ViewBag.CustomClass" />
 }

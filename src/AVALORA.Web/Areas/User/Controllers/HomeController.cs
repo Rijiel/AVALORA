@@ -29,6 +29,7 @@ public class HomeController : BaseController<HomeController>
 		_userManager = userManager;
 	}
 	[Route("/")]
+	[Route("/Home")]
 	public async Task<IActionResult> Index(CancellationToken cancellationToken, [FromQuery] string? category = null,
 		[FromQuery] string? color = null, [FromQuery] int page = 1, [FromQuery] string? search = null)
 	{

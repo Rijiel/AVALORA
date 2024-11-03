@@ -6,6 +6,7 @@ using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.BaseController;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace AVALORA.Web.Areas.Admin.Controllers;
 
@@ -76,7 +77,7 @@ public class ProductsController : BaseController<ProductsController>
 
 	[HttpPost]
 	[Route("{id?}")]
-	public async Task<IActionResult> Edit()
+	public async Task<IActionResult> Edit(CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
 		{
@@ -88,7 +89,7 @@ public class ProductsController : BaseController<ProductsController>
 		}
 
 		Logger.LogWarning("Invalid model state. Product not created.");
-
+		ProductUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken);
 		return View(ProductUpsertVM);
 	}
 

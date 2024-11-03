@@ -10,51 +10,47 @@
 
 <div class="row mt-2">
 	<!-- Sidebar -->
-	<aside class="col-lg-2 bg-light">
-		<div class="mt-5">
+	<aside class="col-lg-2 bg-light-gray">
+		<div class="row gy-4">
 			<!-- Search -->
-			<div>
+			<div class="mt-5">
 				<form asp-area="@Role.User" asp-controller="Home" asp-action="Index" method="get">
-					<label class="fw-bold">Search</label>
+					<h6 class="text-body">Search an Item</h6>
 					<div class="input-group" role="group">
 						@if (!String.IsNullOrEmpty(ViewBag.Category))
 						{
 							<input type="hidden" name="category" value="@ViewBag.Category" />
 						}
-						<input type="text" name="search" class="form-control" placeholder="Search our store" />
-						<button type="submit" class="input-group-text"><i class="bi bi-search"></i></button>
+						<input type="search" name="search" class="form-control" placeholder="Search" />
+						<button type="submit" class="input-group-text border border-light-gray  text-body text-opacity-75"><i class="bi bi-search"></i></button>
 					</div>
 				</form>
 			</div>
 			<!-- Top Rated Products -->
-			<div class="mt-4">
-				<h6>Top Rated Products</h6>
+			<div>
+				<h6 class="text-body">Top Rated Products</h6>
 				<ul class="list-group">
 					@foreach (var product in products.OrderByDescending(p => p.TotalRating).Take(5))
 					{
 						<li class="list-group-item">
 							<div class="row align-items-center">
-								<div class="col-4 px-1">
-									@if (product.ProductImages?.Count() > 0)
-									{
-										<img src="@product.ProductImages.FirstOrDefault()!.Path" class="w-100 rounded mt-2" />
+								<div class="col-4 px-1 pb-2">
+									@{
+										ViewBag.ImgSidebar = new ViewDataDictionary(ViewData) { { "CustomClass", "img-sidebar" } };
 									}
-									else
-									{
-										<img src="https://www.placehold.co/500x600/png" class="w-100 rounded mt-2" />
-									}
+									<partial name="_ProductImagePartial" model="product" view-data="ViewBag.ImgSidebar" />
 								</div>
 								<div class="col-8">
-									<small class="text-break">@product.Name</small>
+									<small class="text-break text-truncate-multiline">@product.Name</small>
 									<small>
 										<partial name="_ProductRatingPartial" model="product" />
 									</small>
 									<div>
 										@if (product.ListPrice.GetValueOrDefault() > 0 && product.ListPrice != product.Price)
 										{
-											<small class="text-decoration-line-through">@product.ListPrice!.Value.ToString("c")</small>
+											<small class="text-decoration-line-through text-black-50">@product.ListPrice!.Value.ToString("c")</small>
 										}
-										<small>@product.Price.ToString("c")</small>
+										<small class="fw-semibold">@product.Price.ToString("c")</small>
 									</div>
 								</div>
 							</div>
@@ -63,22 +59,22 @@
 				</ul>
 			</div>
 			<!-- Categories -->
-			<div class="mt-4">
-				<h6>Categories</h6>
+			<div>
+				<h6 class="text-body">Categories</h6>
 				<ul class="list-group">
 					@foreach (var (category, productsCount) in categoryCounts.Take(5))
 					{
 						<li class="list-group-item d-flex justify-content-between align-items-center">
 							<a href="/Home/Index?category=@category" class="text-body">@category</a>
-							<small class="badge-sm bg-secondary" style="min-width: 2rem">@productsCount</small>
+							<small class="badge-sm bg-secondary">@productsCount</small>
 						</li>
 					}
 				</ul>
 			</div>
 			<!-- Colors -->
-			<div class="mt-4">
-				<h6>Colors</h6>
-				<div class="bg-white border rounded">
+			<div>
+				<h6 class="text-body">Colors</h6>
+				<div class="bg-white border border-light-gray rounded">
 					<div class="mt-1 d-flex flex-wrap align-self-center justify-content-center">
 						@for (int i = 1; i < Enum.GetValues(typeof(Color)).Length; i++)
 						{
@@ -87,7 +83,7 @@
 								<a href="/Home/Index?color=@color" class="color-option bg-@color.ToString().ToLower()" title="@color"></a>
 							</div>
 						}
-					</div>					
+					</div>
 				</div>
 			</div>
 		</div>
@@ -103,23 +99,30 @@
 			}
 			@foreach (var product in filteredProducts)
 			{
-				<div class="col-3">
-					<div class="card my-2">
+				<div class="col-3 d-flex align-items-stretch">
+					<div class="card w-100">
 						<div class="card-header border-0">
-							<partial name="_ProductImagePartial" model="product" />
+							@{
+								ViewBag.CardImgTop = new ViewDataDictionary(ViewData) { { "CustomClass", "card-img-top" } };
+							}
+							<partial name="_ProductImagePartial" model="product" view-data="ViewBag.CardImgTop" />
 						</div>
-						<div class="card-body text-center py-2">
-							<div class="mb-1">
-								<partial name="_ProductRatingPartial" model="product" />
+						<div class="card-body text-center p-0 d-flex flex-column justify-content-between">
+							<div>
+								<div class="mb-1">
+									<partial name="_ProductRatingPartial" model="product" />
+								</div>
+								<p class="mb-1 p-card-text text-truncate-multiline">@product.Name</p>
 							</div>
-							<p class="mb-1">@product.Name</p>
-							<p class="card-text">
-								@if (product.ListPrice.GetValueOrDefault() > 0 && product.ListPrice != product.Price)
-								{
-									<span class="text-decoration-line-through">@product.ListPrice!.Value.ToString("c")</span>
-								}
-								<span>@product.Price.ToString("c")</span>
-							</p>
+							<div>
+								<p class="card-text">
+									@if (product.ListPrice.GetValueOrDefault() > 0 && product.ListPrice != product.Price)
+									{
+										<span class="text-decoration-line-through">@product.ListPrice!.Value.ToString("c")</span>
+									}
+									<span class="fw-semibold text-dark-primary fs-4">@product.Price.ToString("c")</span>
+								</p>
+							</div>
 						</div>
 						<div class="card-footer text-center border-0">
 							<a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary w-100 btn-sm">Details</a>
@@ -142,7 +145,7 @@
 					@for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
 					{
 						<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
-							<a href="/Home/Index?@(category+color)page=@(pge+amp+search)" class="page-link">@pge</a>
+							<a href="/Home?@(category+color)page=@(pge+amp+search)" class="page-link">@pge</a>
 						</li>
 					}
 				</ul>
