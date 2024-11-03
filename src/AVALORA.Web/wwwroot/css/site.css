@@ -9,22 +9,10 @@ html {
 }
 
 :root, [data-bs-theme=light] {
-    --bs-primary-rgb: 131, 110, 93;
+    --bs-primary-rgb: 209, 175, 149;
     --bs-secondary-rgb: 81, 156, 138;
     --bs-danger-rgb: 155, 96, 97;
     --custom-light-gray: #99a0ad83;
-}
-
-.btn {
-    border-radius: var(--bs-border-radius-pill);
-}
-
-.btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-info {
-    text-transform: uppercase
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #8a6f5bff;
 }
 
 html {
@@ -34,6 +22,33 @@ html {
 
 body {
     margin-bottom: 60px;
+}
+
+.content {
+    padding-top: 3rem !important;
+    margin-top: 5rem !important
+}
+
+.btn {
+    border-radius: var(--bs-border-radius-pill);
+}
+
+.btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-info, .btn-outline-primary {
+    text-transform: uppercase
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #8a6f5bff;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-control-plaintext ~ label,
+.form-floating > .form-select ~ label {
+    opacity: 0.65;
+    left: 50%;
+    top: 30%;
+    transform: scale(0.85) translate(-50%, -50%);
 }
 
 /* Custom Bootstrap Colors */
@@ -121,6 +136,12 @@ body {
     --bs-btn-disabled-bg: transparent;
     --bs-btn-disabled-border-color: #37675b;
     --bs-gradient: none
+}
+
+.btn-menu {
+    width: 30%;
+    margin-right: .75rem;
+    margin-left: .75rem;
 }
 
 .border-light-gray {
@@ -270,6 +291,7 @@ input[type="radio"]:checked + .color-option {
     color: rgba(var(--bs-dark-primary-rgb),var(--bs-text-opacity)) !important
 }
 
+
 .badge-sm {
     --bs-badge-padding-x: 6px;
     --bs-badge-padding-y: 5px;
@@ -324,4 +346,35 @@ input[type="radio"]:checked + .color-option {
 .img-sidebar {
     height: 60px;
     object-fit: cover;
+}
+
+.mt-11 {
+    margin-top: 5rem !important
+}
+
+.mb-n11 {
+    margin-bottom: -8rem !important
+}
+
+
+/* Animations */
+
+.dropdown-anim {
+    position: absolute;
+    top: -1000px;
+    animation: dropdown 0.5s ease-in-out 1s forwards;
+}
+
+@keyframes dropdown {
+    0% {
+        top: 50px;
+    }
+
+    80% {
+        top: 80px;
+    }
+
+    100% {
+        top: 70px;
+    }
 }

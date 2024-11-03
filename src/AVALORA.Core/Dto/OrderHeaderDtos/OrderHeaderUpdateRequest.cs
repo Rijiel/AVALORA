@@ -1,6 +1,5 @@
 ﻿using AVALORA.Core.Domain.Models.Validations;
 using AVALORA.Core.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
@@ -18,7 +17,7 @@ public class OrderHeaderUpdateRequest
 
 	[Required]
 	[Phone]
-	[Column(TypeName = "varchar(15)")]
+	[StringLength(15)]
 	[DisplayName("Phone Number")]
 	public string PhoneNumber { get; set; } = null!;
 
@@ -56,10 +55,8 @@ public class OrderHeaderUpdateRequest
 	public string? Carrier { get; set; }
 
 	[UniqueTrackingNumber]
-	[Column(TypeName = "varchar(15)")]
 	public string? TrackingNumber { get; set; }
 
-	[Column(TypeName = "varchar(20)")]
 	public string? PaymentID { get; set; }
 }
 

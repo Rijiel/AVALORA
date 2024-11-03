@@ -25,7 +25,7 @@ public class CheckoutVM
 
 	[Required]
 	[Phone]
-	[Column(TypeName = "varchar(15)")]
+	[StringLength(15)]
 	[DisplayName("Phone Number")]
 	public string PhoneNumber { get; set; } = null!;
 

@@ -34,7 +34,6 @@ public class ProductAddRequest
 	public int CategoryId { get; set; }
 
 	[Range(0, 5)]
-	[Column(TypeName = "decimal(18, 2)")]
 	[DisplayName("Total Rating")]
 	public decimal TotalRating { get; set; }
 
