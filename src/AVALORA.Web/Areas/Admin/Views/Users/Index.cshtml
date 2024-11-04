@@ -2,28 +2,22 @@
 	ViewBag.Title = "Users";
 }
 
-<div class="mt-5">
-	<h3 class="text-center text-uppercase">User List</h3>
-
-	<div class="row mt-5">
-		<div class="col-12">
-			<div class="text-end">
-				<a asp-action="Create" class="btn btn-primary">Create New User</a>
-			</div>
-
-			<table id="dataTable" class="table table-bordered table-hover mt-3">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Email</th>
-						<th>Address</th>
-						<th>Phone Number</th>
-						<th>Role</th>
-						<th>Options</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
+<div class="row content-lg">
+	<h4 class="text-dark-primary text-center">User Accounts <i class="bi bi-people"></i></h4>
+	<div class="col-12">
+		<!-- Data Table -->
+		<table id="dataTable" class="table table-bordered table-hover mt-3">
+			<thead>
+				<tr>
+					<th class="text-center bg-primary text-white">Name</th>
+					<th class="text-center bg-primary text-white">Email</th>
+					<th class="text-center bg-primary text-white">Address</th>
+					<th class="text-center bg-primary text-white">Phone Number</th>
+					<th class="text-center bg-primary text-white">Role</th>
+					<th class="text-center bg-primary text-white">Options</th>
+				</tr>
+			</thead>
+		</table>
 	</div>
 </div>
 

@@ -4,16 +4,23 @@
 
 function dataTables() {
     $('#dataTable').DataTable({
+        layout: {
+            topStart: {
+                buttons: [
+                    'print', 'excel', 'pdf'
+                ]
+            }
+        },
         ajax: {
             url: '/users/getall',
             dataSrc: 'data'
         },
         columns: [
-            { data: 'name', width: '15%' },
-            { data: 'email', width: '15%' },
-            { data: 'address', width: '15%' },
-            { data: 'phoneNumber', class: 'text-start', width: '15%' },
-            { data: 'role', width: '10%' },
+            { data: 'name', class: 'text-truncate text-center', width: '15%' },
+            { data: 'email', class: 'text-truncate text-center', width: '15%' },
+            { data: 'address', class: 'text-truncate text-center', width: '15%' },
+            { data: 'phoneNumber', class: 'text-center', width: '15%' },
+            { data: 'role', class: 'text-center', width: '10%' },
             {
                 data: { id: 'id', lockoutEnd: 'lockoutEnd' },
                 width: '25%',
