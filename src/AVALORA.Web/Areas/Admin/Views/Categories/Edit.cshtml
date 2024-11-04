@@ -3,15 +3,15 @@
 	ViewBag.Title = "Edit Category";
 }
 
-<div class="row content">
-	<h4 class="text-dark-primary text-center">Edit Category</h4>
-	<div class="text-center">
+<div class="content">
+	<h4 class="text-dark-primary text-center">Edit Category <i class="bi bi-pencil-square"></i></h4>
+	<div class="row text-center mt-2">
 		<div class="col-6 offset-3">
 			<form method="post">
 				<!-- Id -->
 				<input asp-for="Id" hidden />
 				<!-- Name -->
-				<div class="form-floating mt-2">
+				<div class="form-floating">
 					<input asp-for="Name" class="form-control text-center" placeholder="" />
 					<label asp-for="Name" class="text-center"></label>
 					<span asp-validation-for="Name" class="text-danger"></span>

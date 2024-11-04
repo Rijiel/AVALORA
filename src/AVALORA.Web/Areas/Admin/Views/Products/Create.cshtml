@@ -3,76 +3,79 @@
 	ViewBag.Title = "Post New Product";
 }
 
-<div class="mt-5">
-	<h3 class="text-center text-uppercase">Post A New Product</h3>
-
-	<div class="row mt-5 p-5 border">
-		<div class="col-12">
+<div class="content-lg">
+	<h4 class="text-dark-primary text-center">Post New Product <i class="bi bi-clipboard2-plus"></i></h4>
+	<div class="row text-center mt-4">
+		<div class="col-8 offset-2">
 			<form method="post" enctype="multipart/form-data" onsubmit="handleSubmit()">
-				<!-- Name -->
-				<div class="form-floating my-2">
-					<input asp-for="Name" class="form-control" placeholder="" />
-					<label asp-for="Name" class="form-label text-muted"></label>
-					<span asp-validation-for="Name" class="text-danger"></span>
-				</div>
-				<!-- List Price -->
-				<div class="form-floating my-2">
-					<input type="number" asp-for="ListPrice" class="form-control" placeholder="" />
-					<label asp-for="ListPrice" class="form-label text-muted"></label>
-					<span asp-validation-for="ListPrice" class="text-danger"></span>
-				</div>
-				<!-- Price -->
-				<div class="form-floating my-2">
-					<input type="number" min="1" value="1" asp-for="Price" class="form-control" placeholder="" />
-					<label asp-for="Price" class="form-label text-muted"></label>
-					<span asp-validation-for="Price" class="text-danger"></span>
-				</div>
-				<!-- Category Id -->
-				<div class="form-floating my-2">
-					<select asp-for="CategoryId" asp-items="Model.Categories" class="form-control">
-						<option selected disabled>--Please select--</option>
-					</select>
-					<label asp-for="CategoryId" class="form-label text-muted">Category</label>
-					<span asp-validation-for="CategoryId" class="text-danger"></span>
-				</div>
-				<!-- Product Image -->
-				<div class="form-floating my-2">
-					<input type="file" multiple asp-for="ImageFiles" class="form-control" placeholder="" />
-					<label asp-for="ImageFiles" class="form-label text-muted"></label>
-					<span asp-validation-for="ImageFiles" class="text-danger"></span>
-				</div>
-				<!-- Description -->
-				<div class="my-2">
-					<label asp-for="Description" class="form-label text-muted small opacity-75"></label>
-					<input id="Description" asp-for="Description" hidden />
-					<div id="description_input" class="form-control overflow-auto" style="max-height: 20rem">
-						@Html.Raw(Model.Description)
+				<div class="row gy-3">
+					<!-- Name -->
+					<div class="form-floating col-6">
+						<input asp-for="Name" class="form-control text-center" placeholder="" />
+						<label asp-for="Name" class="text-center"></label>
+						<span asp-validation-for="Name" class="text-danger"></span>
 					</div>
-					<span asp-validation-for="Description" class="text-danger"></span>
-				</div>
-				<!-- Colors -->
-				<div class="my-2 row">
-					<label class="form-label text-muted small opacity-75">Available Colors:</label>
-					<div class="col-2">
-						@for (int i = 1; i < Enum.GetValues(typeof(Color)).Length; i++)
-						{
-							Color color = (Color)Enum.GetValues(typeof(Color)).GetValue(i)!;
-							<div class="d-inline-block mx-1">
-								<input type="checkbox" class="btn-check" name="colors" id="color@(i)" value="@color" autocomplete="off" />
-								<label for="color@(i)" class="color-option bg-@color.ToString().ToLower()" title="@color"></label>
-							</div>							
-						}
-					</div>					
-				</div>
-				<!-- Buttons -->
-				<div class="mt-3 row">
-					<div class="col-3">
-						<button type="submit" class="btn btn-primary form-control">Create</button>
+					<!-- Category Id -->
+					<div class="form-floating col-6">
+						<select asp-for="CategoryId" asp-items="Model.Categories" class="form-control text-center">
+							<option selected disabled>--Please select--</option>
+						</select>
+						<label asp-for="CategoryId" class="text-center">Category</label>
+						<span asp-validation-for="CategoryId" class="text-danger"></span>
 					</div>
-					<div class="col-3">
-						<a asp-action="Index" class="btn btn-outline-primary form-control">Back to List</a>
+					<!-- Price -->
+					<div class="form-floating col-6">
+						<input type="number" min="1" value="1" asp-for="Price" class="form-control text-center" placeholder="" />
+						<label asp-for="Price" class="text-center"></label>
+						<span asp-validation-for="Price" class="text-danger"></span>
 					</div>
-					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<!-- List Price -->
+					<div class="form-floating col-6">
+						<input type="number" asp-for="ListPrice" value="" class="form-control text-center" placeholder="" />
+						<label asp-for="ListPrice" class="text-center">List Price (Optional)</label>
+						<span asp-validation-for="ListPrice" class="text-danger"></span>
+					</div>
+					<!-- Product Image -->
+					<div class="form-floating col-6">
+						<input type="file" multiple asp-for="ImageFiles" class="form-control text-center" placeholder="" />
+						<label asp-for="ImageFiles" class="text-center"></label>
+						<span asp-validation-for="ImageFiles" class="text-danger"></span>
+					</div>
+					<!-- Colors -->
+					<div class="col-6">
+						<div class="d-flex align-items-center justify-content-center">
+							<div class="col-4">
+								<label class="form-label form-label-muted">Available Colors:</label>
+							</div>
+							<div class="col-6 mt-1">
+								@for (int i = 1; i < Enum.GetValues(typeof(Color)).Length; i++)
+								{
+									Color color = (Color)Enum.GetValues(typeof(Color)).GetValue(i)!;
+									<div class="d-inline-block px-1">
+										<input type="checkbox" class="btn-check" name="colors" id="color@(i)" value="@color" autocomplete="off" />
+										<label for="color@(i)" class="color-option bg-@color.ToString().ToLower()" title="@color"></label>
+									</div>
+								}
+							</div>
+						</div>
+					</div>
+					<!-- Description -->
+					<div>
+						<div>
+							<label asp-for="Description" class="form-label form-label-muted"></label>
+							<input id="Description" asp-for="Description" hidden />
+							<div id="description_input" class="form-control description rounded-top-0">
+								@Html.Raw(Model.Description)
+							</div>
+							<span asp-validation-for="Description" class="text-danger"></span>
+						</div>
+					</div>
+					<!-- Buttons -->
+					<div class="mt-4 row d-flex justify-content-center">
+						<button type="submit" class="btn btn-primary btn-menu">Create</button>
+						<a asp-action="Index" class="btn btn-outline-primary btn-menu">Back to List</a>
+						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					</div>
 				</div>
 			</form>
 		</div>

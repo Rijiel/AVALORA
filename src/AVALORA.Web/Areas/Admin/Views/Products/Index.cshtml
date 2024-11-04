@@ -2,27 +2,22 @@
 	ViewBag.Title = "Products";
 }
 
-<div class="mt-5">
-	<h3 class="text-center text-uppercase">Product List</h3>
-
-	<div class="row mt-5">
-		<div class="col-12">
-			<div class="text-end">
-				<a asp-action="Create" class="btn btn-primary">Post New Product</a>
-			</div>
-
-			<table id="dataTable" class="table table-bordered table-hover mt-3">
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Name</th>
-						<th>Price</th>
-						<th>Category</th>
-						<th>Product Images</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
+<div class="row content-lg">
+	<h4 class="text-dark-primary text-center">AVALORA Product Listing <i class="bi bi-list-ol"></i></h4>
+	<div class="col-12">
+		<!-- Data Table -->
+		<table id="dataTable" class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<th class="bg-primary text-white">ID</th>
+					<th class="text-center bg-primary text-white">Name</th>
+					<th class="text-center bg-primary text-white">Price</th>
+					<th class="text-center bg-primary text-white">Category</th>
+					<th class="text-center bg-primary text-white">Product Images</th>
+					<th class="text-center bg-primary text-white">Options</th>
+				</tr>
+			</thead>
+		</table>
 	</div>
 </div>
 

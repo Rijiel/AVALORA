@@ -2747,7 +2747,7 @@ progress {
 }
 
 .form-control[type=file] {
-    overflow: hidden
+    overflow: hidden;
 }
 
     .form-control[type=file]:not(:disabled):not([readonly]) {

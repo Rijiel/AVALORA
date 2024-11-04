@@ -4,24 +4,31 @@
 
 function dataTables() {
     $('#dataTable').DataTable({
+        layout: {
+            topStart: {
+                buttons: [
+                    'print', 'excel', 'pdf'
+                ]
+            }
+        },
         ajax: {
             url: '/products/getall',
             dataSrc: 'data'
         },
         columns: [
-            { data: 'id', with: '10%' },
-            { data: 'name', with: '25%' },
-            { data: 'price', with: '10%' },
-            { data: 'category.name', with: '20%' },
-            { data: 'productImagesCount', with: '10%' },
+            { data: 'id', width: '10%' },
+            { data: 'name', class: 'text-truncate text-center', width: '25%' },
+            { data: 'price', class: 'text-center', width: '10%' },
+            { data: 'category.name', class: 'text-center', width: '15%' },
+            { data: 'productImagesCount', class: 'text-center', width: '12%' },
             {
                 data: 'id',
-                width: '25%',
+                width: '15%',
                 render: function (data) {
                     return `
                     <div class="d-flex">
-                        <a href="/products/edit/${data}" class="btn btn-primary mx-2 w-50">Edit</a>
-                        <a onclick="Delete('/products/delete?id=${data}')" class="btn btn-danger mx-2 w-50">Delete</a>
+                        <a href="/products/edit/${data}" class="btn btn-sm btn-primary rounded-0 mx-1 w-50"><i class="bi bi-pencil"></i> Edit</a>
+                        <a onclick="Delete('/products/delete?id=${data}')" class="btn btn-sm btn-danger rounded-0 mx-1 w-50"><i class="bi bi-trash"></i> Delete</a>
                     </div>                    
                     `;
                 }
