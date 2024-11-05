@@ -10,6 +10,7 @@ html {
 
 :root, [data-bs-theme=light] {
     --bs-primary-rgb: 182, 129, 88;
+    --bs-light-primary-rgb: 255, 180, 123;
     --bs-dark-primary-rgb: 123, 98, 79;
     --bs-secondary-rgb: 81, 156, 138;
     --bs-danger-rgb: 155, 96, 97;
@@ -26,7 +27,7 @@ body {
 }
 
 .content {
-    padding-top: 8rem !important;
+    padding-top: 10vh !important;
 }
 
 .content-lg {
@@ -341,9 +342,16 @@ input[type="radio"]:checked + .color-option {
     color: rgba(var(--bs-dark-primary-rgb),var(--bs-text-opacity)) !important
 }
 
+
 .bg-dark-primary {
     --bs-bg-opacity: 1;
     background-color: rgba(var(--bs-dark-primary-rgb),var(--bs-bg-opacity)) !important
+}
+
+.bg-checkout {
+    background-image: url(/images/pattern.png);
+    background-size: cover;
+    background-position: center
 }
 
 .badge-sm {
@@ -381,6 +389,11 @@ input[type="radio"]:checked + .color-option {
     overflow: auto
 }
 
+.description-sm {
+    max-height: 10rem;
+    overflow: auto
+}
+
 .nav-link {
     font-size: 0.9rem;
 }
@@ -392,10 +405,6 @@ input[type="radio"]:checked + .color-option {
 .navbar-nav > li {
     padding-left: 15px;
     padding-right: 15px;
-}
-
-.text-truncate{
-    max-width: 50px;
 }
 
 .text-truncate-multiline {
@@ -416,12 +425,17 @@ input[type="radio"]:checked + .color-option {
 }
 
 .img-sidebar {
-    height: 3.7vw;
+    height: 3vw;
     object-fit: cover;
 }
 
 .img-shadow {
     box-shadow: 5px 5px 20px rgb(255, 221, 99) !important
+}
+
+.shadow-md {
+    -webkit-box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075) !important;
+    box-shadow: 3px 3px 10px rgb(0, 0, 0, 0.2) !important
 }
 
 .mt-11 {
@@ -432,8 +446,20 @@ input[type="radio"]:checked + .color-option {
     margin-bottom: -8rem !important
 }
 
+.mw-1r {
+    max-width: 1rem;
+}
+
+.mw-20r {
+    max-width: 20rem;
+}
+
 .min-vh-7{
     min-height: 7vw
+}
+
+.w-2r{
+    width: 2rem;
 }
 
 

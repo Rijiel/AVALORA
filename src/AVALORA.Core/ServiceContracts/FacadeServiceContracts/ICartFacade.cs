@@ -20,9 +20,10 @@ public interface ICartFacade
 	/// <param name="cartItemId">The ID of the cart item to update.</param>
 	/// <param name="quantity">The new quantity of the cart item.</param>
 	/// <param name="controller">The controller instance to send the TempData.</param>
+	/// <param name="showMessage">A flag indicating whether to show a success message.</param>
 	/// <returns>A task representing the asynchronous operation. 
 	/// Returns a TempData message for successful operation.</returns>
-	Task UpdateCartItemQuantityAsync(int? cartItemId, int quantity, Controller controller);
+	Task UpdateCartItemQuantityAsync(int? cartItemId, int quantity, Controller controller, bool showMessage);
 
 	/// <summary>
 	/// Retrieves the cart items of the current user asynchronously.

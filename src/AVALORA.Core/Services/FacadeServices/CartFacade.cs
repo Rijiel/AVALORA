@@ -41,12 +41,12 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 
 		// Only add count if item is already in cart and of the same color
 		CartItemResponse? existingCartItemResponse = await ServiceUnitOfWork.CartItemService
-			.GetAsync(c => c.ApplicationUserId == userId 
-			&& c.ProductId == productResponse.Id 
+			.GetAsync(c => c.ApplicationUserId == userId
+			&& c.ProductId == productResponse.Id
 			&& c.Color == cartItemAddRequest.Color);
 		if (existingCartItemResponse != null)
 		{
-			await UpdateCartItemQuantityAsync(existingCartItemResponse.Id, cartItemAddRequest.Count, controller);
+			await UpdateCartItemQuantityAsync(existingCartItemResponse.Id, cartItemAddRequest.Count, controller, true);
 			return;
 		}
 
@@ -57,7 +57,7 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 		UpdateCartSessionCount(controller, +1);
 	}
 
-	public async Task UpdateCartItemQuantityAsync(int? cartItemId, int quantity, Controller controller)
+	public async Task UpdateCartItemQuantityAsync(int? cartItemId, int quantity, Controller controller, bool showMessage)
 	{
 		CartItemResponse? cartItemResponse = await ServiceUnitOfWork.CartItemService.GetByIdAsync(cartItemId);
 		if (cartItemResponse == null)
@@ -82,16 +82,19 @@ public class CartFacade : BaseFacade<CartFacade>, ICartFacade
 		}
 
 		Logger.LogInformation($"Updated cart item {cartItemResponse.Id} quantity: {quantity}");
-		controller.TempData[SD.TEMPDATA_SUCCESS] = "Item quantity updated";
+
+		if (showMessage)
+			controller.TempData[SD.TEMPDATA_SUCCESS] = "Item quantity updated";
+
 		await ServiceUnitOfWork.CartItemService.UpdateAsync(cartItemUpdateRequest);
 	}
 
 	public async Task<List<CartItemResponse>> GetCurrentUserCartItemsAsync(bool includeImages = false, CancellationToken cancellationToken = default)
 	{
 		string userId = UserHelper.GetCurrentUserId(_contextAccessor)!;
-		IEnumerable<CartItemResponse> cartItemResponses = 
+		IEnumerable<CartItemResponse> cartItemResponses =
 			await ServiceUnitOfWork.CartItemService.GetAllAsync(c => c.ApplicationUserId == userId, cancellationToken: cancellationToken);
-		
+
 		// Retrieve product images if requested
 		if (includeImages)
 		{

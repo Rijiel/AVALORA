@@ -26,5 +26,8 @@ public class CartItem
 
     [Required(ErrorMessage = "Please specify your preferred color")]
     public Color Color { get; set; }
+
+	[NotMapped]
+	public double TotalPrice { get; set; }
 }
 

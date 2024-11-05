@@ -6,6 +6,7 @@ using AVALORA.Core.Enums;
 using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.BaseController;
+using AVALORA.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,7 @@ public class CartController : BaseController<CartController>
 	private readonly IOrderFacade _orderFacade;
 	private readonly IHttpContextAccessor _contextAccessor;
 
-    public CartController(ICartFacade cartFacade, IOrderFacade orderFacade, IHttpContextAccessor contextAccessor)
+	public CartController(ICartFacade cartFacade, IOrderFacade orderFacade, IHttpContextAccessor contextAccessor)
 	{
 		_cartFacade = cartFacade;
 		_orderFacade = orderFacade;
@@ -30,6 +31,10 @@ public class CartController : BaseController<CartController>
 	public async Task<IActionResult> Index()
 	{
 		List<CartItemResponse> cartItemResponses = await _cartFacade.GetCurrentUserCartItemsAsync(true);
+
+		// Initialize the total price for each cart item
+		foreach (var item in cartItemResponses)
+			item.GetTotalPrice();
 
 		// Create a new CartItemResponsesVM to hold the cart item responses and total price
 		var cartItemResponsesVM = new CartItemResponsesVM
@@ -44,7 +49,7 @@ public class CartController : BaseController<CartController>
 	[Route("{id?}")]
 	public async Task<IActionResult> Subtract(int? id)
 	{
-		await _cartFacade.UpdateCartItemQuantityAsync(id, -1, this);
+		await _cartFacade.UpdateCartItemQuantityAsync(id, -1, this, false);
 
 		return RedirectToAction(nameof(Index));
 	}
@@ -52,7 +57,7 @@ public class CartController : BaseController<CartController>
 	[Route("{id?}")]
 	public async Task<IActionResult> Add(int? id)
 	{
-		await _cartFacade.UpdateCartItemQuantityAsync(id, +1, this);
+		await _cartFacade.UpdateCartItemQuantityAsync(id, +1, this, false);
 
 		return RedirectToAction(nameof(Index));
 	}
@@ -80,6 +85,11 @@ public class CartController : BaseController<CartController>
 		}
 
 		List<CartItemResponse> cartItemResponses = await _cartFacade.GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
+
+		// Initialize the total price for each cart item
+		foreach (var item in cartItemResponses)
+			item.GetTotalPrice();
+
 		OrderHeaderAddRequest orderHeaderAddRequest = await _orderFacade.CreateOrderHeaderAsync(cancellationToken);
 
 		// Populate the checkout view model with orderheader, cart items and total price
@@ -90,7 +100,7 @@ public class CartController : BaseController<CartController>
 		return View(checkoutVM);
 	}
 
-    [HttpPost]
+	[HttpPost]
 	public async Task<IActionResult> Checkout(CheckoutVM checkoutVM, CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
@@ -98,7 +108,7 @@ public class CartController : BaseController<CartController>
 			OrderHeaderAddRequest orderHeaderAddRequest = Mapper.Map<OrderHeaderAddRequest>(checkoutVM);
 			OrderSummaryAddRequest orderSummaryAddRequest = Mapper.Map<OrderSummaryAddRequest>(checkoutVM);
 
-			OrderHeaderResponse orderHeaderResponse = await _orderFacade.PlaceOrderAsync(orderHeaderAddRequest, 
+			OrderHeaderResponse orderHeaderResponse = await _orderFacade.PlaceOrderAsync(orderHeaderAddRequest,
 				orderSummaryAddRequest, this, cancellationToken);
 
 			// Redirect to payment gateway

@@ -3,7 +3,7 @@
 	ViewBag.Title = "Edit Category";
 }
 
-<div class="content">
+<section class="content">
 	<h4 class="text-dark-primary text-center">Edit Category <i class="bi bi-pencil-square"></i></h4>
 	<div class="row text-center mt-4">
 		<div class="col-6 offset-3">
@@ -25,11 +25,10 @@
 			</form>
 		</div>
 	</div>
-
 	<div class="mt-11">
-		<a asp-action="Index" class="btn-link"><i class="bi bi-arrow-left"></i> Back to List...</a>
+		<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3"><i class="bi bi-caret-left-fill"></i> Back to List</a>
 	</div>
-</div>
+</section>
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />

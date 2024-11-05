@@ -5,68 +5,79 @@
 	ViewData["Title"] = $"Cart({Model.CartItemResponses.Count()})";
 }
 
-<div class="mt-5">
-	<div class="text-center">
-		<h3 class="text-uppercase">Shopping Cart</h3>
-	</div>
-
-	<div class="row mt-5">
-		<div class="col-12">
-			<div>
-				<a asp-controller="Home" asp-action="Index" class="btn btn-outline-info">Continue shopping</a>
-			</div>
+<section class="content-lg">
+	<h4 class="text-dark-primary text-center">Shopping Cart <i class="bi bi-cart3"></i></h4>
+	<div class="row mt-4">
+		<div class="col-10 offset-1">
+			<a asp-controller="Home" asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3"><i class="bi bi-caret-left-fill"></i> Continue shopping</a>
 			@foreach (var cartItem in Model.CartItemResponses)
 			{
-				<div class="row mt-4">
+				string classColor = (cartItem.Color != Color.None && cartItem.Color != Color.White) ? $"text-{cartItem.Color.ToString().ToLower()}" : "";
+
+				<section class="row align-items-center border border-light-gray rounded shadow-md my-3 p-3">
 					<!-- Product Details -->
-					<div class="col-7">
-						<div class="row">
-							<div class="col-2">
+					<div class="col-5 d-flex align-items-center p-2">
+						<figure class="w-25">
+							<a asp-controller="Home" asp-action="Details" asp-route-id="@cartItem.Product.Id" class="text-body">
 								<partial name="_ProductImagePartial" model="mapper.Map<ProductResponse>(cartItem.Product)" />
-							</div>
-							<div class="col-10 mt-2">
-								<h3 class="fs-4">@cartItem.Product.Name</h3>
-								<p>Color: @cartItem.Color</p>
-								<div class="overflow-auto" style="max-height: 10rem">
-									<p><small>@Html.Raw(cartItem.Product.Description)</small></p>
-								</div>
+							</a>
+						</figure>
+						<div class="d-inline-block ps-3 text-start">
+							<a asp-controller="Home" asp-action="Details" asp-route-id="@cartItem.Product.Id" class="text-truncate mw-20r">
+								<h5 class="text-truncate mw-20r mb-0 pt-2">@cartItem.Product.Name</h5>
+							</a>
+							<small class="fst-italic">
+								Color:
+								<span class="@classColor">@cartItem.Color</span>
+							</small>
+							<div class="description-sm">
+								<p><small>@Html.Raw(cartItem.Product.Description)</small></p>
 							</div>
 						</div>
 					</div>
-					<!-- Price, Quantity -->
-					<div class="col-2 text-center fw-bold">
-						<div>@cartItem.Product.Price.ToString("c")</div>
-						<div>
-							x <span>@cartItem.Count</span>
-						</div>
+					<!-- Price -->
+					<div class="col-2 text-center fw-bold ps-5">
+						@if (cartItem.Product.ListPrice.GetValueOrDefault() > 0 && cartItem.Product.ListPrice != cartItem.Product.Price)
+						{
+							<span class="text-decoration-line-through text-black-50">@cartItem.Product.ListPrice!.Value.ToString("c")</span>
+						}
+						<span>@cartItem.Product.Price.ToString("c")</span>
 					</div>
 					<!-- Count Buttons -->
-					<div class="col-2 text-center">
+					<div class="col-2">
 						<div class="btn-group">
-							<a asp-action="Subtract" asp-route-id="@cartItem.Id" class="btn btn-outline-primary me-1 w-50 px-4">
+							<a asp-action="Subtract" asp-route-id="@cartItem.Id" class="btn btn-sm btn-outline-primary w-50">
 								<span class="fw-bold">-</span>
 							</a>
-							<a asp-action="Add" asp-route-id="@cartItem.Id" class="btn btn-outline-primary w-50 px-4">
+							<input class="form-control form-control-sm text-center rounded-0 border-primary border-0 border-top border-bottom w-2r" value="@cartItem.Count" readonly />
+							<a asp-action="Add" asp-route-id="@cartItem.Id" class="btn btn-sm btn-outline-primary w-50">
 								<span class="fw-bold">+</span>
 							</a>
 						</div>
 					</div>
-					<!-- Delete Button -->
-					<div class="col-1 text-center">
-						<a asp-action="Remove" asp-route-id="@cartItem.Id" class="btn btn-danger"><i class="bi bi-trash3"></i></a>
+					<!-- Subtotal -->
+					<div class="col-1">
+						<p class="m-0 text-dark-primary">@cartItem.TotalPrice.ToString("c")</p>
 					</div>
-				</div>
-				<hr />
+					<!-- Delete Button -->
+					<div class="col-2 text-center">
+						<a asp-action="Remove" asp-route-id="@cartItem.Id" class="text-red"><i class="bi bi-trash3"></i> Delete</a>
+					</div>
+				</section>
 			}
-			<!-- Total Price -->
-			<div class="text-center fw-bold fs-5">
-				<span class="mx-3">TOTAL (USD)</span>
-				<span class="mx-3">@Model.TotalPrice.ToString("c")</span>
-			</div>
-			<!-- Button -->
-			<div class="text-center mt-4">
-				<a asp-action="Checkout" class="btn btn-primary">Checkout</a>
-			</div>
+			<div class="pb-5"></div>
+			<section class="fixed-bottom bg-white p-3 border-top">
+				<!-- Total Price -->
+				<h5 class="text-center">
+					Total (@Model.CartItemResponses.Count() item):
+					<span class="fw-bold fs-6 text-danger">@Model.TotalPrice.ToString("c")</span>
+				</h5>
+				<!-- Button -->
+				<div class="text-center mt-4">
+					<a asp-action="Checkout" class="btn btn-primary">Checkout</a>
+				</div>
+			</section>
 		</div>
 	</div>
-</div>
+</section>
+

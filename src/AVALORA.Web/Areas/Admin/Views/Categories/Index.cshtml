@@ -5,7 +5,7 @@
 
 <div class="row content">
 	<!-- Left Column -->
-	<div class="col-6">
+	<section class="col-6">
 		<!-- Create Category -->
 		<form method="post" class="text-center">
 			<h4 class="text-dark-primary">Create New Category <i class="bi bi-clipboard2-plus"></i></h4>
@@ -21,7 +21,6 @@
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			</div>
 		</form>
-
 		<!-- Categories -->
 		<div class="mt-5 text-center">
 			<h5 class="text-dark-primary">All Categories</h5>
@@ -36,18 +35,17 @@
 				}
 			</div>
 		</div>
-
-	</div>
+	</section>
 
 	<!-- Right Column -->
-	<div class="col-6 d-flex flex-column justify-content-end">
+	<section class="col-6 d-flex flex-column justify-content-end">
 		<div class="mx-auto text-center dropdown-anim">
 			<img src="~/images/categories.png" class="w-50 z-1" />
 		</div>
 		<div class="mb-n11 ms-5 text-center">
 			<img src="~/images/categoryitems.png" class="w-75" loading="lazy" />
 		</div>
-	</div>
+	</section>
 </div>
 
 @section Scripts {

@@ -3,12 +3,12 @@
 	ViewBag.Title = "Post New Product";
 }
 
-<div class="content-lg">
+<section class="content-lg">
 	<h4 class="text-dark-primary text-center">Post New Product <i class="bi bi-clipboard2-plus"></i></h4>
 	<div class="row text-center mt-4">
 		<div class="col-8 offset-2">
 			<form method="post" enctype="multipart/form-data" onsubmit="handleSubmit()">
-				<div class="row gy-3">
+				<fieldset class="row gy-3">
 					<!-- Name -->
 					<div class="form-floating col-6">
 						<input asp-for="Name" class="form-control text-center" placeholder="" />
@@ -76,11 +76,11 @@
 						<a asp-action="Index" class="btn btn-outline-primary btn-menu">Back to List</a>
 						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 					</div>
-				</div>
+				</fieldset>
 			</form>
 		</div>
 	</div>
-</div>
+</section>
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />

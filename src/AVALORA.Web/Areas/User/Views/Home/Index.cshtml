@@ -8,12 +8,12 @@
 	var categoryCounts = Model.CategoryCounts;
 }
 
-<div class="row pt-2">
+<div class="row pt-4">
 	<!-- Sidebar -->
 	<aside class="col-lg-2 bg-light-gray">
 		<div class="row gy-4">
 			<!-- Search -->
-			<div class="pt-4">
+			<section class="pt-4">
 				<form asp-area="@Role.User" asp-controller="Home" asp-action="Index" method="get">
 					<h6 class="text-body">Search an Item</h6>
 					<div class="input-group" role="group">
@@ -25,22 +25,22 @@
 						<button type="submit" class="input-group-text border border-light-gray  text-body text-opacity-75"><i class="bi bi-search"></i></button>
 					</div>
 				</form>
-			</div>
+			</section>
 			<!-- Top Rated Products -->
-			<div>
+			<section>
 				<h6 class="text-body">Top Rated Products</h6>
 				<ul class="list-group">
 					@foreach (var product in products.OrderByDescending(p => p.TotalRating).Take(5))
 					{
 						<li class="list-group-item">
-							<a href="/Home/Details/@product.Id" class="text-body text-decoration-none">
+							<a asp-action="Details" asp-route-id="@product.Id" class="text-body text-decoration-none">
 								<div class="row align-items-center">
-									<div class="col-4 px-1 pb-2">
+									<figure class="col-4 mb-0">
 										@{
 											ViewBag.ImgSidebar = new ViewDataDictionary(ViewData) { { "CustomClass", "img-sidebar" } };
 										}
 										<partial name="_ProductImagePartial" model="product" view-data="ViewBag.ImgSidebar" />
-									</div>
+									</figure>
 									<div class="col-8">
 										<small class="text-break text-truncate-multiline">@product.Name</small>
 										<small>
@@ -59,9 +59,9 @@
 						</li>
 					}
 				</ul>
-			</div>
+			</section>
 			<!-- Categories -->
-			<div>
+			<section>
 				<h6 class="text-body">Categories</h6>
 				<ul class="list-group">
 					@foreach (var (category, productsCount) in categoryCounts.Take(5))
@@ -72,9 +72,9 @@
 						</li>
 					}
 				</ul>
-			</div>
+			</section>
 			<!-- Colors -->
-			<div>
+			<section>
 				<h6 class="text-body">Colors</h6>
 				<div class="bg-white border border-light-gray rounded">
 					<div class="mt-1 d-flex flex-wrap align-self-center justify-content-center">
@@ -87,11 +87,11 @@
 						}
 					</div>
 				</div>
-			</div>
+			</section>
 		</div>
 	</aside>
-	<!-- Main -->
-	<div class="col-lg-10">
+	<!-- Cards -->
+	<section class="col-lg-10">
 		<div class="row">
 			@if (ViewBag.Search != null)
 			{
@@ -102,13 +102,15 @@
 			@foreach (var product in filteredProducts)
 			{
 				<div class="col-3 d-flex align-items-stretch">
-					<div class="card w-100">
-						<div class="card-header border-0">
-							@{
-								ViewBag.CardImgTop = new ViewDataDictionary(ViewData) { { "CustomClass", "card-img-top" } };
-							}
-							<partial name="_ProductImagePartial" model="product" view-data="ViewBag.CardImgTop" />
-						</div>
+					<article class="card w-100">
+						<header class="card-header border-0">
+							<figure>
+								@{
+									ViewBag.CardImgTop = new ViewDataDictionary(ViewData) { { "CustomClass", "card-img-top" } };
+								}
+								<partial name="_ProductImagePartial" model="product" view-data="ViewBag.CardImgTop" />
+							</figure>							
+						</header>
 						<div class="card-body text-center p-0 d-flex flex-column justify-content-between">
 							<div>
 								<div class="mb-1">
@@ -129,12 +131,12 @@
 						<div class="card-footer text-center border-0">
 							<a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary w-100 btn-sm">Details</a>
 						</div>
-					</div>
+					</article>
 				</div>
 			}
 		</div>
 		<!-- Pagination -->
-		<div class="container">
+		<nav class="container">
 			@if (pager!.TotalPages > 0)
 			{
 				<ul class="pagination justify-content-end">
@@ -152,6 +154,6 @@
 					}
 				</ul>
 			}
-		</div>
-	</div>
+		</nav>
+	</section>
 </div>

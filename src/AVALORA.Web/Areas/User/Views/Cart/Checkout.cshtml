@@ -3,97 +3,122 @@
 	ViewData["Title"] = "Order Summary";
 }
 
-<div class="mt-5">
-	<div class="d-flex justify-content-between">
-		<h3 class="text-uppercase fs-4">Order Summary</h3>
-		<a asp-action="Index" class="btn btn-outline-info">Back to cart</a>
-	</div>
-	<div class="row mt-5">
-		<div class="col-12">
+<div class="content-lg">
+	<h4 class="text-dark-primary text-center">Checkout <i class="bi bi-send-check"></i></h4>
+	<div class="row mt-4">
+		<div class="col-10 offset-1">
+			<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3"><i class="bi bi-caret-left-fill"></i> Back to cart</a>
 			<form method="post">
-				<input asp-for="ApplicationUserId" hidden />
-				<input asp-for="EstimatedFromDate" hidden />
-				<input asp-for="EstimatedToDate" hidden />
-				<input asp-for="TotalPrice" hidden />
-				<div class="row">
-					<!-- Shipping Details -->
-					<div class="col-6">
-						<h4>Shipping Details:</h4>
-						<div class="mt-4">
-							<div class="row mt-3">
-								<div class="col-3 align-self-center">
-									<p class="my-0">Name:</p>
-								</div>
-								<div class="col-9">
-									<input asp-for="Name" class="form-control" />
-									<span asp-validation-for="Name" class="text-danger"></span>
-								</div>
-							</div>
-							<div class="row mt-3">
-								<div class="col-3 align-self-center">
-									<p class="my-0">Phone:</p>
-								</div>
-								<div class="col-9">
-									<input asp-for="PhoneNumber" class="form-control" />
-									<span asp-validation-for="PhoneNumber" class="text-danger"></span>
-								</div>
-							</div>
-							<div class="row mt-3">
-								<div class="col-3 align-self-center">
-									<p class="my-0">Address:</p>
-								</div>
-								<div class="col-9">
-									<input asp-for="Address" class="form-control" />
-									<span asp-validation-for="Address" class="text-danger"></span>
-								</div>
-							</div>
-							<div class="row mt-3">
-								<div class="col-3 align-self-center">
-									<p class="my-0">Email:</p>
-								</div>
-								<div class="col-9">
-									<input asp-for="Email" class="form-control" />
-									<span asp-validation-for="Email" class="text-danger"></span>
-								</div>
-							</div>
-						</div>
-					</div>
+				<div class="row gy-3 pt-2">
+					<input asp-for="ApplicationUserId" hidden />
+					<input asp-for="EstimatedFromDate" hidden />
+					<input asp-for="EstimatedToDate" hidden />
+					<input asp-for="TotalPrice" hidden />
 					<!-- Order Summary -->
-					<div class="col-6">
-						<div class="ms-5">
-							<h4>Order Summary:</h4>
-							<div class="mt-4">
-								<ul class="list-group">
-									@if (Model.CartItemResponses != null && Model.CartItemResponses.Any())
-									{
-										foreach (var cart in Model.CartItemResponses)
-										{
-											<li class="list-group-item d-flex justify-content-between">
-												<div>
-													<h6 class="my-0">@cart.Product.Name</h6>
-													<div class="my-0">
-														<small>Color: @cart.Color</small>
-													</div>
-													<div>
-														<small class="text-muted">Quantity: @cart.Count</small>
-													</div>
-												</div>
-												<span class="text-muted">@cart.Product.Price.ToString("c")</span>
-											</li>
-										}
-									}									
-									<!-- Total -->
-									<li class="list-group-item d-flex justify-content-between">
-										<small class="fw-semibold">Total (USD)</small>
-										<strong>@Model.TotalPrice.ToString("c")</strong>
-									</li>
-								</ul>
-							</div>
+					<section class="mt-4 px-0">
+						<ul class="list-group">
+							@if (Model.CartItemResponses != null && Model.CartItemResponses.Any())
+							{
+								<li class="list-group-item d-flex justify-content-between align-items-center border-bottom-0 p-4">
+									<h5 class="col-2 mb-0">Products Ordered</h5>
+									<div class="col-6">
+										<div class="d-flex justify-content-end text-end">
+											<p class="col-4 m-0">Unit Price</p>
+											<p class="col-4 m-0">Quantity</p>
+											<p class="col-4 m-0">Item Subtotal</p>
+										</div>
+									</div>
 
+								</li>
+								<!-- Products -->
+								foreach (var cart in Model.CartItemResponses)
+								{
+									string classColor = (cart.Color != Color.None && cart.Color != Color.White) ? $"text-{cart.Color.ToString().ToLower()}" : "";
+
+									<li class="list-group-item d-flex justify-content-between px-4">
+										<div>
+											<h6 class="text-truncate mw-20r my-0">@cart.Product.Name</h6>
+											<div class="my-0">
+												<small class="fst-italic">
+													Color:
+													<span class="@classColor">@cart.Color</span>
+												</small>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="d-flex justify-content-end text-end">
+												<p class="col-4 m-0">@cart.Product.Price.ToString("c")</p>
+												<p class="col-4 m-0 pe-4">@cart.Count</p>
+												<p class="col-4 m-0">@cart.TotalPrice.ToString("c")</p>
+											</div>
+										</div>
+									</li>
+								}
+							}
+							<!-- Total -->
+							<li class="list-group-item d-flex justify-content-between px-4">
+								<small class="fw-semibold">Total (USD)</small>
+								<strong>@Model.TotalPrice.ToString("c")</strong>
+							</li>
+						</ul>
+					</section>
+					<!-- Shipping Details -->
+					<section class="mt-5 rounded bg-checkout">
+						<div class="row p-3">
+							<div class="col-6"></div>
+							<div class="col-6 bg-white rounded shadow-md p-3">
+								<h5>Shipping Details:</h5>
+								<div class="row gy-3 mt-2">
+									<div>
+										<div class="row">
+											<div class="col-3 align-self-center">
+												<p class="my-0">Name:</p>
+											</div>
+											<div class="col-9">
+												<input asp-for="Name" class="form-control" />
+												<span asp-validation-for="Name" class="text-danger"></span>
+											</div>
+										</div>
+									</div>
+									<div>
+										<div class="row">
+											<div class="col-3 align-self-center">
+												<p class="my-0">Phone:</p>
+											</div>
+											<div class="col-9">
+												<input asp-for="PhoneNumber" class="form-control" />
+												<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+											</div>
+										</div>
+									</div>
+									<div>
+										<div class="row">
+											<div class="col-3 align-self-center">
+												<p class="my-0">Address:</p>
+											</div>
+											<div class="col-9">
+												<input asp-for="Address" class="form-control" />
+												<span asp-validation-for="Address" class="text-danger"></span>
+											</div>
+										</div>
+									</div>
+									<div>
+										<div class="row">
+											<div class="col-3 align-self-center">
+												<p class="my-0">Email:</p>
+											</div>
+											<div class="col-9">
+												<input asp-for="Email" class="form-control" />
+												<span asp-validation-for="Email" class="text-danger"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
-					</div>
+					</section>
 				</div>
-				<div class="mt-5">
+				<section class="mt-5">
 					<hr />
 					<div class="d-flex justify-content-between">
 						<small class="text-danger">
@@ -102,7 +127,7 @@
 						</small>
 						<button type="submit" class="btn btn-primary">Place Order</button>
 					</div>
-				</div>
+				</section>
 			</form>
 		</div>
 	</div>

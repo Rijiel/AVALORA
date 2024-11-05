@@ -16,9 +16,9 @@ function dataTables() {
             dataSrc: 'data'
         },
         columns: [
-            { data: 'name', class: 'text-truncate text-center', width: '15%' },
-            { data: 'email', class: 'text-truncate text-center', width: '15%' },
-            { data: 'address', class: 'text-truncate text-center', width: '15%' },
+            { data: 'name', class: 'text-truncate mw-1r text-center', width: '15%' },
+            { data: 'email', class: 'text-truncate mw-1r text-center', width: '15%' },
+            { data: 'address', class: 'text-truncate mw-1r text-center', width: '15%' },
             { data: 'phoneNumber', class: 'text-center', width: '15%' },
             { data: 'role', class: 'text-center', width: '10%' },
             {

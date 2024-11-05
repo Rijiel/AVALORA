@@ -17,7 +17,7 @@ function dataTables() {
         },
         columns: [
             { data: 'id', width: '10%' },
-            { data: 'name', class: 'text-truncate text-center', width: '25%' },
+            { data: 'name', class: 'text-truncate mw-1r text-center', width: '25%' },
             { data: 'price', class: 'text-center', width: '10%' },
             { data: 'category.name', class: 'text-center', width: '15%' },
             { data: 'productImagesCount', class: 'text-center', width: '12%' },

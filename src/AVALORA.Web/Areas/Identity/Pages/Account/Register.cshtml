@@ -1,7 +1,7 @@
 ﻿@page
 @model RegisterModel
 @{
-	ViewData["Title"] = User.IsInRole(Role.Admin.ToString()) ? "Create User" : "Register an account";
+	ViewData["Title"] = User.IsInRole(Role.Admin.ToString()) ? "Create New User" : "Register an account";
 	string btnName = User.IsInRole(Role.Admin.ToString()) ? "Create" : "Register";
 	string title = User.IsInRole(Role.Admin.ToString()) ? "Create a new user" : "Create a new account";
 }
@@ -53,7 +53,7 @@
 				@if (User.IsInRole(Role.Admin.ToString()))
 				{
 					<div class="mb-3">
-						<select asp-for="Input.Role" asp-items="Model.Roles" class="form-control" aria-required="true" placeholder="">
+						<select asp-for="Input.Role" asp-items="Model.Roles" class="form-control text-center" aria-required="true" placeholder="">
 							<option value="" selected disabled>--Select Role--</option>
 						</select>
 						<span asp-validation-for="Input.Role" class="text-danger"></span>
