@@ -305,6 +305,10 @@ input[type="radio"]:checked + .color-option {
     color: var(--bs-green);
 }
 
+.text-dark-green {
+    color: #34C759
+}
+
 .text-blue {
     color: var(--bs-blue);
 }
@@ -454,14 +458,27 @@ input[type="radio"]:checked + .color-option {
     max-width: 20rem;
 }
 
-.min-vh-7{
+.min-vh-7 {
     min-height: 7vw
 }
 
-.w-2r{
+.w-2r {
     width: 2rem;
 }
 
+.carousel-inner {
+    height: 55vh;
+}
+
+.carousel-item {
+    height: 100% !important
+}
+
+.carousel-item img{
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain
+}
 
 /* Animations */
 
@@ -484,4 +501,3 @@ input[type="radio"]:checked + .color-option {
         top: 70px;
     }
 }
-

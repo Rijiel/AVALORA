@@ -3,17 +3,19 @@
 	ViewBag.Title = "Complete Payment";
 }
 
-<div class="row mt-5">
-	<div class="col-4 mx-auto">
-		<h2 class="text-center">Complete your order</h2>
-		<div class="my-4">
-			<div class="">Total Amount($)</div>
-			<input asp-for="TotalPrice" id="totalAmount" class="form-control" disabled />
+<section class="row content">
+	<div class="col-4 offset-4 text-center border border-light-gray rounded shadow-md p-5">
+		<h4 class="text-dark-primary">Complete your order <i class="bi bi-wallet2"></i></h4>
+		<div class="mt-4">
+			<strong>Amount to pay:</strong>
+			<input asp-for="TotalPrice" id="totalAmount" class="border-0 fs-8 text-dark-green fw-bold text-center" readonly />
 		</div>
-		<div id="notification-container"></div>
-		<div id="paypal-button-container"></div>
+		<div class="mt-4">
+			<div id="notification-container"></div>
+			<div id="paypal-button-container"></div>
+		</div>
 	</div>
-</div>
+</section>
 
 @section Scripts {
 	<script src="https://www.paypal.com/sdk/js?client-id=@(ViewBag.ClientID)&currency=USD"></script>

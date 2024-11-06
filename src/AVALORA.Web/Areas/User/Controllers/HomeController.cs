@@ -108,6 +108,12 @@ public class HomeController : BaseController<HomeController>
 		List<ProductReviewResponse> productReviewResponses = await ServiceUnitOfWork.ProductReviewService
 			.GetAllAsync(p => p.ProductId == productResponse.Id, cancellationToken: cancellationToken);
 
+		// Sort by comment length -> rating -> date posted
+		productReviewResponses = productReviewResponses
+			.OrderByDescending(p => p.Comment?.Length)
+			.ThenByDescending(p => p.Rating)
+			.ThenByDescending(p => p.DatePosted.Date).ToList();
+
 		List<ProductReviewResponse> pagedProductReviewResponses = ServiceUnitOfWork.PagerService
 			.GetPagedItems(productReviewResponses, page, pageSize: 3);
 
@@ -191,6 +197,8 @@ public class HomeController : BaseController<HomeController>
 			SuccessMessage = "Review added, thanks!";
 			Logger.LogInformation($"Added review for product: {productReviewAddRequest.ProductId}");
 		}
+		else
+			ErrorMessage = "Please select your rating";
 
 		return RedirectToAction(nameof(Details), new { id = productReviewAddRequest.ProductId });
 	}

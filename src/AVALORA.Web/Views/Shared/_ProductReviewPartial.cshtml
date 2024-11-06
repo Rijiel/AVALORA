@@ -10,19 +10,19 @@
 		<strong>Anonymous</strong>
 	}
 	<small class="text-muted mb-0 d-block">@Model.DatePosted.ToString("d")</small>
-	<div style="color: orange">
+	<p class="text-orange">
 		@for (int i = 0; i < Model.Rating; i++)
 		{
 			<span class="bi bi-star-fill"></span>
 		}
-		@for (int i = 0; i < (5 - Model.Rating); i++)
+		@for (int i = Model.Rating; i < 5; i++)
 		{
 			<span class="bi bi-star"></span>
 		}
-	</div>
+	</p>
 	@if (!String.IsNullOrEmpty(Model.Comment))
 	{
-		<input asp-for="@Model.Comment" class="form-control my-3" rows="3" disabled />
+		<input asp-for="@Model.Comment" class="form-control mt-3" disabled />
 	}
 </div>
 

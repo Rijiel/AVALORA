@@ -17,120 +17,137 @@ namespace AVALORA.Web.Areas.User.Controllers;
 [Route("[controller]/[action]")]
 public class PaymentController : BaseController<PaymentController>
 {
-    private readonly ICartFacade _cartFacade;
-    private readonly IOptions<PaypalSettings> _paypal;
+	private readonly ICartFacade _cartFacade;
+	private readonly IOptions<PaypalSettings> _paypal;
+	private readonly IHttpContextAccessor _contextAccessor;
 
-    public PaymentController(ICartFacade cartFacade, IOptions<PaypalSettings> paypal)
-    {
-        _cartFacade = cartFacade;
-        _paypal = paypal;
-    }
+	public PaymentController(ICartFacade cartFacade, IOptions<PaypalSettings> paypal, IHttpContextAccessor contextAccessor)
+	{
+		_cartFacade = cartFacade;
+		_paypal = paypal;
+		_contextAccessor = contextAccessor;
+	}
 
-    public async Task<IActionResult> Index(int? id, CancellationToken cancellationToken)
-    {
-        HttpContext.Session.SetInt32(SD.TEMPDATA_ORDERID, id ?? 0);
+	public async Task<IActionResult> Index(int? id, CancellationToken cancellationToken)
+	{
+		OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id ?? 0);
 
-        ViewBag.ClientID = _paypal.Value.ClientID;
+		// Only allow payment for current user's orders
+		if (orderHeaderResponse != null && orderHeaderResponse.ApplicationUserId == UserHelper.GetCurrentUserId(_contextAccessor))
+		{
+			// Only allow payment for pending, cancelled and delayed payment orders
+			if (orderHeaderResponse.OrderStatus == OrderStatus.Pending
+			|| (orderHeaderResponse.PaymentStatus == PaymentStatus.Cancelled && orderHeaderResponse.OrderStatus != OrderStatus.Cancelled)
+			|| (orderHeaderResponse.OrderStatus == OrderStatus.Shipped && orderHeaderResponse.PaymentStatus == PaymentStatus.DelayedPayment))
+			{
+				HttpContext.Session.SetInt32(SD.TEMPDATA_ORDERID, id ?? 0);
 
-        OrderSummaryResponse? orderSummaryResponse = await ServiceUnitOfWork.OrderSummaryService
-            .GetAsync(o => o.OrderHeaderId == id);
+				ViewBag.ClientID = _paypal.Value.ClientID;
 
-        if (orderSummaryResponse == null)
-        {
-            Logger.LogWarning("Order not found");
-            return NotFound("Order not found");
-        }
+				OrderSummaryResponse? orderSummaryResponse = await ServiceUnitOfWork.OrderSummaryService
+					.GetAsync(o => o.OrderHeaderId == id);
 
-        // Only empty cart when checking out
-        if (TempData[SD.TEMPDATA_CLEARCART] is bool == true)
-            await _cartFacade.ClearCartItemsAsync(this, cancellationToken);
+				if (orderSummaryResponse == null)
+				{
+					Logger.LogWarning("Order not found");
+					return NotFound("Order not found");
+				}
 
-        return View(orderSummaryResponse);
-    }
+				// Only empty cart when checking out
+				if (TempData[SD.TEMPDATA_CLEARCART] is bool == true)
+					await _cartFacade.ClearCartItemsAsync(this, cancellationToken);
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] JsonObject data)
-    {
-        if (!data.ContainsKey("amount") || !decimal.TryParse(data["amount"]?.ToString(), out decimal totalAmount))
-            return new JsonResult(new { Id = "", message = "Invalid amount or missing amount." });
+				return View(orderSummaryResponse);
+			}
+		}
 
-        // create request body
-        var createOrderRequest = new JsonObject
-        {
-            { "intent", "CAPTURE" },
-            { "purchase_units", new JsonArray
-                {
-                    new JsonObject
-                    {
-                        { "amount", new JsonObject
-                            {
-                                { "currency_code", "USD" },
-                                { "value", totalAmount.ToString("F2") }
-                            }
-                        }
-                    }
-                }
-            }
-        };
+		Logger.LogError($"Invalid payment attempt for order id: {id}");
+		throw new InvalidOperationException("Order cannot be paid at this moment.");
+	}
 
-        string url = _paypal.Value.SandboxURL + "/v2/checkout/orders";
-        string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(_paypal.Value);
-        var httpContent = new StringContent(createOrderRequest.ToString(), null, "application/json");
+	[HttpPost]
+	public async Task<IActionResult> Create([FromBody] JsonObject data)
+	{
+		if (!data.ContainsKey("amount") || !decimal.TryParse(data["amount"]?.ToString(), out decimal totalAmount))
+			return new JsonResult(new { Id = "", message = "Invalid amount or missing amount." });
 
-        var jsonResponse = await ServiceUnitOfWork.PaymentService.SendRequestAsync(url, authHeaderValue, httpContent);
+		// create request body
+		var createOrderRequest = new JsonObject
+		{
+			{ "intent", "CAPTURE" },
+			{ "purchase_units", new JsonArray
+				{
+					new JsonObject
+					{
+						{ "amount", new JsonObject
+							{
+								{ "currency_code", "USD" },
+								{ "value", totalAmount.ToString("F2") }
+							}
+						}
+					}
+				}
+			}
+		};
 
-        if (jsonResponse != null)
-        {
-            string paypalOrderId = jsonResponse["id"]?.ToString() ?? "";
+		string url = _paypal.Value.SandboxURL + "/v2/checkout/orders";
+		string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(_paypal.Value);
+		var httpContent = new StringContent(createOrderRequest.ToString(), null, "application/json");
 
-            return new JsonResult(new { Id = paypalOrderId });
-        }
+		var jsonResponse = await ServiceUnitOfWork.PaymentService.SendRequestAsync(url, authHeaderValue, httpContent);
 
-        return new JsonResult(new { Id = "" });
-    }
+		if (jsonResponse != null)
+		{
+			string paypalOrderId = jsonResponse["id"]?.ToString() ?? "";
 
-    public async Task<JsonResult> Complete([FromBody] JsonObject data)
-    {
-        var orderId = data?["orderID"]?.ToString();
-        if (String.IsNullOrEmpty(orderId))
-            return new JsonResult("error");
+			return new JsonResult(new { Id = paypalOrderId });
+		}
 
-        string url = _paypal.Value.SandboxURL + $"/v2/checkout/orders/{orderId}/capture";
-        string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(_paypal.Value);
-        var httpContent = new StringContent("", null, "application/json");
+		return new JsonResult(new { Id = "" });
+	}
 
-        var jsonResponse = await ServiceUnitOfWork.PaymentService.SendRequestAsync(url, authHeaderValue, httpContent);
+	public async Task<JsonResult> Complete([FromBody] JsonObject data)
+	{
+		var orderId = data?["orderID"]?.ToString();
+		if (String.IsNullOrEmpty(orderId))
+			return new JsonResult("error");
 
-        if (jsonResponse != null)
-        {
-            string paypalOrderStatus = jsonResponse["status"]?.ToString() ?? "";
-            if (paypalOrderStatus == "COMPLETED")
-            {
-                string? paymentId = jsonResponse["purchase_units"]?[0]?["payments"]?["captures"]?[0]?["id"]?.ToString();
-                TempData["PaymentId"] = paymentId;
+		string url = _paypal.Value.SandboxURL + $"/v2/checkout/orders/{orderId}/capture";
+		string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(_paypal.Value);
+		var httpContent = new StringContent("", null, "application/json");
 
-                var redirectUrl = Url.Action(nameof(OrderConfirmation), "Payment");
-                return new JsonResult(new { success = true, url = redirectUrl });
-            }
-        }
+		var jsonResponse = await ServiceUnitOfWork.PaymentService.SendRequestAsync(url, authHeaderValue, httpContent);
 
-        return new JsonResult(new { success = false, url = "" });
-    }
+		if (jsonResponse != null)
+		{
+			string paypalOrderStatus = jsonResponse["status"]?.ToString() ?? "";
+			if (paypalOrderStatus == "COMPLETED")
+			{
+				string? paymentId = jsonResponse["purchase_units"]?[0]?["payments"]?["captures"]?[0]?["id"]?.ToString();
+				TempData["PaymentId"] = paymentId;
 
-    public async Task<IActionResult> OrderConfirmation(int? id)
-    {
-        var orderHeaderId = id ?? HttpContext.Session.GetInt32(SD.TEMPDATA_ORDERID);
-        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(orderHeaderId);
-        if (orderHeaderResponse == null)
-        {
-            Logger.LogWarning("Order not found");
-            return NotFound("Order not found");
-        }
+				var redirectUrl = Url.Action(nameof(OrderConfirmation), "Payment");
+				return new JsonResult(new { success = true, url = redirectUrl });
+			}
+		}
 
-        var paymentId = TempData["PaymentId"] as string;
-        await ServiceUnitOfWork.OrderHeaderService.UpdatePaymentIdAsync(orderHeaderId, paymentId);
-        await ServiceUnitOfWork.OrderHeaderService.UpdateOrderStatusAsync(orderHeaderId, OrderStatus.Approved, PaymentStatus.Approved);
+		return new JsonResult(new { success = false, url = "" });
+	}
 
-        return View(orderHeaderResponse);
-    }
+	public async Task<IActionResult> OrderConfirmation(int? id)
+	{
+		var orderHeaderId = id ?? HttpContext.Session.GetInt32(SD.TEMPDATA_ORDERID);
+		OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(orderHeaderId);
+		if (orderHeaderResponse == null)
+		{
+			Logger.LogWarning("Order not found");
+			return NotFound("Order not found");
+		}
+
+		var paymentId = TempData["PaymentId"] as string;
+		await ServiceUnitOfWork.OrderHeaderService.UpdatePaymentIdAsync(orderHeaderId, paymentId);
+		await ServiceUnitOfWork.OrderHeaderService.UpdateOrderStatusAsync(orderHeaderId, OrderStatus.Approved, PaymentStatus.Approved);
+
+		return View(orderHeaderResponse);
+	}
 }
