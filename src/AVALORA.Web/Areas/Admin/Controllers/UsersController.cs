@@ -2,10 +2,13 @@
 using AVALORA.Core.Dto.ApplicationUserDtos;
 using AVALORA.Core.Enums;
 using AVALORA.Core.Helpers;
+using AVALORA.Web.Areas.User.Controllers;
 using AVALORA.Web.BaseController;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SmartBreadcrumbs.Attributes;
+using SmartBreadcrumbs.Nodes;
 
 namespace AVALORA.Web.Areas.Admin.Controllers;
 
@@ -21,6 +24,7 @@ public class UsersController : BaseController<UsersController>
 		_userManager = userManager;
 	}
 
+	[Breadcrumb("Users", FromController = typeof(HomeController), FromAction = nameof(HomeController.Index), AreaName = nameof(Role.Admin))]
 	public IActionResult Index() => View();
 
 	[HttpGet]
@@ -39,6 +43,20 @@ public class UsersController : BaseController<UsersController>
 
 		var applicationUserVM = Mapper.Map<ApplicationUserRoleVM>(applicationUserResponse);
 		applicationUserVM.Roles = ServiceUnitOfWork.ApplicationUserService.GetRoleOptions(applicationUserResponse.Role);
+
+		// Setup breadcrumb
+		var breadCrumbNode = new MvcBreadcrumbNode(nameof(Index), "Users", "Users", areaName: Role.Admin.ToString());
+		var breadCrumbNode1 = new MvcBreadcrumbNode(nameof(Edit), "Users", "Edit", areaName: Role.Admin.ToString())
+		{
+			OverwriteTitleOnExactMatch = true,
+			Parent = breadCrumbNode
+		};
+		var breadCrumbNode2 = new MvcBreadcrumbNode(nameof(Edit), "Users", id?.ToString(), areaName: Role.Admin.ToString())
+		{
+			OverwriteTitleOnExactMatch = true,
+			Parent = breadCrumbNode1
+		};
+		ViewData["BreadcrumbNode"] = breadCrumbNode2;
 
 		return View(applicationUserVM);
 	}

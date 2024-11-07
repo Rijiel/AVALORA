@@ -1,7 +1,7 @@
 ﻿@inject IHttpContextAccessor accessor
 @model OrderVM
 @{
-	ViewData["Title"] = "Order Summary";
+	ViewData["Title"] = "Order Details";
 
 	string orderStatus = Model.OrderHeaderResponse.OrderStatus.ToString();
 	string paymentStatus = Model.OrderHeaderResponse.PaymentStatus.ToString();
@@ -11,6 +11,8 @@
 	bool isAdmin = User.IsInRole(Role.Admin.ToString());
 	bool isReadOnly = !isAdmin || Model.IsCancelled;
 }
+
+<breadcrumb></breadcrumb>
 
 <div class="content-lg">
 	<header class="header text-center">

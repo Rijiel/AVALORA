@@ -1,10 +1,11 @@
 ﻿@model ProductDetailsVM
 @{
-	ViewData["Title"] = "Product Details";
+	ViewData["Title"] = Model.CartItemAddRequestVM.ProductResponse.Name;
 
 	var pager = ViewBag.Pager as PagerService;
 	int totalStars = (int)Model.CartItemAddRequestVM.ProductResponse.TotalRating;
 }
+<breadcrumb></breadcrumb>
 
 <div class="row content-lg">
 	<div class="col-12">

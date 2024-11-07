@@ -3,10 +3,13 @@ using AVALORA.Core.Dto.ProductDtos;
 using AVALORA.Core.Dto.ProductImageDtos;
 using AVALORA.Core.Enums;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
+using AVALORA.Web.Areas.User.Controllers;
 using AVALORA.Web.BaseController;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
+using SmartBreadcrumbs;
+using SmartBreadcrumbs.Attributes;
+using SmartBreadcrumbs.Nodes;
 
 namespace AVALORA.Web.Areas.Admin.Controllers;
 
@@ -25,9 +28,11 @@ public class ProductsController : BaseController<ProductsController>
 		_productFacade = productFacade;
 	}
 
+	[Breadcrumb("Products", FromController = typeof(HomeController), FromAction = nameof(HomeController.Index), AreaName = nameof(Role.Admin))]
 	public IActionResult Index() => View();
 
 	[HttpGet]
+	[Breadcrumb("Create", FromAction = nameof(Index))]
 	public async Task<IActionResult> Create(CancellationToken cancellationToken)
 	{
 		ProductUpsertVM = new ProductUpsertVM()
@@ -71,6 +76,21 @@ public class ProductsController : BaseController<ProductsController>
 
 		var productUpsertVM = Mapper.Map<ProductUpsertVM>(productResponse);
 		productUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken);
+
+		// Setup breadcrumb
+		var breadCrumbNode = new MvcBreadcrumbNode(nameof(Index), "Products", "Products", areaName: Role.Admin.ToString());
+		var breadCrumbNode1 = new MvcBreadcrumbNode(nameof(Edit), "Products", "Edit", areaName: Role.Admin.ToString())
+		{			
+			OverwriteTitleOnExactMatch = true,
+			Parent = breadCrumbNode,
+			RouteValues = null
+		};
+		var breadCrumbNode2 = new MvcBreadcrumbNode(nameof(Edit), "Products", id.ToString(), areaName: Role.Admin.ToString())
+		{
+			OverwriteTitleOnExactMatch = true,
+			Parent = breadCrumbNode1
+		};
+		ViewData["BreadcrumbNode"] = breadCrumbNode2;
 
 		return View(productUpsertVM);
 	}

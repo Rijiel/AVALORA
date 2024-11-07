@@ -10,12 +10,15 @@ using AVALORA.Web.BaseController;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SmartBreadcrumbs.Attributes;
+using SmartBreadcrumbs.Nodes;
 using System.Diagnostics;
 
 namespace AVALORA.Web.Areas.User.Controllers;
 
 [Area(nameof(Role.User))]
 [Route("[controller]/[action]")]
+[DefaultBreadcrumb("AVALORA", AreaName = nameof(Role.User))]
 public class HomeController : BaseController<HomeController>
 {
 	private readonly ICartFacade _cartFacade;
@@ -150,6 +153,19 @@ public class HomeController : BaseController<HomeController>
 			CartItemAddRequestVM = cartItemAddRequestVM,
 			ProductReviewVM = productReviewVM
 		};
+
+		// Setup breadcrumb
+		var breadCrumbNode = new MvcBreadcrumbNode(nameof(Index), "Home", productResponse.Category.Name, areaName: Role.User.ToString())
+		{
+			RouteValues = new { category = productResponse.Category.Name },
+		};
+
+		var breadCrumbNode1 = new MvcBreadcrumbNode(nameof(Details), "Home", productResponse.Name, areaName: Role.User.ToString())
+		{
+			OverwriteTitleOnExactMatch = true,
+			Parent = breadCrumbNode
+		};
+		ViewData["BreadcrumbNode"] = breadCrumbNode1;
 
 		return View(productDetailsVM);
 	}

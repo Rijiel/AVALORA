@@ -3,7 +3,7 @@
 	ViewBag.Title = "Complete Payment";
 }
 
-<section class="row content">
+<div class="row content">
 	<div class="col-4 offset-4 text-center border border-light-gray rounded shadow-md p-5">
 		<header class="header text-center">
 			<h2 class="text-dark-primary fs-7">Complete your order <i class="bi bi-wallet2"></i></h2>
@@ -17,7 +17,7 @@
 			<div id="paypal-button-container"></div>
 		</div>
 	</div>
-</section>
+</div>
 
 @section Scripts {
 	<script src="https://www.paypal.com/sdk/js?client-id=@(ViewBag.ClientID)&currency=USD"></script>

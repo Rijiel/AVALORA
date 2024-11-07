@@ -12,6 +12,7 @@ using FoolProof.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using SmartBreadcrumbs.Extensions;
 
 namespace AVALORA.Web.Extensions;
 
@@ -62,6 +63,15 @@ public static class ServicesExtension
 
 		services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 		services.AddFoolProof();
+		services.AddBreadcrumbs(typeof(Program).Assembly, options =>
+		{
+			options.TagName = "nav";
+			options.TagClasses = "mt-3";
+			options.OlClasses = "breadcrumb";
+			options.LiClasses = "breadcrumb-item";
+			options.ActiveLiClasses = "breadcrumb-item active";
+			options.SeparatorElement = "&nbsp;<i class=\"bi bi-chevron-right\"></i>&nbsp;";
+		});
 
 		services.Configure<PaypalSettings>(config => cfg.GetSection("Paypal").Bind(config));
 		services.AddHttpClient<IPaymentService, PaymentService>(client 

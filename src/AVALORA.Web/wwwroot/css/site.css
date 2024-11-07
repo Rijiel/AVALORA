@@ -34,6 +34,12 @@ body {
     padding-top: 3rem !important;
 }
 
+.brand-logo{
+    max-width: 170px;
+    max-height: 36px;
+    min-height: auto;
+}
+
 .btn {
     border-radius: var(--bs-border-radius-pill);
 }
@@ -483,7 +489,9 @@ input[type="radio"]:checked + .color-option {
     height: 100% !important;
     object-fit: contain
 }
-
+.pt-t{
+    padding-top: 0 !important;
+}
 /* Animations */
 
 .dropdown-anim {

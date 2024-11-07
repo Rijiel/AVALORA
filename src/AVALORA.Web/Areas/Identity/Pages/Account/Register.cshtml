@@ -1,14 +1,20 @@
 ﻿@page
 @model RegisterModel
 @{
-	ViewData["Title"] = User.IsInRole(Role.Admin.ToString()) ? "Create New User" : "Register an account";
+	ViewData["Title"] = User.IsInRole(Role.Admin.ToString()) ? "New User" : "Register";
 	string btnName = User.IsInRole(Role.Admin.ToString()) ? "Create" : "Register";
 	string title = User.IsInRole(Role.Admin.ToString()) ? "Create a new user" : "Create a new account";
+	string colNum = User.IsInRole(Role.Admin.ToString()) ? "col-6 offset-3" : "col-6";
+}
+
+@if (User.IsInRole(Role.Admin.ToString()))
+{
+	<breadcrumb></breadcrumb>
 }
 
 <div class="row content">
-	<!-- Right Column -->
-	<div class="col-6 text-center">
+	<!-- Left Column -->
+	<div class="@colNum text-center">
 		<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
 			<header class="header text-center">
 				<h2 class="text-dark-primary fs-7">@ViewData["Title"] <i class="bi bi-person-add"></i></h2>
@@ -63,53 +69,62 @@
 				}
 				<!-- Buttons -->
 				<div class="d-flex justify-content-evenly align-items-center mx-auto">
-					<span>
-						Already have an account?
-						<a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Login here</a>
-					</span>
-					<button id="registerSubmit" type="submit" class="w-50 btn btn-primary">Register</button>					
+					@if (!User.Identity!.IsAuthenticated)
+					{
+						<span>
+							Already have an account?
+							<a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Login here</a>
+						</span>
+					}
+					<button id="registerSubmit" type="submit" class="w-50 btn btn-primary">@btnName</button>
 				</div>
 			</div>
 		</form>
 		<!-- External Login -->
-		<div>
-			<section>
-				<p class="divider-text d-flex mt-2">or</p>
-				@{
-					if ((Model.ExternalLogins?.Count ?? 0) == 0)
-					{
-						<div>
-							<p>
-								There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-									article
-									about setting up this ASP.NET application to support logging in via external services
-								</a>.
-							</p>
-						</div>
-					}
-					else
-					{
-						<form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+		@if (!User.Identity!.IsAuthenticated)
+		{
+			<div>
+				<section>
+					<p class="divider-text d-flex mt-2">or</p>
+					@{
+						if ((Model.ExternalLogins?.Count ?? 0) == 0)
+						{
 							<div>
 								<p>
-									@foreach (var provider in Model.ExternalLogins!)
-									{
-										<button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-									}
+									There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+										article
+										about setting up this ASP.NET application to support logging in via external services
+									</a>.
 								</p>
 							</div>
-						</form>
+						}
+						else
+						{
+							<form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+								<div>
+									<p>
+										@foreach (var provider in Model.ExternalLogins!)
+										{
+											<button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+										}
+									</p>
+								</div>
+							</form>
+						}
 					}
-				}
-			</section>
-		</div>
+				</section>
+			</div>
+		}
 	</div>
-	<!-- Right Column -->
-	<div class="col-6 d-flex flex-column justify-content-center">
-		<div class="mx-auto text-center">
-			<img src="~/images/registersale.jpg" class="w-75 rounded-top-0 rounded-end-5 rounded-bottom-5 img-shadow border border-5" />
+	@if (!User.Identity!.IsAuthenticated)
+	{
+		<!-- Right Column -->
+		<div class="col-6 d-flex flex-column justify-content-center">
+			<div class="mx-auto text-center">
+				<img src="~/images/registersale.jpg" class="w-75 rounded-top-0 rounded-end-5 rounded-bottom-5 img-shadow border border-5" />
+			</div>
 		</div>
-	</div>
+	}
 </div>
 
 @section Scripts {

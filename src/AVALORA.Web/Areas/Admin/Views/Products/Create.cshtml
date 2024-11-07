@@ -1,9 +1,11 @@
 ﻿@model ProductUpsertVM
 @{
-	ViewBag.Title = "Post New Product";
+	ViewBag.Title = "New Product";
 }
 
-<section class="content-lg">
+<breadcrumb></breadcrumb>
+
+<div class="content-lg">
 	<header class="header text-center">
 		<h2 class="text-dark-primary fs-7">Post New Product <i class="bi bi-clipboard2-plus"></i></h2>
 	</header>
@@ -82,7 +84,7 @@
 			</form>
 		</div>
 	</div>
-</section>
+</div>
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />

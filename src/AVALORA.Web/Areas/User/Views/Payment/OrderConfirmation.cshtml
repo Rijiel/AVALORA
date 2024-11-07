@@ -3,12 +3,12 @@
 	ViewBag.Title = "Order Confirmed!";
 }
 
-<section class="row content-lg">
+<div class="row content-lg">
 	<header class="header text-center">
 		<h2 class="text-dark-primary fs-7">Thank you for purchasing!</h2>
 	</header>
 	<div class="col-8 offset-2 text-center mt-4">
-		<p>Your order number: <strong class="text-orange">@Model.Id</strong></p>
+		<p>Your order number is: <strong class="text-orange">@Model.Id</strong></p>
 		<div class="mx-auto">
 			<img src="~/images/orderconfirm.jpg" class="w-50 rounded" />
 		</div>
@@ -16,4 +16,4 @@
 			<a asp-controller="Home" asp-action="Index" class="btn btn-primary">Back to Home</a>
 		</div>
 	</div>
-</section>
+</div>

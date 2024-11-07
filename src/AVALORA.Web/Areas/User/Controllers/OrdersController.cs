@@ -9,6 +9,8 @@ using AVALORA.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using SmartBreadcrumbs.Attributes;
+using SmartBreadcrumbs.Nodes;
 
 namespace AVALORA.Web.Areas.User.Controllers;
 
@@ -27,6 +29,7 @@ public class OrdersController : BaseController<OrdersController>
         _contextAccessor = contextAccessor;
     }
 
+    [Breadcrumb("Orders", FromController = typeof(HomeController), FromAction = nameof(HomeController.Index), AreaName = nameof(Role.User))]
     public IActionResult Index()
     {
         return View();
@@ -62,7 +65,21 @@ public class OrdersController : BaseController<OrdersController>
         // Receive model state errors from other actions' redirection to this controller action.
         ValidationHelper.AddModelState(this, nameof(OrderHeaderResponse));
 
-        return View(OrderVM);
+		// Setup breadcrumb
+		var breadCrumbNode = new MvcBreadcrumbNode(nameof(Index), "Orders", "Orders", areaName: Role.User.ToString());
+		var breadCrumbNode1 = new MvcBreadcrumbNode(nameof(Edit), "Orders", "Edit", areaName: Role.User.ToString())
+		{
+			OverwriteTitleOnExactMatch = true,
+			Parent = breadCrumbNode
+		};
+		var breadCrumbNode2 = new MvcBreadcrumbNode(nameof(Edit), "Orders", id?.ToString(), areaName: Role.User.ToString())
+		{
+			OverwriteTitleOnExactMatch = true,
+			Parent = breadCrumbNode1
+		};
+		ViewData["BreadcrumbNode"] = breadCrumbNode2;
+
+		return View(OrderVM);
     }
 
     [Authorize(Roles = nameof(Role.Admin))]

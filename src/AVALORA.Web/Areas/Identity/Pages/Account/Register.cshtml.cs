@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AVALORA.Core.Domain.Models;
 using AVALORA.Core.Enums;
+using AVALORA.Web.Areas.Admin.Controllers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -21,9 +22,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using SmartBreadcrumbs.Attributes;
 
 namespace AVALORA.Web.Areas.Identity.Pages.Account
 {
+	[Breadcrumb("Create", FromController = typeof(UsersController), FromAction = nameof(UsersController.Index), AreaName = nameof(Role.Admin))]
 	public class RegisterModel : PageModel
 	{
 		private readonly SignInManager<IdentityUser> _signInManager;
