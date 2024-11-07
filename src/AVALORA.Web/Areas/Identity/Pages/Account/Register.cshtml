@@ -10,7 +10,9 @@
 	<!-- Right Column -->
 	<div class="col-6 text-center">
 		<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-			<h4 class="text-dark-primary text-center">@ViewData["Title"] <i class="bi bi-person-add"></i></h4>
+			<header class="header text-center">
+				<h2 class="text-dark-primary fs-7">@ViewData["Title"] <i class="bi bi-person-add"></i></h2>
+			</header>
 			<div class="row gy-3 mt-3">
 				<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 				<!-- Name -->

@@ -19,13 +19,14 @@ function dataTables(status) {
         },
         columns: [
             { data: 'orderHeaderResponse.id', width: '5%' },
-            { data: 'orderHeaderResponse.name', width: '13%' },
-            { data: 'orderHeaderResponse.phoneNumber', width: '12%' },
-            { data: 'orderHeaderResponse.email', width: '15%' },
-            { data: 'orderHeaderResponse.address', width: '15%' },
-            { data: 'orderHeaderResponse.orderStatusDescription', width: '10%' },
+            { data: 'orderHeaderResponse.name', class: 'text-truncate mw-1r text-center', width: '13%' },
+            { data: 'orderHeaderResponse.phoneNumber', class: 'text-center', width: '12%' },
+            { data: 'orderHeaderResponse.email', class: 'text-truncate mw-1r text-center', width: '15%' },
+            { data: 'orderHeaderResponse.address', class: 'text-truncate mw-1r text-center', width: '15%' },
+            { data: 'orderHeaderResponse.orderStatusDescription', class: 'text-center', width: '10%' },
             {
                 data: 'orderHeaderResponse.orderDate',
+                class: 'text-center',
                 width: '10%',
                 render: function (data) {
                     var date = new Date(data);
@@ -34,6 +35,7 @@ function dataTables(status) {
             },
             {
                 data: 'orderSummaryResponse.totalPrice',
+                class: 'text-center',
                 width: '10%',
                 render: function (data) {
                     return new Intl.NumberFormat('en-US', {
@@ -49,7 +51,7 @@ function dataTables(status) {
                 render: function (data) {
                     return `
                     <div class="d-flex">
-                        <a href="/orders/edit/${data}" class="btn btn-primary mx-2 w-50"><i class="bi bi-pencil-square"></i></a>
+                    <a href="/orders/edit/${data}" class="btn btn-sm btn-secondary rounded-0 mx-1"><i class="bi bi-pencil"></i> Edit</a>
                     </div>                    
                     `;
                 }

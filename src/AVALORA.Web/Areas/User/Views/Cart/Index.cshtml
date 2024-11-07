@@ -6,7 +6,9 @@
 }
 
 <section class="content-lg">
-	<h4 class="text-dark-primary text-center">Shopping Cart <i class="bi bi-cart3"></i></h4>
+	<header class="header text-center">
+		<h2 class="text-dark-primary fs-7">Shopping Cart <i class="bi bi-cart3"></i></h2>
+	</header>
 	<div class="row mt-4">
 		<div class="col-10 offset-1">
 			<a asp-controller="Home" asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3"><i class="bi bi-caret-left-fill"></i> Continue shopping</a>
@@ -17,7 +19,7 @@
 				<section class="row align-items-center border border-light-gray rounded shadow-md my-3 p-3">
 					<!-- Product Details -->
 					<div class="col-5 d-flex align-items-center p-2">
-						<figure class="w-25">
+						<figure class="w-25 mb-0">
 							<a asp-controller="Home" asp-action="Details" asp-route-id="@cartItem.Product.Id" class="text-body">
 								<partial name="_ProductImagePartial" model="mapper.Map<ProductResponse>(cartItem.Product)" />
 							</a>

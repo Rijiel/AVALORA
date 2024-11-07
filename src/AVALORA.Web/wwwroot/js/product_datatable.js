@@ -27,7 +27,7 @@ function dataTables() {
                 render: function (data) {
                     return `
                     <div class="d-flex">
-                        <a href="/products/edit/${data}" class="btn btn-sm btn-primary rounded-0 mx-1 w-50"><i class="bi bi-pencil"></i> Edit</a>
+                        <a href="/products/edit/${data}" class="btn btn-sm btn-secondary rounded-0 mx-1 w-50"><i class="bi bi-pencil"></i> Edit</a>
                         <a onclick="Delete('/products/delete?id=${data}')" class="btn btn-sm btn-danger rounded-0 mx-1 w-50"><i class="bi bi-trash"></i> Delete</a>
                     </div>                    
                     `;

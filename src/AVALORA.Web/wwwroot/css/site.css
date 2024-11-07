@@ -346,6 +346,10 @@ input[type="radio"]:checked + .color-option {
     color: rgba(var(--bs-dark-primary-rgb),var(--bs-text-opacity)) !important
 }
 
+.text-heading {
+    color: var(--bs-heading-color)
+}
+
 
 .bg-dark-primary {
     --bs-bg-opacity: 1;

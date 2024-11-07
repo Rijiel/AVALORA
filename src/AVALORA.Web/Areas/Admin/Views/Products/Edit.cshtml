@@ -4,11 +4,13 @@
 }
 
 <section class="content-lg">
-	<h4 class="text-dark-primary text-center">Edit Product <i class="bi bi-pencil-square"></i></h4>
+	<header class="header text-center">
+		<h2 class="text-dark-primary fs-7">Edit Product <i class="bi bi-pencil-square"></i></h2>
+	</header>
 	<div class="row text-center mt-4">
 		<div class="col-8 offset-2">
 			<form method="post" enctype="multipart/form-data" onsubmit="handleSubmit()">
-				<fieldset class="row gy-3">
+				<fieldset class="fieldset row gy-3">
 					<!-- Id -->
 					<input asp-for="Id" hidden />
 					<!-- Name -->
