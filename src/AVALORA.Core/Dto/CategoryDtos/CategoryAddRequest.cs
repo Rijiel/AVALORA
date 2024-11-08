@@ -7,7 +7,7 @@ namespace AVALORA.Core.Dto.CategoryDtos;
 public class CategoryAddRequest
 {
 	[Required]
-	[StringLength(50)]
+	[StringLength(25)]
 	[RegularExpression(@"^[A-Z][a-zA-Z]+$", ErrorMessage = "Name must start with a capital letter and contain only letters.")]
 	[UniqueCategoryName]
     [DisplayName("Category Name")]

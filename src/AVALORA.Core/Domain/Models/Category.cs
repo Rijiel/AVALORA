@@ -9,7 +9,7 @@ public class Category
     public int Id { get; set; }
 
     [Required]
-    [Column(TypeName = "varchar(50)")]
+    [Column(TypeName = "varchar(25)")]
     [DisplayName("Category Name")]
     public string Name { get; set; } = null!;
 }

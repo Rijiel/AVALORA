@@ -10,10 +10,10 @@
 
 <div class="row pt-4">
 	<!-- Sidebar -->
-	<aside class="col-lg-2 bg-light-gray">
-		<nav class="row gy-4">
+	<aside class="col-12 col-lg-2 bg-light-gray">
+		<nav class="row gy-4 px-2">
 			<!-- Search -->
-			<section class="pt-4">
+			<section class="pt-4 d-none d-lg-block px-0">
 				<form asp-area="@Role.User" asp-controller="Home" asp-action="Index" method="get">
 					<h6 class="text-body">Search an Item</h6>
 					<div class="input-group" role="group">
@@ -27,21 +27,53 @@
 				</form>
 			</section>
 			<!-- Top Rated Products -->
-			<section>
-				<h6 class="text-body">Top Rated Products</h6>
-				<ul class="list-group">
+			<section class="px-0">
+				<h6 class="text-body my-2">Top Rated Products</h6>
+				<!-- LG -->
+				<ul class="list-group d-none d-lg-block">
 					@foreach (var product in products.OrderByDescending(p => p.TotalRating).Take(5))
 					{
 						<li class="list-group-item">
 							<a asp-action="Details" asp-route-id="@product.Id" class="text-body text-decoration-none">
 								<div class="row align-items-center">
-									<figure class="col-4 mb-0">
+									<figure class="col-12 col-xl-4 mb-0">
 										@{
 											ViewBag.ImgSidebar = new ViewDataDictionary(ViewData) { { "CustomClass", "img-sidebar" } };
 										}
 										<partial name="_ProductImagePartial" model="product" view-data="ViewBag.ImgSidebar" />
 									</figure>
-									<div class="col-8">
+									<div class="col-12 col-xl-8 text-center text-xl-start">
+										<small class="text-break text-truncate-multiline">@product.Name</small>
+										<small>
+											<partial name="_ProductRatingPartial" model="product" />
+										</small>
+										<div>
+											@if (product.ListPrice.GetValueOrDefault() > 0 && product.ListPrice != product.Price)
+											{
+												<small class="text-decoration-line-through text-black-50">@product.ListPrice!.Value.ToString("c")</small>
+											}
+											<small class="fw-semibold">@product.Price.ToString("c")</small>
+										</div>
+									</div>
+								</div>
+							</a>
+						</li>
+					}
+				</ul>
+				<!-- MD -->
+				<ul class="list-group list-group-horizontal d-flex d-lg-none">
+					@foreach (var product in products.OrderByDescending(p => p.TotalRating).Take(5))
+					{
+						<li class="card list-group-item col p-0 m-0 py-2 shadow-none rounded-0">
+							<a asp-action="Details" asp-route-id="@product.Id" class="text-body text-decoration-none">
+								<div class="d-flex flex-column align-items-center justify-content-center">
+									<figure class="m-0">
+										@{
+											ViewBag.CardImgTop = new ViewDataDictionary(ViewData) { { "CustomClass", "card-img-top" } };
+										}
+										<partial name="_ProductImagePartial" model="product" view-data="ViewBag.CardImgTop" />
+									</figure>
+									<div class="text-center px-2">
 										<small class="text-break text-truncate-multiline">@product.Name</small>
 										<small>
 											<partial name="_ProductRatingPartial" model="product" />
@@ -61,27 +93,38 @@
 				</ul>
 			</section>
 			<!-- Categories -->
-			<section>
-				<h6 class="text-body">Categories</h6>
-				<ul class="list-group">
-					@foreach (var (category, productsCount) in categoryCounts.Take(5))
-					{
-						<li class="list-group-item d-flex justify-content-between align-items-center">
-							<a href="/Home?category=@category" class="text-body">@category</a>
-							<small class="badge-sm bg-secondary">@productsCount</small>
-						</li>
-					}
-				</ul>
+			<section class="col-9 col-sm-10 col-lg-auto">
+				<h6 class="text-body ms-n2">Categories</h6>
+				<div class="row">
+					<ul class="list-group col col-lg-12 w-50 w-lg-100 p-0">
+						@foreach (var (category, productsCount) in categoryCounts.Take(5))
+						{
+							<li class="list-group-item d-flex justify-content-between align-items-center px-1 px-xl-3">
+								<a href="/Home?category=@category" class="text-body text-truncate">@category</a>
+								<small class="badge-sm bg-secondary">@productsCount</small>
+							</li>
+						}
+					</ul>
+					<ul class="list-group col col-lg-12 w-50 mx-2 mx-md-0 d-block d-lg-none px-0 px-md-2">
+						@foreach (var (category, productsCount) in categoryCounts.Skip(5).Take(5))
+						{
+							<li class="list-group-item d-flex justify-content-between align-items-center px-1 px-xl-3">
+								<a href="/Home?category=@category" class="text-body text-truncate">@category</a>
+								<small class="badge-sm bg-secondary">@productsCount</small>
+							</li>
+						}
+					</ul>
+				</div>
 			</section>
 			<!-- Colors -->
-			<section>
+			<section class="col-3 col-sm-2 col-lg-auto px-0">
 				<h6 class="text-body">Colors</h6>
 				<div class="bg-white border border-light-gray rounded">
-					<div class="mt-1 d-flex flex-wrap align-self-center justify-content-center">
+					<div class="mt-1 d-flex flex-wrap align-self-center justify-content-center px-0 px-xxl-2 py-2 py-md-3 py-lg-0">
 						@for (int i = 1; i < Enum.GetValues(typeof(Color)).Length; i++)
 						{
 							Color color = (Color)Enum.GetValues(typeof(Color)).GetValue(i)!;
-							<div class="d-inline-block m-1">
+							<div class="d-inline-block my-1 my-sm-0 my-lg-1 mx-2 mx-lg-1">
 								<a href="/Home?color=@color" class="color-option bg-@color.ToString().ToLower()" title="@color"></a>
 							</div>
 						}
@@ -91,7 +134,7 @@
 		</nav>
 	</aside>
 	<!-- Cards -->
-	<section class="col-lg-10">
+	<section class="col-lg-10 mt-5 mt-lg-0">
 		<div class="row">
 			@if (ViewBag.Search != null)
 			{
@@ -101,15 +144,15 @@
 			}
 			@foreach (var product in filteredProducts)
 			{
-				<div class="col-3 d-flex align-items-stretch">
+				<div class="col-4 col-md-3 d-flex align-items-stretch">
 					<article class="card w-100">
-						<header class="card-header border-0">
+						<header class="card-header border-0 pb-0 px-4 px-md-3 px-lg-4">
 							<figure>
 								@{
 									ViewBag.CardImgTop = new ViewDataDictionary(ViewData) { { "CustomClass", "card-img-top" } };
 								}
 								<partial name="_ProductImagePartial" model="product" view-data="ViewBag.CardImgTop" />
-							</figure>							
+							</figure>
 						</header>
 						<div class="card-body text-center p-0 d-flex flex-column justify-content-between">
 							<div>
