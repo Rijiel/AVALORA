@@ -11,7 +11,7 @@
 		<h2 class="text-dark-primary fs-7">Edit Category <i class="bi bi-pencil-square"></i></h2>
 	</header>
 	<div class="row text-center mt-4">
-		<div class="col-6 offset-3">
+		<div class="col-8 col-lg-6 mx-auto">
 			<form method="post">
 				<!-- Id -->
 				<input asp-for="Id" hidden />
@@ -23,8 +23,8 @@
 				</div>
 				<!-- Buttons -->
 				<div class="mt-4 row d-flex justify-content-center">
-					<button type="submit" class="btn btn-primary btn-menu">Update</button>
-					<a onclick="Delete('/categories/delete/@Model.Id')" class="btn btn-danger btn-menu">Delete Category</a>
+					<button type="submit" class="btn btn-primary btn-menu btn-col-8">Update</button>
+					<a onclick="Delete('/categories/delete/@Model.Id')" class="btn btn-danger btn-menu btn-col-8">Delete Category</a>
 					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 				</div>
 			</form>
