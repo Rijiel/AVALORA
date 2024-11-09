@@ -8,4 +8,4 @@
 }
 
 <a asp-action="Index" asp-route-status="@ViewBag.Status"
-   class="btn @(query == @ViewBag.Status ? btnActive : btnOutline)">@ViewBag.Name</a>
+   class="btn @ViewBag.Class @(query == @ViewBag.Status ? btnActive : btnOutline)">@ViewBag.Name</a>

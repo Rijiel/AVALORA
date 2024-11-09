@@ -568,6 +568,10 @@ input[type="radio"]:checked + .color-option {
     width: 50% !important
 }
 
+.dt-order-buttons {
+    font-size: 0.65rem
+}
+
 
 
 
@@ -654,6 +658,10 @@ input[type="radio"]:checked + .color-option {
 
     .img-register {
         margin-bottom: 0
+    }
+
+    .dt-order-buttons {
+        font-size: 0.875rem
     }
 }
 

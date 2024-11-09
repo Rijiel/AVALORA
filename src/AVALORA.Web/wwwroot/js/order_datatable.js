@@ -9,10 +9,14 @@
     else {
         dataTables('all');
     }
+
+    $(".dt-search").parent().addClass("col-6");
+    $(".dt-length").parent().addClass("col-6");
 })
 
 function dataTables(status) {
     $('#dataTable').DataTable({
+        responsive: true,
         ajax: {
             url: '/orders/getall?status=' + status,
             dataSrc: 'data'

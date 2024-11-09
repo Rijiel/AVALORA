@@ -28,10 +28,10 @@
 				<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3"><i class="bi bi-caret-left-fill"></i> Back to Orders</a>
 
 				<div class="row text-center mt-3">
-					<!-- Pickup Details -->
-					<section class="col-6">
+					<!-- Left Column: Pickup Details -->
+					<section class="col-md-10 col-lg-6 mx-auto order-last order-lg-first mt-5 mt-lg-0">
 						<fieldset class="fieldset">
-							<legend class="legend fs-5 fw-semibold text-heading text-start" style="margin-bottom: 35px">Pickup Details:</legend>
+							<legend class="legend legend-order fs-5 fw-semibold text-heading text-start">Pickup Details:</legend>
 							<div class="row gy-3">
 								<!-- Name -->
 								<div>
@@ -191,8 +191,8 @@
 							</div>
 						</fieldset>
 					</section>
-					<!-- Order Summary -->
-					<section class="col-5 mx-auto">
+					<!-- Right Column: Order Summary -->
+					<section class="col-md-10 col-lg-6 col-xl-5 mx-auto">
 						<h5 class="fs-5 fw-semibold text-start">Order Summary:</h5>
 						<div class="mt-4 border border-light-gray shadow-md rounded p-4">
 							<h6 class="text-uppercase text-center d-block border border-secondary text-secondary rounded py-2 mt-2">Order Status - @Model.OrderHeaderResponse.OrderStatus</h6>
