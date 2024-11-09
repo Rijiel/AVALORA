@@ -1,9 +1,12 @@
 ﻿$(function () {
     dataTables();
+
+    $(".dt-buttons").parent().addClass("text-center");
 })
 
 function dataTables() {
     $('#dataTable').DataTable({
+        responsive: true,
         layout: {
             topStart: {
                 buttons: [
@@ -32,8 +35,8 @@ function dataTables() {
                     const btnText = isLocked ? 'Locked' : 'Unlocked';
                     return `
                     <div class="d-flex">
-                    <a onclick="lockUnlock('/Users/LockUnlock?id=${data.id}')" class="btn btn-sm ${btnClass} rounded-0 mx-1 w-50"><i class="${btnIcon}"></i> ${btnText}</a>
-                    <a href="/Users/Edit/${data.id}" class="btn btn-sm btn-danger rounded-0 mx-1 w-50"><i class="bi bi-pencil-square"></i> Permission</a>
+                    <a onclick="lockUnlock('/Users/LockUnlock?id=${data.id}')" class="btn btn-sm ${btnClass} rounded-0 mx-1 w-50"><i class="${btnIcon} d-none d-xl-inline"></i> ${btnText}</a>
+                    <a href="/Users/Edit/${data.id}" class="btn btn-sm btn-danger rounded-0 mx-1 w-50"><i class="bi bi-pencil-square d-none d-xl-inline"></i> Permission</a>
                     </div>                    
                     `;
                 }

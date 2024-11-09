@@ -542,10 +542,6 @@ input[type="radio"]:checked + .color-option {
         object-fit: contain
     }
 
-.pt-t {
-    padding-top: 0 !important;
-}
-
 .checkout-product-name {
     max-width: 11rem;
 }
@@ -562,6 +558,10 @@ input[type="radio"]:checked + .color-option {
 .img-category {
     margin-bottom: 10%;
     margin-right: 10%
+}
+
+.img-register{
+    margin-bottom: 40%
 }
 
 .dt-buttons {
@@ -650,6 +650,10 @@ input[type="radio"]:checked + .color-option {
 
     .bg-checkout {
         background-position: center;
+    }
+
+    .img-register {
+        margin-bottom: 0
     }
 }
 

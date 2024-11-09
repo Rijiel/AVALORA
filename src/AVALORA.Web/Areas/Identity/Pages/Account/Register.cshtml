@@ -1,46 +1,49 @@
 ﻿@page
 @model RegisterModel
 @{
-	ViewData["Title"] = User.IsInRole(Role.Admin.ToString()) ? "New User" : "Register";
-	string btnName = User.IsInRole(Role.Admin.ToString()) ? "Create" : "Register";
-	string title = User.IsInRole(Role.Admin.ToString()) ? "Create a new user" : "Create a new account";
-	string colNum = User.IsInRole(Role.Admin.ToString()) ? "col-6 offset-3" : "col-6";
+	bool isAdmin = User.IsInRole(Role.Admin.ToString());
+	ViewData["Title"] = isAdmin ? "New User" : "Register";
+	string btnName = isAdmin ? "Create" : "Register";
+	string title = isAdmin ? "Create a new user" : "Create a new account";
+	string colNum = isAdmin ? "col-9 col-md-12 col-lg-8 col-xl-6 mx-auto" : "col-6";
+	string inputColNum = isAdmin ? "col-md-6" : "col-lg-6";
+	string gutterNum = isAdmin ? "gy-2 gy-md-3" : "gy-2 gy-lg-3";
 }
 
-@if (User.IsInRole(Role.Admin.ToString()))
+@if (isAdmin)
 {
 	<breadcrumb></breadcrumb>
 }
 
 <div class="row content">
 	<!-- Left Column -->
-	<div class="@colNum text-center">
+	<div class="@colNum text-center order-last order-lg-0">
 		<form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
 			<header class="header text-center">
 				<h2 class="text-dark-primary fs-7">@ViewData["Title"] <i class="bi bi-person-add"></i></h2>
 			</header>
-			<div class="row gy-3 mt-3">
+			<div class="row @gutterNum mt-3">
 				<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 				<!-- Name -->
-				<div class="form-floating col-6">
+				<div class="form-floating @inputColNum">
 					<input asp-for="Input.Name" class="form-control text-center" autocomplete="username" aria-required="true" placeholder="name@example.com" />
 					<label asp-for="Input.Name" class="text-center">Full Name</label>
 					<span asp-validation-for="Input.Name" class="text-danger"></span>
 				</div>
 				<!-- Email -->
-				<div class="form-floating col-6">
+				<div class="form-floating @inputColNum">
 					<input asp-for="Input.Email" class="form-control text-center" autocomplete="username" aria-required="true" placeholder="name@example.com" />
 					<label asp-for="Input.Email" class="text-center">Email</label>
 					<span asp-validation-for="Input.Email" class="text-danger"></span>
 				</div>
 				<!-- Address -->
-				<div class="form-floating col-6">
+				<div class="form-floating @inputColNum">
 					<input asp-for="Input.Address" class="form-control text-center" autocomplete="username" aria-required="true" placeholder="name@example.com" />
 					<label asp-for="Input.Address" class="text-center">Complete Address</label>
 					<span asp-validation-for="Input.Address" class="text-danger"></span>
 				</div>
 				<!-- Phone Number -->
-				<div class="form-floating col-6">
+				<div class="form-floating @inputColNum">
 					<input asp-for="Input.PhoneNumber" class="form-control text-center" autocomplete="username" aria-required="true" placeholder="name@example.com" />
 					<label asp-for="Input.PhoneNumber" class="text-center">Phone Number</label>
 					<span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
@@ -58,7 +61,7 @@
 					<span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
 				</div>
 				<!-- Role -->
-				@if (User.IsInRole(Role.Admin.ToString()))
+				@if (isAdmin)
 				{
 					<div class="mb-3">
 						<select asp-for="Input.Role" asp-items="Model.Roles" class="form-control text-center" aria-required="true" placeholder="">
@@ -120,7 +123,7 @@
 	{
 		<!-- Right Column -->
 		<div class="col-6 d-flex flex-column justify-content-center">
-			<div class="mx-auto text-center">
+			<div class="mx-auto text-center img-register">
 				<img src="~/images/registersale.jpg" class="w-75 rounded-top-0 rounded-end-5 rounded-bottom-5 img-shadow border border-5" />
 			</div>
 		</div>

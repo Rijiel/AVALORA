@@ -6,7 +6,7 @@
 }
 
 <div class="row content">
-	<div class="col-6 offset-3 text-center">
+	<div class="col-10 col-lg-6 mx-auto text-center">
 		<form id="account" method="post">
 			<header class="header text-center">
 				<h2 class="text-dark-primary fs-7">@ViewData["Title"] <i class="bi bi-person-check"></i></h2>
@@ -35,8 +35,8 @@
 				<!-- Buttons -->
 				<div class="d-flex justify-content-evenly align-items-center mx-auto">
 					<span>
-						Don't have an account?
-						<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register here</a>
+						<span class="d-block d-lg-inline">Don't have an account?</span>
+						<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-nowrap">Register here</a>
 					</span>
 					<button id="login-submit" type="submit" class="w-50 btn btn-primary">Log in</button>
 				</div>				
