@@ -22,12 +22,12 @@
 							@if (Model.CartItemResponses != null && Model.CartItemResponses.Any())
 							{
 								<li class="list-group-item d-flex justify-content-between align-items-center border-bottom-0 p-4">
-									<h5 class="col-2 mb-0">Products Ordered</h5>
+									<h5 class="col mb-0">Products Ordered</h5>
 									<div class="col-6">
-										<div class="d-flex justify-content-end text-end">
-											<p class="col-4 m-0">Unit Price</p>
-											<p class="col-4 m-0">Quantity</p>
-											<p class="col-4 m-0">Item Subtotal</p>
+										<div class="d-flex justify-content-end">
+											<p class="col-4 m-0 text-start text-md-end">Unit Price</p>
+											<p class="col-4 m-0 text-center text-lg-end">Quantity</p>
+											<p class="col-4 m-0 text-end"><span class="d-none d-md-inline">Item</span> Subtotal</p>
 										</div>
 									</div>
 
@@ -39,7 +39,7 @@
 
 									<li class="list-group-item d-flex justify-content-between px-4">
 										<div>
-											<h6 class="text-truncate mw-20r my-0">@cart.Product.Name</h6>
+											<h6 class="text-truncate checkout-product-name my-0">@cart.Product.Name</h6>
 											<div class="my-0">
 												<small class="fst-italic">
 													Color:
@@ -68,7 +68,7 @@
 					<section class="mt-5 rounded bg-checkout">
 						<div class="row p-3">
 							<div class="col-6"></div>
-							<div class="col-6 bg-white rounded shadow-md p-3">
+							<div class="col-12 col-lg-6 bg-white rounded shadow-md p-3">
 								<h5>Shipping Details:</h5>
 								<div class="row gy-3 mt-2">
 									<div>

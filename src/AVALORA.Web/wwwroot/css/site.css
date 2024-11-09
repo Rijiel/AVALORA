@@ -418,7 +418,7 @@ input[type="radio"]:checked + .color-option {
 .bg-checkout {
     background-image: url(/images/pattern.png);
     background-size: cover;
-    background-position: center
+    background-position: left;
 }
 
 .badge-sm {
@@ -524,10 +524,6 @@ input[type="radio"]:checked + .color-option {
     max-width: 20rem;
 }
 
-.mw-vw{
-   
-}
-
 .min-vh-7 {
     min-height: 7vw
 }
@@ -554,6 +550,10 @@ input[type="radio"]:checked + .color-option {
     padding-top: 0 !important;
 }
 
+.checkout-product-name {
+    max-width: 11rem;
+}
+
 /* Media Query */
 
 @media (min-width: 576px) {
@@ -576,6 +576,10 @@ input[type="radio"]:checked + .color-option {
     .fs-delete-cart {
         font-size: 1.2rem;
     }
+
+    .checkout-product-name {
+        max-width: 13rem;
+    }
 }
 
 @media (min-width: 768px) {
@@ -585,6 +589,10 @@ input[type="radio"]:checked + .color-option {
 
     .fs-delete-cart {
         font-size: 0.875rem;
+    }
+
+    .checkout-product-name {
+        max-width: 15rem;
     }
 }
 
@@ -604,6 +612,14 @@ input[type="radio"]:checked + .color-option {
     .w-lg-100 {
         width: 100% !important
     }
+
+    .checkout-product-name{
+        max-width: 20rem;
+    }
+
+    .bg-checkout {
+        background-position: center;
+    }
 }
 
 @media (min-width: 1200px) {
@@ -615,6 +631,10 @@ input[type="radio"]:checked + .color-option {
         height: 3vw;
         width: auto;
         object-fit: cover;
+    }
+
+    .checkout-product-name {
+        max-width: 30rem;
     }
 }
 

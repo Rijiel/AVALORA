@@ -4,13 +4,13 @@
 }
 
 <div class="row content">
-	<div class="col-4 offset-4 text-center border border-light-gray rounded shadow-md p-5">
+	<div class="col-9 col-md-7 col-lg-6 col-xl-5 col-xxl-4 mx-auto text-center border border-light-gray rounded shadow-md p-5">
 		<header class="header text-center">
 			<h2 class="text-dark-primary fs-7">Complete your order <i class="bi bi-wallet2"></i></h2>
 		</header>
 		<div class="mt-4">
 			<strong>Amount to pay:</strong>
-			<input asp-for="TotalPrice" id="totalAmount" class="border-0 fs-8 text-dark-green fw-bold text-center" readonly />
+			<input asp-for="TotalPrice" id="totalAmount" class="form-control border-0 fs-8 text-dark-green fw-bold text-center" readonly />
 		</div>
 		<div class="mt-4">
 			<div id="notification-container"></div>
