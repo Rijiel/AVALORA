@@ -23,8 +23,8 @@
 				</div>
 				<!-- Buttons -->
 				<div class="mt-4 row d-flex justify-content-center">
+					<a onclick="Delete('/categories/delete/@Model.Id')" class="btn btn-danger btn-menu btn-col-8 order-last order-md-0">Delete Category</a>
 					<button type="submit" class="btn btn-primary btn-menu btn-col-8">Update</button>
-					<a onclick="Delete('/categories/delete/@Model.Id')" class="btn btn-danger btn-menu btn-col-8">Delete Category</a>
 					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 				</div>
 			</form>

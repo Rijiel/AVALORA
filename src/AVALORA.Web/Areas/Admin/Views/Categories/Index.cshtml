@@ -19,8 +19,8 @@
 			</div>
 			<!-- Buttons -->
 			<div class="mt-4 row d-flex justify-content-center gap-2">
+				<a class="btn btn-outline-primary btn-menu btn-col-10 order-last order-md-0" asp-area="@Role.User" asp-controller="Home" asp-action="Index">Back to Home</a>
 				<button type="submit" class="btn btn-primary btn-menu btn-col-10">Create</button>
-				<a class="btn btn-outline-primary btn-menu btn-col-10" asp-area="@Role.User" asp-controller="Home" asp-action="Index">Back to Home</a>
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			</div>
 		</form>

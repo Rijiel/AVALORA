@@ -564,12 +564,17 @@ input[type="radio"]:checked + .color-option {
     margin-right: 10%
 }
 
+.dt-buttons {
+    width: 50% !important
+}
+
+
+
 
 
 
 
 /* Media Query */
-
 @media (min-width: 576px) {
     body::before {
         content: "SM";
@@ -615,6 +620,10 @@ input[type="radio"]:checked + .color-option {
 
     .btn-col-10 {
         width: 30%;
+    }
+
+    .dt-buttons {
+        width: 100% !important
     }
 }
 

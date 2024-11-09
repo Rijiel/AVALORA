@@ -10,13 +10,13 @@
 		<h2 class="text-dark-primary fs-7">Edit Product <i class="bi bi-pencil-square"></i></h2>
 	</header>
 	<div class="row text-center mt-4">
-		<div class="col-8 offset-2">
+		<div class="col-12 col-lg-8 offset-lg-2">
 			<form method="post" enctype="multipart/form-data" onsubmit="handleSubmit()">
 				<fieldset class="fieldset row gy-3">
 					<!-- Id -->
 					<input asp-for="Id" hidden />
 					<!-- Name -->
-					<div class="form-floating col-6">
+					<div class="form-floating col-md-6">
 						<input asp-for="Name" class="form-control text-center" placeholder="" />
 						<label asp-for="Name" class="text-center"></label>
 						<span asp-validation-for="Name" class="text-danger"></span>
@@ -48,12 +48,12 @@
 						<span asp-validation-for="ImageFiles" class="text-danger"></span>
 					</div>
 					<!-- Colors -->
-					<div class="col-6">
-						<div class="d-flex align-items-center justify-content-center">
-							<div class="col-4">
-								<label class="form-label form-label-muted">Available Colors:</label>
+					<div class="col-md-6">
+						<div class="d-lg-flex align-items-center justify-content-center">
+							<div class="col-lg-4">
+								<label class="form-label form-label-muted mb-0">Available Colors:</label>
 							</div>
-							<div class="col-6 mt-1">
+							<div class="col-md-10 col-lg-8 col-xl-6 mt-1 d-md-flex d-lg-block overflow-x-auto">
 								@for (int i = 1; i < Enum.GetValues(typeof(Color)).Length; i++)
 								{
 									Color color = (Color)Enum.GetValues(typeof(Color)).GetValue(i)!;
@@ -95,8 +95,8 @@
 					</div>
 					<!-- Buttons -->
 					<div class="mt-4 row d-flex justify-content-center">
-						<button type="submit" class="btn btn-primary btn-menu">Update</button>
 						<a asp-action="Index" class="btn btn-outline-primary btn-menu">Back to List</a>
+						<button type="submit" class="btn btn-primary btn-menu">Update</button>
 						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 					</div>
 				</fieldset>

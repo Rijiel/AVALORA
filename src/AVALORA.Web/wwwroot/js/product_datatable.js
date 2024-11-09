@@ -1,9 +1,12 @@
 ﻿$(function () {
     dataTables();
+
+    $(".dt-buttons").parent().addClass("text-center");
 })
 
 function dataTables() {
     $('#dataTable').DataTable({
+        responsive: true,
         layout: {
             topStart: {
                 buttons: [
@@ -17,18 +20,18 @@ function dataTables() {
         },
         columns: [
             { data: 'id', width: '10%' },
-            { data: 'name', class: 'text-truncate mw-1r text-center', width: '25%' },
+            { data: 'name', class: 'text-truncate mw-1r text-center w-25' },
             { data: 'price', class: 'text-center', width: '10%' },
             { data: 'category.name', class: 'text-center', width: '15%' },
             { data: 'productImagesCount', class: 'text-center', width: '12%' },
             {
                 data: 'id',
-                width: '15%',
+                width: '20%',
                 render: function (data) {
                     return `
                     <div class="d-flex">
-                        <a href="/products/edit/${data}" class="btn btn-sm btn-secondary rounded-0 mx-1 w-50"><i class="bi bi-pencil"></i> Edit</a>
-                        <a onclick="Delete('/products/delete?id=${data}')" class="btn btn-sm btn-danger rounded-0 mx-1 w-50"><i class="bi bi-trash"></i> Delete</a>
+                        <a href="/products/edit/${data}" class="btn btn-sm btn-secondary rounded-0 mx-1 w-50"><i class="bi bi-pencil d-none d-xl-inline"></i> Edit</a>
+                        <a onclick="Delete('/products/delete?id=${data}')" class="btn btn-sm btn-danger rounded-0 mx-1 w-50"><i class="bi bi-trash d-none d-xl-inline"></i> Delete</a>
                     </div>                    
                     `;
                 }
