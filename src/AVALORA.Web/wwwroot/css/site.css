@@ -115,67 +115,6 @@ body {
     font-size: 0.875em
 }
 
-/* Media Query */
-@media (min-width: 576px) {
-    body::before {
-        content: "SM";
-    }
-
-    .text-lg-body {
-        color: rgba(var(--bs-dark-rgb))
-    }
-
-    .text-logout {
-        color: rgba(var(--bs-danger-rgb))
-    }
-
-        .text-logout:hover {
-            color: #d5745b;
-        }
-}
-
-@media (min-width: 768px) {
-    body::before {
-        content: "MD";
-    }
-}
-
-@media (min-width: 992px) {
-    body::before {
-        content: "LG";
-    }
-
-    .text-lg-body {
-        color: rgba(var(--bs-body-color-rgb))
-    }
-
-    .text-logout {
-        color: rgba(var(--bs-body-color-rgb))
-    }
-
-    .w-lg-100 {
-        width: 100% !important
-    }
-}
-
-@media (min-width: 1200px) {
-    body::before {
-        content: "XL";
-    }
-
-    .img-sidebar {
-        height: 3vw;
-        width: auto;
-        object-fit: cover;
-    }
-}
-
-@media (min-width: 1400px) {
-    body::before {
-        content: "XXL";
-    }
-}
-
 /* Animations */
 
 .dropdown-anim {
@@ -536,11 +475,11 @@ input[type="radio"]:checked + .color-option {
 }
 
 .navbar-brand > img {
-    max-width: 11vw;
-    min-width: 150px;
+    max-width: 9.5vw;
+    min-width: 130px;
     display: block;
     width: 100%;
-    padding: 0 24px;
+    padding-left: 10px;
 }
 
 .text-truncate-multiline {
@@ -585,6 +524,10 @@ input[type="radio"]:checked + .color-option {
     max-width: 20rem;
 }
 
+.mw-vw{
+   
+}
+
 .min-vh-7 {
     min-height: 7vw
 }
@@ -609,4 +552,74 @@ input[type="radio"]:checked + .color-option {
 
 .pt-t {
     padding-top: 0 !important;
+}
+
+/* Media Query */
+
+@media (min-width: 576px) {
+    body::before {
+        content: "SM";
+    }
+
+    .text-lg-body {
+        color: rgba(var(--bs-dark-rgb))
+    }
+
+    .text-logout {
+        color: rgba(var(--bs-danger-rgb))
+    }
+
+        .text-logout:hover {
+            color: #d5745b;
+        }
+
+    .fs-delete-cart {
+        font-size: 1.2rem;
+    }
+}
+
+@media (min-width: 768px) {
+    body::before {
+        content: "MD";
+    }
+
+    .fs-delete-cart {
+        font-size: 0.875rem;
+    }
+}
+
+@media (min-width: 992px) {
+    body::before {
+        content: "LG";
+    }
+
+    .text-lg-body {
+        color: rgba(var(--bs-body-color-rgb))
+    }
+
+    .text-logout {
+        color: rgba(var(--bs-body-color-rgb))
+    }
+
+    .w-lg-100 {
+        width: 100% !important
+    }
+}
+
+@media (min-width: 1200px) {
+    body::before {
+        content: "XL";
+    }
+
+    .img-sidebar {
+        height: 3vw;
+        width: auto;
+        object-fit: cover;
+    }
+}
+
+@media (min-width: 1400px) {
+    body::before {
+        content: "XXL";
+    }
 }

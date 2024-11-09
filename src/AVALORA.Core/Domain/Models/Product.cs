@@ -15,7 +15,7 @@ public class Product
 	public string Name { get; set; } = null!;
 
 	[Required]
-	[StringLength(200)]
+	[StringLength(1000)]
 	public string Description { get; set; } = null!;
 
 	[Range(0, 5000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
