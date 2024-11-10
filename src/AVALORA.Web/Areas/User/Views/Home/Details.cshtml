@@ -7,10 +7,10 @@
 }
 <breadcrumb></breadcrumb>
 
-<div class="row content-lg">
-	<div class="col-12">
+<div class="content-lg">
+	<div class="col-12 row gap-11">
 		<!-- Product Details -->
-		<section>
+		<section class="bg-details rounded rounded-3 ps-5 py-3">
 			@using (Html.BeginForm("Details", "Home", FormMethod.Post))
 			{
 				<input asp-for="CartItemAddRequestVM.ProductResponse.Id" hidden />
@@ -21,7 +21,7 @@
 
 				<div class="row mt-4">
 					<!-- Left Column -->
-					<div class="col-4">
+					<div class="col-4 carousel-container">
 						@{
 							var product = Model.CartItemAddRequestVM.ProductResponse;
 						}
@@ -38,7 +38,7 @@
 								<div class="carousel-inner">
 									@for (int i = 0; i < product.ProductImages.Count; i++)
 									{
-										<div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="5000">
+										<div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="50000">
 											<img src="@product.ProductImages.ElementAt(i).Path" alt="product image">
 										</div>
 									}
@@ -53,10 +53,11 @@
 								</button>
 							</div>
 							<hr />
+							<!-- Mini Images -->
 							<div class="row mt-3">
 								@foreach (var image in product.ProductImages.Take(4))
 								{
-									<div class="col-3  d-flex align-items-center">
+									<div class="col-6 col-md-4 col-lg-3 d-flex align-items-center mt-2">
 										<img src="@image.Path" class="w-100" alt="product image">
 									</div>
 								}
@@ -71,9 +72,10 @@
 					<!-- Right Column-->
 					<div class="col-8 ps-5">
 						<div class="mt-3">
+							<!-- Product Details -->
 							<div class="d-inline-block">
 								<p class="badge bg-orange pb-2">@product.Category.Name</p>
-								<h4 class="">@Model.CartItemAddRequestVM.ProductResponse.Name</h4>
+								<h4 class="text-truncate-multiline text-break">@Model.CartItemAddRequestVM.ProductResponse.Name</h4>
 							</div>
 							<div class="d-flex align-items-center">
 								<div class="d-inline-block">
@@ -104,18 +106,15 @@
 									<span class="mb-2 text-decoration-line-through text-black-50">@product.ListPrice.Value.ToString("c")</span>
 								}
 							</div>
-							<div class="mt-5 overflow-auto" style="max-height: 20rem">
-								<p>@Html.Raw(product.Description)</p>
-							</div>
 							<!-- Colors -->
 							@if (product.Colors.FirstOrDefault() != Color.None)
 							{
-								<div class="my-2 row">
+								<div class="mt-4 row">
 									@{
 										var colors = product.Colors;
 									}
 									<label class="form-label text-muted small opacity-75">Available Colors:</label>
-									<div class="col-2">
+									<div class="d-colors">
 										@for (int i = 0; i < colors.Count; i++)
 										{
 											<div class="d-inline-block mx-1">
@@ -130,10 +129,11 @@
 							}
 							<!-- Buttons -->
 							<div class="row mt-5">
-								<div class="col-3">
+								<div class="col-7 col-md-5 col-lg-4 col-xl-3">
 									<div class="mt-3 input-group">
 										<div class="input-group-text bg-secondary border-0 text-light fw-bold">Count</div>
-										<input asp-for="CartItemAddRequestVM.CartItemAddRequest.Count" type="number" min="1" value="1" class="form-control border-1 rounded-0 rounded-end text-end pe-2" />
+										<input asp-for="CartItemAddRequestVM.CartItemAddRequest.Count" type="number" min="1" value="1"
+											   class="form-control border-1 rounded-0 rounded-end text-end pe-2" />
 										<span asp-validation-for="CartItemAddRequestVM.CartItemAddRequest.Count" class="text-danger"></span>
 									</div>
 								</div>
@@ -147,10 +147,24 @@
 			}
 		</section>
 
+		<!-- Product Description -->
+		<section class="row">
+			<div class="col-md-9 col-lg-8 border-light-gray overflow-auto mx-auto" style="max-height: 70vh">
+				<header>
+					<h4 class="text-uppercase">Product Description</h4>
+				</header>
+				<div>
+					<p>@Html.Raw(Model.CartItemAddRequestVM.ProductResponse.Description)</p>
+				</div>
+			</div>
+		</section>
+
 		<!-- Product Reviews -->
-		<section class="row mt-11">
-			<div class="col-8 offset-2">
-				<h4 class="text-uppercase text-secondary">Product Reviews <i class="bi bi-chat-square-dots"></i></h4>
+		<section class="row">
+			<div class="col-md-9 col-lg-8 mx-auto">
+				<header>
+					<h4 class="text-uppercase text-secondary">Product Reviews <i class="bi bi-chat-square-dots"></i></h4>
+				</header>
 				<div>
 					@if (User.Identity!.IsAuthenticated)
 					{
