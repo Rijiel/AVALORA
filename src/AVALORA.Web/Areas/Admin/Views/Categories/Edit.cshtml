@@ -6,26 +6,30 @@
 <breadcrumb></breadcrumb>
 
 <div class="content-lg">
-	<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3"><i class="bi bi-caret-left-fill"></i> Back to List</a>
-	<header class="header text-center">
-		<h2 class="text-dark-primary fs-7">Edit Category <i class="bi bi-pencil-square"></i></h2>
+	<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3" aria-label="Back to category list"
+	   title="Back to category list"><i class="bi bi-caret-left-fill" aria-hidden="true"></i> Back to List</a>
+	<header class="header text-center" aria-labelledby="edit-category-header">
+		<h2 id="edit-category-header" class="text-dark-primary fs-7">Edit Category <i class="bi bi-pencil-square" aria-hidden="true"></i></h2>
 	</header>
 	<div class="row text-center mt-4">
 		<div class="col-8 col-lg-6 mx-auto">
-			<form method="post">
+			<form method="post" aria-labelledby="edit-category-header">
 				<!-- Id -->
-				<input asp-for="Id" hidden />
+				<input asp-for="Id" hidden aria-hidden="true" />
 				<!-- Name -->
 				<div class="form-floating">
-					<input asp-for="Name" class="form-control text-center" placeholder="" />
+					<input asp-for="Name" class="form-control text-center" placeholder="Enter category name" aria-required="true" />
 					<label asp-for="Name" class="text-center"></label>
-					<span asp-validation-for="Name" class="text-danger"></span>
+					<span asp-validation-for="Name" class="text-danger" role="alert"></span>
 				</div>
 				<!-- Buttons -->
 				<div class="mt-4 row d-flex justify-content-center">
-					<a onclick="Delete('/categories/delete/@Model.Id')" class="btn btn-danger btn-menu btn-col-8 order-last order-md-0">Delete Category</a>
-					<button type="submit" class="btn btn-primary btn-menu btn-col-8">Update</button>
-					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+					<a onclick="Delete('/categories/delete/@Model.Id')" class="btn btn-danger btn-menu btn-col-8 order-last order-md-0"
+					   role="button" aria-label="Delete category" title="Delete this category">Delete Category</a>
+					<button type="submit" class="btn btn-primary btn-menu btn-col-8" aria-label="Update category" title="Update category">
+						Update
+					</button>
+					<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 				</div>
 			</form>
 		</div>

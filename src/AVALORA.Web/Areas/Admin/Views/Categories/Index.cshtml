@@ -7,31 +7,32 @@
 
 <div class="row content">
 	<!-- Left Column -->
-	<section class="col-10 col-lg-6 offset-1 offset-lg-0">
-		<form method="post" class="text-center">
+	<section class="col-10 col-lg-6 offset-1 offset-lg-0" aria-labelledby="create-category-header">
+		<form method="post" class="text-center" role="form" aria-label="Create Category Form">
 			<header class="header text-center">
-				<h2 class="text-dark-primary fs-7">Create New Category <i class="bi bi-clipboard2-plus"></i></h2>
+				<h2 id="create-category-header" class="text-dark-primary fs-7">Create New Category <i class="bi bi-clipboard2-plus" aria-hidden="true"></i></h2>
 			</header>
 			<!-- Name -->
 			<div class="mt-4">
-				<input asp-for="CategoryAddRequest.Name" class="form-control text-center w-75 mx-auto" placeholder="" />
-				<span asp-validation-for="CategoryAddRequest.Name" class="text-danger"></span>
+				<input asp-for="CategoryAddRequest.Name" class="form-control text-center w-75 mx-auto" placeholder="Enter category name" aria-label="Category Name" aria-required="true" />
+				<span asp-validation-for="CategoryAddRequest.Name" class="text-danger" role="alert"></span>
 			</div>
 			<!-- Buttons -->
 			<div class="mt-4 row d-flex justify-content-center gap-2">
-				<a class="btn btn-outline-primary btn-menu btn-col-10 order-last order-md-0" asp-area="@Role.User" asp-controller="Home" asp-action="Index">Back to Home</a>
-				<button type="submit" class="btn btn-primary btn-menu btn-col-10">Create</button>
-				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<a class="btn btn-outline-primary btn-menu btn-col-10 order-last order-md-0" asp-area="@Role.User" asp-controller="Home" 
+				asp-action="Index" aria-label="Back to Home" title="Back to Home">Back to Home</a>
+				<button type="submit" class="btn btn-primary btn-menu btn-col-10" aria-label="Create new category" title="Create new category">Create</button>
+				<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 			</div>
 		</form>
 		<!-- All Categories -->
 		<div class="mt-5 text-center">
-			<h5 class="text-dark-primary">All Categories</h5>
-			<div class="row mt-3">
+			<h5 id="all-categories-header" class="text-dark-primary">All Categories</h5>
+			<div class="row mt-3" role="list" aria-labelledby="all-categories-header">
 				@foreach (var category in Model.CategoryResponses)
 				{
-					<div class="col-3 col-md-2 mb-3 p-0 text-truncate">
-						<a asp-action="Edit" asp-route-id="@category.Id">
+					<div class="col-3 col-md-2 mb-3 p-0 text-truncate" role="listitem">
+						<a asp-action="Edit" asp-route-id="@category.Id" aria-label="Edit category @category.Name" title="@category.Name">
 							@category.Name
 						</a>
 					</div>
@@ -40,12 +41,12 @@
 		</div>
 	</section>
 	<!-- Right Column -->
-	<section class="col-10 col-lg-6 offset-1 offset-lg-0 d-none d-lg-flex flex-column justify-content-end">
+	<section class="col-10 col-lg-6 offset-1 offset-lg-0 d-none d-lg-flex flex-column justify-content-end" aria-hidden="true">
 		<div class="text-center dropdown-anim">
-			<img src="~/images/categories.png" class="w-50 z-1" />
+			<img src="~/images/categories.png" class="w-50 z-1" alt="Categories illustration" title="Categories illustration" />
 		</div>
 		<div class="img-category text-center d-flex justify-content-end">
-			<img src="~/images/categoryitems.png" class="w-75 z-n1" loading="lazy" />
+			<img src="~/images/categoryitems.png" class="w-75 z-n1" loading="lazy" alt="Category items illustration" title="Category items illustration" />
 		</div>
 	</section>
 </div>

@@ -53,6 +53,9 @@ public class PaymentController : BaseController<PaymentController>
 					return NotFound("Order not found");
 				}
 
+				// Ensure total price has 2 decimal places
+				orderSummaryResponse.TotalPrice = Math.Round(orderSummaryResponse.TotalPrice, 2);
+
 				// Only empty cart when checking out
 				if (TempData[SD.TEMPDATA_CLEARCART] is bool == true)
 					await _cartFacade.ClearCartItemsAsync(this, cancellationToken);

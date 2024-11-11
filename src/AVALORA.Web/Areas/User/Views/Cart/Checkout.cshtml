@@ -4,21 +4,23 @@
 }
 
 <div class="content-lg">
-	<header class="header text-center">
-		<h2 class="text-dark-primary fs-7">Checkout <i class="bi bi-send-check"></i></h2>
+	<header class="header text-center" aria-labelledby="checkout-header">
+		<h2 id="checkout-header" class="text-dark-primary fs-7">Checkout <i class="bi bi-send-check" aria-hidden="true"></i></h2>
 	</header>
 	<div class="row mt-4">
 		<div class="col-10 offset-1">
-			<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3"><i class="bi bi-caret-left-fill"></i> Back to cart</a>
-			<form method="post">
+			<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3" aria-label="Back to cart" title="Back to cart">
+				<i class="bi bi-caret-left-fill" aria-hidden="true"></i> Back to cart
+			</a>
+			<form method="post" aria-label="Checkout form">
 				<div class="row gy-3 pt-2">
-					<input asp-for="ApplicationUserId" hidden />
-					<input asp-for="EstimatedFromDate" hidden />
-					<input asp-for="EstimatedToDate" hidden />
-					<input asp-for="TotalPrice" hidden />
+					<input asp-for="ApplicationUserId" hidden aria-hidden="true">
+					<input asp-for="EstimatedFromDate" hidden aria-hidden="true" />
+					<input asp-for="EstimatedToDate" hidden aria-hidden="true" />
+					<input asp-for="TotalPrice" hidden aria-hidden="true" />
 					<!-- Order Summary -->
-					<section class="mt-4 px-0">
-						<ul class="list-group">
+					<section class="mt-4 px-0" aria-label="Order summary">
+						<ul class="list-group" role="group">
 							@if (Model.CartItemResponses != null && Model.CartItemResponses.Any())
 							{
 								<li class="list-group-item d-flex justify-content-between align-items-center border-bottom-0 p-4">
@@ -59,17 +61,17 @@
 							}
 							<!-- Total -->
 							<li class="list-group-item d-flex justify-content-between px-4">
-								<small class="fw-semibold">Total (USD)</small>
-								<strong>@Model.TotalPrice.ToString("c")</strong>
+								<small class="fw-semibold" aria-label="Total price in USD">Total (USD)</small>
+								<strong aria-label="Total price value">@Model.TotalPrice.ToString("c")</strong>
 							</li>
 						</ul>
 					</section>
 					<!-- Shipping Details -->
-					<section class="mt-5 rounded bg-checkout">
+					<section class="mt-5 rounded bg-checkout" aria-labelledby="shipping-details-header">
 						<div class="row p-3">
 							<div class="col-6"></div>
 							<div class="col-12 col-lg-6 bg-white rounded shadow-md p-3">
-								<h5>Shipping Details:</h5>
+								<h5 id="shipping-details-header">Shipping Details:</h5>
 								<div class="row gy-3 mt-2">
 									<div>
 										<div class="row">
@@ -77,8 +79,8 @@
 												<p class="my-0">Name:</p>
 											</div>
 											<div class="col-9">
-												<input asp-for="Name" class="form-control" />
-												<span asp-validation-for="Name" class="text-danger"></span>
+												<input asp-for="Name" class="form-control" aria-required="true" placeholder="John Doe" />
+												<span asp-validation-for="Name" class="text-danger" role="alert"></span>
 											</div>
 										</div>
 									</div>
@@ -88,8 +90,8 @@
 												<p class="my-0">Phone:</p>
 											</div>
 											<div class="col-9">
-												<input asp-for="PhoneNumber" class="form-control" />
-												<span asp-validation-for="PhoneNumber" class="text-danger"></span>
+												<input asp-for="PhoneNumber" class="form-control" aria-required="true" placeholder="+1 234 567 890" />
+												<span asp-validation-for="PhoneNumber" class="text-danger" role="alert"></span>
 											</div>
 										</div>
 									</div>
@@ -99,8 +101,8 @@
 												<p class="my-0">Address:</p>
 											</div>
 											<div class="col-9">
-												<input asp-for="Address" class="form-control" />
-												<span asp-validation-for="Address" class="text-danger"></span>
+												<input asp-for="Address" class="form-control" aria-required="true" placeholder="1234 Main St" />
+												<span asp-validation-for="Address" class="text-danger" role="alert"></span>
 											</div>
 										</div>
 									</div>
@@ -110,8 +112,8 @@
 												<p class="my-0">Email:</p>
 											</div>
 											<div class="col-9">
-												<input asp-for="Email" class="form-control" />
-												<span asp-validation-for="Email" class="text-danger"></span>
+												<input asp-for="Email" class="form-control" aria-required="true" placeholder="email@example.com" />
+												<span asp-validation-for="Email" class="text-danger" role="alert"></span>
 											</div>
 										</div>
 									</div>
@@ -120,14 +122,15 @@
 						</div>
 					</section>
 				</div>
-				<section class="mt-5">
+				<!-- Order Confirmation -->
+				<section class="mt-5" aria-label="Order confirmation">
 					<hr />
 					<div class="d-flex justify-content-between">
-						<small class="text-danger">
+						<small class="text-danger" aria-label="Estimated arrival date">
 							Estimate Arrival Date:
 							<span class="fw-semibold">@Model.EstimatedFromDate.ToShortDateString() - @Model.EstimatedToDate.ToShortDateString()</span>
 						</small>
-						<button type="submit" class="btn btn-primary">Place Order</button>
+						<button type="submit" class="btn btn-primary" aria-label="Place order" title="Place order">Place Order</button>
 					</div>
 				</section>
 			</form>

@@ -15,21 +15,24 @@
 <breadcrumb></breadcrumb>
 
 <div class="content-lg">
-	<header class="header text-center">
-		<h2 class="text-dark-primary fs-7">Order Details <i class="bi bi-box2"></i></h2>
+	<header class="header text-center" aria-labelledby="edit-order-header">
+		<h2 id="edit-order-header" class="text-dark-primary fs-7">Order Details <i class="bi bi-box2" aria-hidden="true"></i></h2>
 	</header>
 	<div class="row mt-4">
 		<div class="col-12">
-			<form method="post">
-				<input asp-for="OrderHeaderResponse.Id" hidden />
-				<input asp-for="OrderHeaderResponse.ApplicationUserId" hidden />
-				<input asp-for="OrderHeaderResponse.OrderStatus" hidden />
+			<form method="post" aria-labelledby="edit-order-header">
+				<input asp-for="OrderHeaderResponse.Id" hidden aria-hidden="true" />
+				<input asp-for="OrderHeaderResponse.ApplicationUserId" hidden aria-hidden="true" />
+				<input asp-for="OrderHeaderResponse.OrderStatus" hidden aria-hidden="true" />
 
-				<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3"><i class="bi bi-caret-left-fill"></i> Back to Orders</a>
+				<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3" aria-label="Back to Orders" title="Back to Orders">
+					<i class="bi bi-caret-left-fill" aria-hidden="true"></i> Back to Orders
+				</a>
 
 				<div class="row text-center mt-3">
 					<!-- Left Column: Pickup Details -->
-					<section class="col-md-10 col-lg-6 mx-auto order-last order-lg-first mt-5 mt-lg-0">
+					<section class="col-md-10 col-lg-6 mx-auto order-last order-lg-first mt-5 mt-lg-0" aria-labelledby="pickup-details-header">
+						<header id="pickup-details-header" class="visually-hidden">Pickup Details</header>
 						<fieldset class="fieldset">
 							<legend class="legend legend-order fs-5 fw-semibold text-heading text-start">Pickup Details:</legend>
 							<div class="row gy-3">
@@ -40,8 +43,8 @@
 											<p class="my-0">Name:</p>
 										</div>
 										<div class="col-9">
-											<input asp-for="OrderHeaderResponse.Name" class="form-control" readonly="@isReadOnly" />
-											<span asp-validation-for="OrderHeaderResponse.Name" class="text-danger"></span>
+											<input asp-for="OrderHeaderResponse.Name" class="form-control" readonly="@isReadOnly" placeholder="John Doe" aria-label="Name" />
+											<span asp-validation-for="OrderHeaderResponse.Name" class="text-danger" role="alert"></span>
 										</div>
 									</div>
 								</div>
@@ -52,8 +55,8 @@
 											<p class="my-0">Phone:</p>
 										</div>
 										<div class="col-9">
-											<input asp-for="OrderHeaderResponse.PhoneNumber" class="form-control" readonly="@isReadOnly" />
-											<span asp-validation-for="OrderHeaderResponse.PhoneNumber" class="text-danger"></span>
+											<input asp-for="OrderHeaderResponse.PhoneNumber" class="form-control" readonly="@isReadOnly" placeholder="+1 123-456-789" aria-label="Phone" />
+											<span asp-validation-for="OrderHeaderResponse.PhoneNumber" class="text-danger" role="alert"></span>
 										</div>
 									</div>
 								</div>
@@ -64,8 +67,8 @@
 											<p class="my-0">Address:</p>
 										</div>
 										<div class="col-9">
-											<input asp-for="OrderHeaderResponse.Address" class="form-control" readonly="@isReadOnly" />
-											<span asp-validation-for="OrderHeaderResponse.Address" class="text-danger"></span>
+											<input asp-for="OrderHeaderResponse.Address" class="form-control" readonly="@isReadOnly" placeholder="123 Main Street" aria-label="Address" />
+											<span asp-validation-for="OrderHeaderResponse.Address" class="text-danger" role="alert"></span>
 										</div>
 									</div>
 								</div>
@@ -76,8 +79,8 @@
 											<p class="my-0">Email:</p>
 										</div>
 										<div class="col-9">
-											<input asp-for="OrderHeaderResponse.Email" class="form-control" readonly="@isReadOnly" />
-											<span asp-validation-for="OrderHeaderResponse.Email" class="text-danger"></span>
+											<input asp-for="OrderHeaderResponse.Email" class="form-control" readonly="@isReadOnly" placeholder="email@example.com" aria-label="Email" />
+											<span asp-validation-for="OrderHeaderResponse.Email" class="text-danger" role="alert"></span>
 										</div>
 									</div>
 								</div>
@@ -88,8 +91,9 @@
 											<p class="my-0">Order Date:</p>
 										</div>
 										<div class="col-9">
-											<input value="@Model.OrderHeaderResponse.OrderDate.ToLongDateString()" class="form-control" readonly />
-											<span asp-validation-for="OrderHeaderResponse.OrderDate" class="text-danger"></span>
+											<input value="@Model.OrderHeaderResponse.OrderDate.ToLongDateString()" class="form-control" readonly
+												   aria-label="Order Date" />
+											<span asp-validation-for="OrderHeaderResponse.OrderDate" class="text-danger" role="alert"></span>
 										</div>
 									</div>
 								</div>
@@ -102,8 +106,9 @@
 												<p class="my-0">Carrier:</p>
 											</div>
 											<div class="col-9">
-												<input asp-for="OrderHeaderResponse.Carrier" class="form-control" readonly="@isReadOnly" />
-												<span asp-validation-for="OrderHeaderResponse.Carrier" class="text-danger"></span>
+												<input asp-for="OrderHeaderResponse.Carrier" class="form-control" readonly="@isReadOnly" 
+												aria-label="Carrier" placeholder="FedEx" />
+												<span asp-validation-for="OrderHeaderResponse.Carrier" class="text-danger" role="alert"></span>
 											</div>
 										</div>
 									</div>
@@ -114,8 +119,9 @@
 												<p class="my-0">Tracking Number:</p>
 											</div>
 											<div class="col-9">
-												<input asp-for="OrderHeaderResponse.TrackingNumber" class="form-control" readonly="@isReadOnly" />
-												<span asp-validation-for="OrderHeaderResponse.TrackingNumber" class="text-danger"></span>
+												<input asp-for="OrderHeaderResponse.TrackingNumber" class="form-control" readonly="@isReadOnly"
+													   aria-label="Tracking Number" placeholder="123456789" />
+												<span asp-validation-for="OrderHeaderResponse.TrackingNumber" class="text-danger" role="alert"></span>
 											</div>
 										</div>
 									</div>
@@ -129,8 +135,9 @@
 												<p class="my-0">Shipping Date:</p>
 											</div>
 											<div class="col-9">
-												<input value="@(Model.OrderHeaderResponse.ShippingDate != null ? Model.OrderHeaderResponse.ShippingDate.Value.ToLongDateString() : null)" class="form-control" readonly />
-												<span asp-validation-for="OrderHeaderResponse.ShippingDate" class="text-danger"></span>
+												<input value="@(Model.OrderHeaderResponse.ShippingDate != null ? Model.OrderHeaderResponse.ShippingDate.Value.ToLongDateString() : null)" class="form-control" readonly
+													   aria-label="Shipping Date" />
+												<span asp-validation-for="OrderHeaderResponse.ShippingDate" class="text-danger" role="alert"></span>
 											</div>
 										</div>
 									</div>
@@ -144,8 +151,8 @@
 												<p class="my-0">Payment ID:</p>
 											</div>
 											<div class="col-9">
-												<input asp-for="OrderHeaderResponse.PaymentID" class="form-control" readonly />
-												<span asp-validation-for="OrderHeaderResponse.PaymentID" class="text-danger"></span>
+												<input asp-for="OrderHeaderResponse.PaymentID" class="form-control" readonly aria-label="Payment ID" />
+												<span asp-validation-for="OrderHeaderResponse.PaymentID" class="text-danger" role="alert"></span>
 											</div>
 										</div>
 									</div>
@@ -159,8 +166,9 @@
 												<p class="my-0">Payment Due Date:</p>
 											</div>
 											<div class="col-9">
-												<input value="@(Model.OrderHeaderResponse.PaymentDueDate != null ? Model.OrderHeaderResponse.PaymentDueDate.Value.ToLongDateString() : null)" class="form-control" readonly />
-												<span asp-validation-for="OrderHeaderResponse.PaymentDueDate" class="text-danger"></span>
+												<input value="@(Model.OrderHeaderResponse.PaymentDueDate != null ? Model.OrderHeaderResponse.PaymentDueDate.Value.ToLongDateString() : null)" class="form-control" readonly
+													   aria-label="Payment Due Date" />
+												<span asp-validation-for="OrderHeaderResponse.PaymentDueDate" class="text-danger" role="alert"></span>
 											</div>
 										</div>
 									</div>
@@ -172,8 +180,8 @@
 											<p class="my-0">Payment Status:</p>
 										</div>
 										<div class="col-9">
-											<input asp-for="OrderHeaderResponse.PaymentStatus" class="form-control" readonly />
-											<span asp-validation-for="OrderHeaderResponse.PaymentStatus" class="text-danger"></span>
+											<input asp-for="OrderHeaderResponse.PaymentStatus" class="form-control" readonly aria-label="Payment Status" />
+											<span asp-validation-for="OrderHeaderResponse.PaymentStatus" class="text-danger" role="alert"></span>
 										</div>
 									</div>
 								</div>
@@ -183,7 +191,10 @@
 									<div>
 										<div class="row">
 											<div class="">
-												<button type="submit" asp-action="UpdateDetails" class="btn btn-secondary form-control">Update Order Details</button>
+												<button type="submit" asp-action="UpdateDetails" class="btn btn-secondary form-control"
+														aria-label="Update Order Details" title="Update Order Details">
+													Update Order Details
+												</button>
 											</div>
 										</div>
 									</div>
@@ -192,13 +203,15 @@
 						</fieldset>
 					</section>
 					<!-- Right Column: Order Summary -->
-					<section class="col-md-10 col-lg-6 col-xl-5 mx-auto">
-						<h5 class="fs-5 fw-semibold text-start">Order Summary:</h5>
-						<div class="mt-4 border border-light-gray shadow-md rounded p-4">
-							<h6 class="text-uppercase text-center d-block border border-secondary text-secondary rounded py-2 mt-2">Order Status - @Model.OrderHeaderResponse.OrderStatus</h6>
+					<section class="col-md-10 col-lg-6 col-xl-5 mx-auto" aria-labelledby="order-summary-header">
+						<h5 id="order-summary-header" class="fs-5 fw-semibold text-start">Order Summary:</h5>
+						<div class="mt-4 border border-light-gray shadow-md rounded p-4" role="region" aria-labelledby="order-summary-header">
+							<h6 class="text-uppercase text-center d-block border border-secondary text-secondary rounded py-2 mt-2" aria-live="polite">
+								Order Status - @Model.OrderHeaderResponse.OrderStatus
+							</h6>
 							<!-- Items -->
-							<ul class="list-group mt-2">
-								<li class="list-group-item">
+							<ul class="list-group mt-2" role="list">
+								<li class="list-group-item" role="listitem">
 									<div class="row">
 										<div class="col-4">
 										</div>
@@ -212,10 +225,10 @@
 								</li>
 								@foreach (var item in Model.OrderSummaryResponse!.OrderSummaryItems)
 								{
-									<li class="list-group-item">
+									<li class="list-group-item" role="listitem">
 										<div class="row align-items-center">
 											<div class="col-4 text-start align-self-center">
-												<h6 class="m-0">@item.Product?.Name</h6>
+												<h6 class="m-0 text-truncate">@item.Product?.Name</h6>
 												<small class="d-block">Quantity: @item.Count</small>
 											</div>
 											<div class="col-4 text-end">
@@ -229,32 +242,42 @@
 										</div>
 									</li>
 								}
-								<li class="list-group-item d-flex justify-content-between align-middle fs-5 bg-secondary text-light">
+								<li class="list-group-item d-flex justify-content-between align-middle fs-5 bg-secondary text-light" role="listitem">
 									<p class="mb-0 text-uppercase">Total</p>
-									<p class="mb-0">@Model.OrderSummaryResponse.TotalPrice.ToString("c")</p>
+									<p class="mb-0" aria-label="Total Price">@Model.OrderSummaryResponse.TotalPrice.ToString("c")</p>
 								</li>
 							</ul>
 							<!-- Buttons -->
 							<div class="row g-2 mt-2">
 								@if ((Model.IsPending || (Model.IsPaymentCancelled && !Model.IsCancelled) || (Model.IsShipped && Model.IsPaymentDelayed)) && Model.OrderHeaderResponse.ApplicationUserId == userId)
 								{
-									<a asp-action="Pay" asp-route-id="@Model.OrderHeaderResponse.Id" class="btn btn-success form-control">Pay Now</a>
+									<a asp-action="Pay" asp-route-id="@Model.OrderHeaderResponse.Id" class="btn btn-success form-control"
+									   role="button" aria-label="Pay Now" title="Pay Now">
+										Pay Now
+									</a>
 								}
 								@if (isAdmin)
 								{
 									@if (Model.IsApproved)
 									{
 										<a asp-action="Process" asp-route-id="@Model.OrderHeaderResponse.Id"
-										   class="btn btn-primary form-control">Start Processing</a>
+										   class="btn btn-primary form-control" role="button" aria-label="Start Processing" title="Start Processing">
+											Start Processing
+										</a>
 									}
 									@if (Model.IsProcessing)
 									{
-										<button type="submit" asp-action="Ship" class="btn btn-primary form-control">Ship Order</button>
+										<button type="submit" asp-action="Ship" class="btn btn-primary form-control" role="button" aria-label="Ship Order" title="Ship Order">
+											Ship Order
+										</button>
 									}
 								}
 								@if (!Model.IsCancelled && !Model.IsShipped)
 								{
-									<a onclick="CancelOrder(@Model.OrderHeaderResponse.Id)" class="btn btn-danger form-control">Cancel Order</a>
+									<a onclick="CancelOrder(@Model.OrderHeaderResponse.Id)" class="btn btn-danger form-control" role="button"
+									   aria-label="Cancel Order" title="Cancel Order">
+										Cancel Order
+									</a>
 								}
 							</div>
 						</div>

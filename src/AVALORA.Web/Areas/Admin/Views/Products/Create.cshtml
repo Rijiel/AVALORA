@@ -6,44 +6,48 @@
 <breadcrumb></breadcrumb>
 
 <div class="content-lg">
-	<header class="header text-center">
-		<h2 class="text-dark-primary fs-7">Post New Product <i class="bi bi-clipboard2-plus"></i></h2>
+	<header class="header text-center" aria-labelledby="post-product-header">
+		<h2 id="post-product-header" class="text-dark-primary fs-7">Post New Product <i class="bi bi-clipboard2-plus" aria-hidden="true"></i></h2>
 	</header>
 	<div class="row text-center mt-4">
 		<div class="col-12 col-lg-8 offset-lg-2">
-			<form method="post" enctype="multipart/form-data" onsubmit="handleSubmit()">
+			<form method="post" enctype="multipart/form-data" onsubmit="handleSubmit()" aria-labelledby="post-product-header">
 				<fieldset class="fieldset row gy-3">
 					<!-- Name -->
 					<div class="form-floating col-md-6">
-						<input asp-for="Name" class="form-control text-center" placeholder="" />
+						<input asp-for="Name" class="form-control text-center" placeholder="Enter product name" aria-required="true" />
 						<label asp-for="Name" class="text-center"></label>
-						<span asp-validation-for="Name" class="text-danger"></span>
+						<span asp-validation-for="Name" class="text-danger" role="alert"></span>
 					</div>
 					<!-- Category Id -->
 					<div class="form-floating col-6">
-						<select asp-for="CategoryId" asp-items="Model.Categories" class="form-control form-select text-center">
+						<select asp-for="CategoryId" asp-items="Model.Categories" class="form-control form-select text-center" aria-required="true">
 							<option selected disabled>--Please select--</option>
 						</select>
 						<label asp-for="CategoryId" class="text-center">Category</label>
-						<span asp-validation-for="CategoryId" class="text-danger"></span>
+						<span asp-validation-for="CategoryId" class="text-danger" role="alert"></span>
 					</div>
 					<!-- Price -->
 					<div class="form-floating col-6">
-						<input type="number" min="1" value="1" asp-for="Price" class="form-control text-center" placeholder="" />
+						<input type="number" min="1" value="1" asp-for="Price" class="form-control text-center" 
+						placeholder="Enter price" aria-required="true" />
 						<label asp-for="Price" class="text-center"></label>
-						<span asp-validation-for="Price" class="text-danger"></span>
+						<span asp-validation-for="Price" class="text-danger" role="alert"></span>
 					</div>
 					<!-- List Price -->
 					<div class="form-floating col-6">
-						<input type="number" asp-for="ListPrice" value="" class="form-control text-center" placeholder="" />
+						<input type="number" asp-for="ListPrice" value="" class="form-control text-center" placeholder="Enter list price (optional)" />
 						<label asp-for="ListPrice" class="text-center">List Price (Optional)</label>
-						<span asp-validation-for="ListPrice" class="text-danger"></span>
+						<span asp-validation-for="ListPrice" class="text-danger" role="alert"></span>
 					</div>
 					<!-- Product Image -->
 					<div class="form-floating col-6">
-						<input type="file" multiple asp-for="ImageFiles" class="form-control text-center" placeholder="" />
+						<input type="file" multiple asp-for="ImageFiles" class="form-control text-center" aria-describedby="image-upload-desc" />
 						<label asp-for="ImageFiles" class="text-center"></label>
-						<span asp-validation-for="ImageFiles" class="text-danger"></span>
+						<small id="image-upload-desc" class="text-muted fst-italic">
+							Select one or more images (first image will be the product cover)
+							</small>
+						<span asp-validation-for="ImageFiles" class="text-danger" role="alert"></span>
 					</div>
 					<!-- Colors -->
 					<div class="col-md-6">
@@ -51,7 +55,7 @@
 							<div class="col-lg-4">
 								<label class="form-label form-label-muted mb-0">Available Colors:</label>
 							</div>
-							<div class="col-md-10 col-lg-8 col-xl-6 mt-1 d-md-flex d-lg-block overflow-x-auto">
+							<div class="col-md-10 col-lg-8 col-xl-6 mt-1 d-md-flex d-lg-block overflow-x-auto" role="group" aria-label="Available colors">
 								@for (int i = 1; i < Enum.GetValues(typeof(Color)).Length; i++)
 								{
 									Color color = (Color)Enum.GetValues(typeof(Color)).GetValue(i)!;
@@ -67,18 +71,20 @@
 					<div>
 						<div>
 							<label asp-for="Description" class="form-label form-label-muted"></label>
-							<input id="Description" asp-for="Description" hidden />
-							<div id="description_input" class="form-control description rounded-top-0">
+							<input id="Description" asp-for="Description" hidden aria-hidden="true" aria-required="true" />
+							<div id="description_input" class="form-control description rounded-top-0" aria-live="polite">
 								@Html.Raw(Model.Description)
 							</div>
-							<span asp-validation-for="Description" class="text-danger"></span>
+							<span asp-validation-for="Description" class="text-danger" role="alert"></span>
 						</div>
 					</div>
 					<!-- Buttons -->
 					<div class="mt-4 row d-flex justify-content-center">
-						<a asp-action="Index" class="btn btn-outline-primary btn-menu">Back to List</a>
-						<button type="submit" class="btn btn-primary btn-menu">Create</button>
-						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+						<a asp-action="Index" class="btn btn-outline-primary btn-menu" aria-label="Back to product list" title="Back to product list">
+							Back to List
+							</a>
+						<button type="submit" class="btn btn-primary btn-menu" aria-label="Create new product" title="Create new product">Create</button>
+						<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 					</div>
 				</fieldset>
 			</form>

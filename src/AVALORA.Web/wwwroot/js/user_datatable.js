@@ -35,8 +35,15 @@ function dataTables() {
                     const btnText = isLocked ? 'Locked' : 'Unlocked';
                     return `
                     <div class="d-flex">
-                    <a onclick="lockUnlock('/Users/LockUnlock?id=${data.id}')" class="btn btn-sm ${btnClass} rounded-0 mx-1 w-50"><i class="${btnIcon} d-none d-xl-inline"></i> ${btnText}</a>
-                    <a href="/Users/Edit/${data.id}" class="btn btn-sm btn-danger rounded-0 mx-1 w-50"><i class="bi bi-pencil-square d-none d-xl-inline"></i> Permission</a>
+                        <a onclick="lockUnlock('/Users/LockUnlock?id=${data.id}')" class="btn btn-sm ${btnClass} rounded-0 mx-1 w-50" 
+                        aria-label="Lock/Unlock user account" title="Lock/Unlock user account">
+                            <i class="${btnIcon} d-none d-xl-inline" aria-hidden="true">
+                            </i> ${btnText}
+                        </a>
+                        <a href="/Users/Edit/${data.id}" class="btn btn-sm btn-danger rounded-0 mx-1 w-50" aria-label="Permission" title="Permission">
+                            <i class="bi bi-pencil-square d-none d-xl-inline" aria-hidden="true">
+                                </i> Permission
+                        </a>
                     </div>                    
                     `;
                 }

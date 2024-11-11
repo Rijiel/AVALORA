@@ -37,24 +37,24 @@
 			else {
 				document.getElementById("notification-container").innerHTML = `
 									<div class="alert alert-danger alert-dismissible fade show" role="alert">
-									<strong>Transaction Error!</strong>
-									<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+										<strong>Transaction Error!</strong>
+										<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 									</div>`
 			}
 		},
 
-		oncancel(data) {
+		onCancel(data) {
 			document.getElementById("notification-container").innerHTML = `
 							<div class="alert alert-danger alert-dismissible fade show" role="alert">
-							<strong>Payment Canceled!</strong>
-							<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+								<strong>Payment Canceled!</strong>
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 							</div>`
 		},
-		onerror(err) {
+		onError(err) {
 			document.getElementById("notification-container").innerHTML = `
 							<div class="alert alert-danger alert-dismissible fade show" role="alert">
-							<strong>An error occurred!</strong>
-							<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+								<strong>An error occurred!</strong>
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 							</div>`
 		}
 	}).render('#paypal-button-container');

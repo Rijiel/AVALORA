@@ -33,29 +33,45 @@
 						<button type="button" class="btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 					</div>
 					<!-- Sidebar Body -->
-					<div class="offcanvas-body d-flex flex-column justify-content-center align-items-center text-center">
+					<div class="offcanvas-body d-flex flex-column justify-content-center align-items-center text-center" role="navigation">
 						@if (User.Identity!.IsAuthenticated)
 						{
-							<ul class="navbar-nav flex-grow-1 justify-content-center pe-3 d-flex d-flex-column gap-3">
-								<li class="nav-item mx-2">
-									<a class="nav-link text-dark" asp-area="@Role.User" asp-controller="Home" asp-action="Index">Home</a>
+							<ul class="navbar-nav flex-grow-1 justify-content-center pe-3 d-flex d-flex-column gap-3" role="menu">
+								<li class="nav-item mx-2" role="menuitem">
+									<a class="nav-link text-dark" asp-area="@Role.User" asp-controller="Home" asp-action="Index" aria-label="Go to Home" title="Home">Home</a>
 								</li>
-								<li class="nav-item mx-2">
-									<a class="nav-link text-dark" asp-area="@Role.User" asp-controller="Orders" asp-action="Index">Orders</a>
+								<li class="nav-item mx-2" role="menuitem">
+									<a class="nav-link text-dark" asp-area="@Role.User" asp-controller="Orders" asp-action="Index" aria-label="View Orders" title="Orders">Orders</a>
 								</li>
 								<!-- Admin Dropdown -->
 								@if (User.IsInRole(Role.Admin.ToString()))
 								{
-									<li class="nav-item dropdown mx-2" id="admin-dropdown">
-										<a class="nav-link dropdown-toggle text-dark" data-bs-dropup="true" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Manage Shop</a>
-										<div class="dropdown-menu">
-											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Categories" asp-action="Index">Categories</a>
+									<li class="nav-item dropdown mx-2" id="admin-dropdown" role="menuitem" aria-haspopup="true">
+										<a class="nav-link dropdown-toggle text-dark" data-bs-dropup="true" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+										   aria-expanded="false" aria-label="Manage Shop" title="Manage Shop">Manage Shop</a>
+										<div class="dropdown-menu" role="menu" aria-labelledby="admin-dropdown">
+											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Categories" asp-action="Index" aria-label="Manage Categories"
+											   title="Categories">
+												Categories
+											</a>
 											<hr class="dropdown-divider" />
-											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Products" asp-action="Index">Products</a>
-											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Products" asp-action="Create">New Product</a>
+											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Products" asp-action="Index" aria-label="Manage Products"
+											   title="Products">
+												Products
+											</a>
+											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Products" asp-action="Create" aria-label="Create New Product"
+											   title="New Product">
+												New Product
+											</a>
 											<hr class="dropdown-divider" />
-											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Users" asp-action="Index">Users</a>
-											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Users" asp-action="Create">New User</a>
+											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Users" asp-action="Index" aria-label="Manage Users"
+											   title="Users">
+												Users
+											</a>
+											<a class="dropdown-item" asp-area="@Role.Admin" asp-controller="Users" asp-action="Create" aria-label="Create New User"
+											   title="New User">
+												New User
+											</a>
 										</div>
 									</li>
 								}
@@ -72,12 +88,16 @@
 					<form asp-area="@Role.User" asp-controller="Home" asp-action="Index" class="d-flex" method="get">
 						@if (!String.IsNullOrEmpty(ViewBag.Category))
 						{
-							<input type="hidden" name="category" value="@ViewBag.Category" />
+							<input type="hidden" name="category" value="@ViewBag.Category" aria-hidden="true" />
+						}
+						@if (!String.IsNullOrEmpty(ViewBag.Color))
+						{
+							<input type="hidden" name="color" value="@ViewBag.Color" aria-hidden="true" />
 						}
 						<div class="input-group">
 							<input type="text" name="search" id="search" class="form-control rounded rounded-pill border-primary border-opacity-50" placeholder="Search" aria-label="Search" />
 							<span class="input-group-text bg-white border-start-0 border-0 border-bottom-0 border ms-n5 rounded-end-pill text-primary text-opacity-75">
-								<i class="bi bi-search"></i>
+								<i class="bi bi-search" aria-hidden="true"></i>
 							</span>
 						</div>
 					</form>
@@ -87,8 +107,8 @@
 				{
 					<ul class="navbar-nav order-2 order-lg-3">
 						<li class="nav-item">
-							<a class="nav-link text-dark position-relative" asp-area="@Role.User" asp-controller="Cart" asp-action="Index">
-								<i class="bi bi-bag-dash"></i>
+							<a class="nav-link text-dark position-relative" asp-area="@Role.User" asp-controller="Cart" asp-action="Index" aria-label="Go to Cart" title="Cart">
+								<i class="bi bi-bag-dash" aria-hidden="true"></i>
 								@await Component.InvokeAsync("CartBadge")
 							</a>
 						</li>

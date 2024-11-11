@@ -14,16 +14,16 @@
 <breadcrumb></breadcrumb>
 
 <div class="row content-lg">
-	<header class="header text-center">
-		<h2 class="text-dark-primary fs-7">Order History <i class="bi bi-clipboard-minus"></i></h2>
+	<header class="header text-center" aria-labelledby="order-history-header">
+		<h2 id="order-history-header" class="text-dark-primary fs-7">Order History <i class="bi bi-clipboard-minus" aria-hidden="true"></i></h2>
 	</header>
 	<div class="col-12 mt-4">
 		<!-- Button Group -->
-		<nav class="d-flex justify-content-end justify-content-md-center justify-content-lg-end">
-			<a class="btn btn-primary me-3 d-block d-md-none align-self-end" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false"
-			   aria-controls="collapseFilter">Filter <i class="bi bi-funnel-fill"></i>
+		<nav class="d-flex justify-content-end justify-content-md-center justify-content-lg-end" aria-label="Order filter options">
+			<a class="btn btn-primary me-3 d-block d-md-none align-self-end" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter" aria-label="Filter orders by status">
+				Filter <i class="bi bi-funnel-fill" aria-hidden="true"></i>
 			</a>
-			<div class="btn-group dt-order-buttons d-none d-md-flex">
+			<div class="btn-group dt-order-buttons d-none d-md-flex" role="group" aria-label="Filter by status">
 				@foreach (var (name, status) in buttonDictionary)
 				{
 					@await Html.PartialAsync("_StatusButtonPartial", new ViewDataDictionary(ViewData) { { "Name", name }, { "Status", status } })
@@ -31,7 +31,7 @@
 			</div>
 		</nav>
 		<div class="d-flex justify-content-end mt-2 d-block d-md-none">
-			<div class="btn-group-vertical collapse" id="collapseFilter">
+			<div class="btn-group-vertical collapse" id="collapseFilter" role="group" aria-label="Vertical filter options">
 				@foreach (var (name, status) in buttonDictionary)
 				{
 					@await Html.PartialAsync("_StatusButtonPartial", new ViewDataDictionary(ViewData) { { "Class", "rounded-0" }, { "Name", name }, { "Status", status } })
@@ -40,8 +40,10 @@
 		</div>
 
 		<!-- Data Table -->
-		<div class="table-responsive">
-			<table id="dataTable" class="table table-bordered table-hover mt-3" cellspacing="0" width="100%">
+		<div class="table-responsive" role="region" aria-labelledby="order-history-header">
+			<table id="dataTable" class="table table-bordered table-hover mt-3" cellspacing="0" width="100%" aria-describedby="order-history-header">
+				<caption class="visually-hidden">List of orders with details such as name, phone number, email, address, status, order date, and total price
+				</caption>
 				<thead>
 					<tr>
 						<th class="bg-primary text-white">ID</th>

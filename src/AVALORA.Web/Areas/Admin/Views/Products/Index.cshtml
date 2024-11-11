@@ -5,13 +5,14 @@
 <breadcrumb></breadcrumb>
 
 <div class="row content-lg">
-	<header class="header text-center">
-		<h2 class="text-dark-primary fs-7">AVALORA Product Listing <i class="bi bi-list-ol"></i></h2>
+	<header class="header text-center" aria-labelledby="product-listing-header">
+		<h2 id="product-listing-header" class="text-dark-primary fs-7">AVALORA Product Listing <i class="bi bi-list-ol" aria-hidden="true"></i></h2>
 	</header>
 	<div class="col-12">
 		<!-- Data Table -->
-		<div class="table-responsive">
-			<table id="dataTable" class="table table-bordered table-hover" cellspacing="0" width="100%">
+		<div class="table-responsive" role="region" aria-labelledby="product-listing-header">
+			<table id="dataTable" class="table table-bordered table-hover" cellspacing="0" width="100%" aria-describedby="product-listing-header">
+				<caption class="visually-hidden">List of AVALORA products with details such as ID, Name, Price, Category, and Product Images</caption>
 				<thead>
 					<tr>
 						<th class="bg-primary text-white align-middle">ID</th>

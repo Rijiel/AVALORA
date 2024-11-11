@@ -4,16 +4,17 @@
 }
 
 <div class="row content">
-	<div class="col-9 col-md-7 col-lg-6 col-xl-5 col-xxl-4 mx-auto text-center border border-light-gray rounded shadow-md p-5">
-		<header class="header text-center">
-			<h2 class="text-dark-primary fs-7">Complete your order <i class="bi bi-wallet2"></i></h2>
+	<div class="col-9 col-md-7 col-lg-6 col-xl-5 col-xxl-4 mx-auto text-center border border-light-gray rounded shadow-md p-5" role="region">
+		<header class="header text-center" aria-labelledby="order-header">
+			<h2 id="order-header" class="text-dark-primary fs-7">Complete your order <i class="bi bi-wallet2"></i></h2>
 		</header>
 		<div class="mt-4">
 			<strong>Amount to pay:</strong>
-			<input asp-for="TotalPrice" id="totalAmount" class="form-control border-0 fs-8 text-dark-green fw-bold text-center" readonly />
+			<input asp-for="TotalPrice" id="totalAmount" class="form-control border-0 fs-8 text-dark-green fw-bold text-center" readonly
+				   aria-label="Total amount to pay" aria-describedby="order-header" />
 		</div>
 		<div class="mt-4">
-			<div id="notification-container"></div>
+			<div id="notification-container" role="alert" aria-live="polite"></div>
 			<div id="paypal-button-container"></div>
 		</div>
 	</div>

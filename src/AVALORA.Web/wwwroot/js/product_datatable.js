@@ -30,8 +30,10 @@ function dataTables() {
                 render: function (data) {
                     return `
                     <div class="d-flex">
-                        <a href="/products/edit/${data}" class="btn btn-sm btn-secondary rounded-0 mx-1 w-50"><i class="bi bi-pencil d-none d-xl-inline"></i> Edit</a>
-                        <a onclick="Delete('/products/delete?id=${data}')" class="btn btn-sm btn-danger rounded-0 mx-1 w-50"><i class="bi bi-trash d-none d-xl-inline"></i> Delete</a>
+                        <a href="/products/edit/${data}" class="btn btn-sm btn-secondary rounded-0 mx-1 w-50" aria-label="Edit" title="Edit">
+                            <i class="bi bi-pencil d-none d-xl-inline" aria-hidden="true"></i> Edit</a>
+                        <a onclick="Delete('/products/delete?id=${data}')" class="btn btn-sm btn-danger rounded-0 mx-1 w-50" aria-label="Delete" title="Delete">
+                            <i class="bi bi-trash d-none d-xl-inline" aria-hidden="true"></i> Delete</a>
                     </div>                    
                     `;
                 }

@@ -7,13 +7,16 @@
 	@if (SignInManager.IsSignedIn(User))
 	{
 		<li class="nav-item btn-group dropdown ps-0" id="login-dropdown">
-			<a class="nav-link text-dark fs-5 d-none d-lg-block" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-				<i class="bi bi-person"></i>
+			<a class="nav-link text-dark fs-5 d-none d-lg-block" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
+			   aria-label="Account" title="Account">
+				<i class="bi bi-person" aria-hidden="true"></i>
 			</a>
 			<div class="dropdown-menu dropdown-menu-end" id="login-dropdown-menu">
-				<a class="dropdown-item text-lg-body" id="manage" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Manage Account</a>
+				<a class="dropdown-item text-lg-body" id="manage" asp-area="Identity" asp-page="/Account/Manage/Index" aria-label="Manage Account" title="Manage Account">
+					Manage Account
+				</a>
 				<form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-					<button id="logout" type="submit" class="dropdown-item text-logout" title="Logout">Logout</button>
+					<button id="logout" type="submit" class="dropdown-item text-logout" aria-label="Logout" title="Logout">Logout</button>
 				</form>
 			</div>
 		</li>
@@ -21,10 +24,10 @@
 	else
 	{
 		<li class="nav-item px-1 my-1">
-			<a class="nav-link text-secondary text-decoration-underline" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+			<a class="nav-link text-secondary text-decoration-underline" id="login" asp-area="Identity" asp-page="/Account/Login" aria-label="Login" title="Login">Login</a>
 		</li>
 		<li class="nav-item bg-secondary rounded rounded-pill my-1">
-			<a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+			<a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register" aria-label="Register" title="Register">Register</a>
 		</li>
 	}
 </ul>

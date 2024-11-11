@@ -55,7 +55,8 @@ function dataTables(status) {
                 render: function (data) {
                     return `
                     <div class="d-flex">
-                    <a href="/orders/edit/${data}" class="btn btn-sm btn-secondary rounded-0 mx-1"><i class="bi bi-pencil"></i> Edit</a>
+                        <a href="/orders/edit/${data}" class="btn btn-sm btn-secondary rounded-0 mx-1" aria-label="Edit" title="Edit">
+                            <i class="bi bi-pencil" aria-hidden="true"></i> Edit</a>
                     </div>                    
                     `;
                 }

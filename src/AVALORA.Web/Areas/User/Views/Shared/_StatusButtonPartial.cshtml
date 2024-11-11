@@ -8,4 +8,6 @@
 }
 
 <a asp-action="Index" asp-route-status="@ViewBag.Status"
-   class="btn @ViewBag.Class @(query == @ViewBag.Status ? btnActive : btnOutline)">@ViewBag.Name</a>
+   class="btn @ViewBag.Class @(query == @ViewBag.Status ? btnActive : btnOutline)" role="button" aria-label="@ViewBag.Name" title="@ViewBag.Name">
+	@ViewBag.Name
+</a>

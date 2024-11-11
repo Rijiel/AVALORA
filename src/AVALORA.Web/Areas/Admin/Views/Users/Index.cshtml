@@ -5,13 +5,14 @@
 <breadcrumb></breadcrumb>
 
 <div class="row content-lg">
-	<header class="header text-center">
-		<h2 class="text-dark-primary fs-7">User Accounts <i class="bi bi-people"></i></h2>
+	<header class="header text-center" aria-labelledby="user-accounts-header">
+		<h2 id="user-accounts-header" class="text-dark-primary fs-7">User Accounts <i class="bi bi-people" aria-hidden="true"></i></h2>
 	</header>
 	<div class="col-12">
 		<!-- Data Table -->
-		<div class="table-responsive">
-			<table id="dataTable" class="table table-bordered table-hover" cellspacing="0" width="100%">
+		<div class="table-responsive" role="region" aria-labelledby="user-accounts-header">
+			<table id="dataTable" class="table table-bordered table-hover" cellspacing="0" width="100%" aria-describedby="user-accounts-header">
+				<caption class="visually-hidden">List of user accounts with details such as name, email, address, phone number and role</caption>
 				<thead>
 					<tr>
 						<th class="text-center bg-primary text-white align-middle">Name</th>

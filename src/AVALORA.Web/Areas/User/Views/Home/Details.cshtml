@@ -10,16 +10,18 @@
 <div class="content-lg">
 	<div class="col-12 row gap-11">
 		<!-- Product Details -->
-		<section class="bg-details rounded rounded-3 ps-5 py-3">
+		<section class="bg-details rounded rounded-3 ps-5 py-3" aria-labelledby="product-details-header">
+			<header id="product-details-header" class="visually-hidden">Product Details</header>
 			@using (Html.BeginForm("Details", "Home", FormMethod.Post))
 			{
-				<input asp-for="CartItemAddRequestVM.ProductResponse.Id" hidden />
-				<input asp-for="CartItemAddRequestVM.CartItemAddRequest.ProductId" hidden />
-				<input asp-for="CartItemAddRequestVM.CartItemAddRequest.ApplicationUserId" hidden />
+				<input asp-for="CartItemAddRequestVM.ProductResponse.Id" hidden aria-hidden="true" />
+				<input asp-for="CartItemAddRequestVM.CartItemAddRequest.ProductId" hidden aria-hidden="true" />
+				<input asp-for="CartItemAddRequestVM.CartItemAddRequest.ApplicationUserId" hidden aria-hidden="true" />
 
-				<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3"><i class="bi bi-caret-left-fill"></i> Back to Home</a>
+				<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3" aria-label="Back to Home" title="Back to Home">
+					<i class="bi bi-caret-left-fill" aria-hidden="true"></i> Back to Home</a>
 
-				<div class="row mt-4">
+				<div class="row mt-4" aria-labelledby="product-carousel">
 					<!-- Left Column -->
 					<div class="col-4 carousel-container">
 						@{
@@ -27,7 +29,9 @@
 						}
 						@if (product.ProductImages?.Count > 1)
 						{
-							<div id="carousel" class="carousel slide carousel-dark" data-bs-ride="carousel" data-bs-theme="dark">
+							<div id="carousel" class="carousel slide carousel-dark" data-bs-ride="carousel" data-bs-theme="dark" 
+							aria-labelledby="carousel-label">
+							<div id="carousel-label" class="visually-hidden">Product Images Carousel</div>
 								<div class="carousel-indicators">
 									@for (int i = 0; i < product.ProductImages.Count; i++)
 									{
@@ -38,16 +42,18 @@
 								<div class="carousel-inner">
 									@for (int i = 0; i < product.ProductImages.Count; i++)
 									{
-										<div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="50000">
-											<img src="@product.ProductImages.ElementAt(i).Path" alt="product image">
+										<div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="5000">
+											<img src="@product.ProductImages.ElementAt(i).Path" alt="Product image" 
+											title="Product image">
 										</div>
 									}
 								</div>
-								<button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+								<button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev" 
+								aria-label="Previous Slide">
 									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 									<span class="visually-hidden">Previous</span>
 								</button>
-								<button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+								<button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next" aria-label="Next Slide">
 									<span class="carousel-control-next-icon" aria-hidden="true"></span>
 									<span class="visually-hidden">Next</span>
 								</button>
@@ -58,7 +64,7 @@
 								@foreach (var image in product.ProductImages.Take(4))
 								{
 									<div class="col-6 col-md-4 col-lg-3 d-flex align-items-center mt-2">
-										<img src="@image.Path" class="w-100" alt="product image">
+										<img src="@image.Path" class="w-100" alt="Additional product image" title="Product image">
 									</div>
 								}
 							</div>
@@ -75,10 +81,10 @@
 							<!-- Product Details -->
 							<div class="d-inline-block">
 								<p class="badge bg-orange pb-2">@product.Category.Name</p>
-								<h4 class="text-truncate-multiline text-break">@Model.CartItemAddRequestVM.ProductResponse.Name</h4>
+								<h4 class="text-truncate-multiline text-break" aria-label="Product Name">@Model.CartItemAddRequestVM.ProductResponse.Name</h4>
 							</div>
 							<div class="d-flex align-items-center">
-								<div class="d-inline-block">
+								<div class="d-inline-block" aria-label="Product Rating">
 									<span class="text-decoration-underline me-1 fs-4">
 										@product.TotalRating.ToString("F1")
 									</span>
@@ -95,11 +101,11 @@
 								</div>
 							</div>
 							<div class="mt-3 lh-sm text-muted">
-								<span class="text-primary fw-semibold fs-6">
+								<span class="text-primary fw-semibold fs-6" aria-label="Product Price">
 									@product.Price.ToString("c")
 								</span>
 								<span class="me-1 text-primary">
-									<i class="bi bi-tags-fill"></i>
+									<i class="bi bi-tags-fill" aria-hidden="true"></i>
 								</span>
 								@if (product.ListPrice > 0 && product.ListPrice != product.Price)
 								{
@@ -109,11 +115,11 @@
 							<!-- Colors -->
 							@if (product.Colors.FirstOrDefault() != Color.None)
 							{
-								<div class="mt-4 row">
+								<div class="mt-4 row" aria-labelledby="available-colors-label">
 									@{
 										var colors = product.Colors;
 									}
-									<label class="form-label text-muted small opacity-75">Available Colors:</label>
+									<label id="available-colors-label" class="form-label text-muted small opacity-75">Available Colors:</label>
 									<div class="d-colors">
 										@for (int i = 0; i < colors.Count; i++)
 										{
@@ -124,7 +130,7 @@
 											</div>
 										}
 									</div>
-									<span asp-validation-for="CartItemAddRequestVM.CartItemAddRequest.Color" class="text-danger"></span>
+									<span asp-validation-for="CartItemAddRequestVM.CartItemAddRequest.Color" class="text-danger" role="alert"></span>
 								</div>
 							}
 							<!-- Buttons -->
@@ -133,12 +139,12 @@
 									<div class="mt-3 input-group">
 										<div class="input-group-text bg-secondary border-0 text-light fw-bold">Count</div>
 										<input asp-for="CartItemAddRequestVM.CartItemAddRequest.Count" type="number" min="1" value="1"
-											   class="form-control border-1 rounded-0 rounded-end text-end pe-2" />
-										<span asp-validation-for="CartItemAddRequestVM.CartItemAddRequest.Count" class="text-danger"></span>
+											   class="form-control border-1 rounded-0 rounded-end text-end pe-2" aria-label="Quantity" />
+										<span asp-validation-for="CartItemAddRequestVM.CartItemAddRequest.Count" class="text-danger" role="alert"></span>
 									</div>
 								</div>
 								<div class="my-3">
-									<button type="submit" class="btn btn-primary">Add to cart</button>
+									<button type="submit" class="btn btn-primary" aria-label="Add to Cart" title="Add to Cart">Add to cart</button>
 								</div>
 							</div>
 						</div>
@@ -148,10 +154,10 @@
 		</section>
 
 		<!-- Product Description -->
-		<section class="row">
+		<section class="row" aria-labelledby="product-description-header">
 			<div class="col-md-9 col-lg-8 border-light-gray overflow-auto mx-auto" style="max-height: 70vh">
 				<header>
-					<h4 class="text-uppercase">Product Description</h4>
+					<h4 id="product-description-header" class="text-uppercase">Product Description</h4>
 				</header>
 				<div>
 					<p>@Html.Raw(Model.CartItemAddRequestVM.ProductResponse.Description)</p>
@@ -160,10 +166,11 @@
 		</section>
 
 		<!-- Product Reviews -->
-		<section class="row">
+		<section class="row" aria-labelledby="reviews-header">
 			<div class="col-md-9 col-lg-8 mx-auto">
 				<header>
-					<h4 class="text-uppercase text-secondary">Product Reviews <i class="bi bi-chat-square-dots"></i></h4>
+					<h4 id="reviews-header" class="text-uppercase text-secondary" aria-live="polite">
+						Product Reviews <i class="bi bi-chat-square-dots" aria-hidden="true"></i></h4>
 				</header>
 				<div>
 					@if (User.Identity!.IsAuthenticated)
@@ -173,27 +180,31 @@
 							{
 								var productReviewAddRequest = Model.ProductReviewVM.ProductReviewAddRequest;
 
-								<input asp-for="@productReviewAddRequest.ProductId" hidden />
-								<input asp-for="@productReviewAddRequest.DatePosted" hidden />
-								<input asp-for="@productReviewAddRequest.UserName" id="userName" hidden />
-								<input asp-for="@productReviewAddRequest.Rating" id="rating" hidden />
+								<input asp-for="@productReviewAddRequest.ProductId" hidden aria-hidden="true" />
+								<input asp-for="@productReviewAddRequest.DatePosted" hidden aria-hidden="true" />
+								<input asp-for="@productReviewAddRequest.UserName" id="userName" hidden aria-hidden="true" />
+								<input asp-for="@productReviewAddRequest.Rating" id="rating" hidden aria-hidden="true" />
 								<!-- Star Rating -->
 								<div>
 									<strong id="myName">@productReviewAddRequest.UserName</strong>
 								</div>
-								<div class="text-orange mb-3" onmouseout="rateSelected()">
+								<div class="text-orange mb-3" onmouseout="rateSelected()" aria-label="Rate this product" role="group">
 									@for (int i = 1; i <= 5; i++)
 									{
-										<span id="span@(i)" onmouseout="rateOut(@(i))" onmouseover="rateOver(@(i))" onclick="rate(@(i))" class="bi bi-star"></span>
+										<span id="span@(i)" onmouseout="rateOut(@(i))" onmouseover="rateOver(@(i))" onclick="rate(@(i))" class="bi bi-star" role="button" aria-label="Star rating @i"></span>
 									}
 								</div>
-								<span asp-validation-for="@productReviewAddRequest.Rating" class="text-danger"></span>
+								<span asp-validation-for="@productReviewAddRequest.Rating" class="text-danger" role="alert"></span>
 								<!-- Comment -->
-								<textarea asp-for="@productReviewAddRequest.Comment" class="form-control" rows="3" placeholder="Type your review..."></textarea>
-								<span asp-validation-for="@productReviewAddRequest.Comment" class="text-danger"></span>
+								<textarea asp-for="@productReviewAddRequest.Comment" class="form-control" rows="3" placeholder="Type your review..." 
+									aria-describedby="review-comment-help"></textarea>
+								<span asp-validation-for="@productReviewAddRequest.Comment" class="text-danger" role="alert"></span>
 								<div class="d-flex align-items-center mt-2">
-									<button type="submit" class="btn btn-sm btn-secondary">Add Review</button>
-									<input type="checkbox" onchange="changeUserName(this.checked)" class="form-check-input ms-2 me-1" id="anonymous" />
+									<button type="submit" class="btn btn-sm btn-secondary" aria-label="Submit your review" title="Submit your review">
+										Add Review
+										</button>
+									<input type="checkbox" onchange="changeUserName(this.checked)" class="form-check-input ms-2 me-1" id="anonymous"
+									aria-label="Submit as anonymous" title="Submit as anonymous" />
 									<label for="anonymous" class="form-check-label">Anonymous?</label>
 								</div>
 							}
@@ -202,7 +213,7 @@
 					}
 				</div>
 				<!-- All Reviews -->
-				<div>
+				<div aria-live="polite">
 					@if (Model.ProductReviewVM.ProductReviewResponses?.Count() > 0)
 					{
 						<div>
@@ -216,7 +227,7 @@
 					}
 				</div>
 				<!-- Pagination -->
-				<nav class="container">
+				<nav class="container" aria-label="Product reviews pagination">
 					@if (pager!.TotalPages > 0)
 					{
 						<ul class="pagination justify-content-end">
@@ -224,7 +235,7 @@
 							{
 								<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
 									<a href="/Home/Details/@(Model.CartItemAddRequestVM.ProductResponse.Id)?page=@pge"
-									   class="page-link">@pge</a>
+											   class="page-link" aria-current="@(pge == pager.CurrentPage ? "page" : null)">@pge</a>
 								</li>
 							}
 						</ul>
