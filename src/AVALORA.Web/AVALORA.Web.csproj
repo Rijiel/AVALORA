@@ -45,4 +45,8 @@
     </Content>
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="AVALORA.IntegrationTests"/>
+	</ItemGroup>
+
 </Project>

@@ -30,7 +30,8 @@ public class PaymentController : BaseController<PaymentController>
 
 	public async Task<IActionResult> Index(int? id, CancellationToken cancellationToken)
 	{
-		OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id ?? 0);
+		OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService
+			.GetByIdAsync(id ?? 0, cancellationToken: cancellationToken);
 
 		// Only allow payment for current user's orders
 		if (orderHeaderResponse != null && orderHeaderResponse.ApplicationUserId == UserHelper.GetCurrentUserId(_contextAccessor))
@@ -45,7 +46,7 @@ public class PaymentController : BaseController<PaymentController>
 				ViewBag.ClientID = _paypal.Value.ClientID;
 
 				OrderSummaryResponse? orderSummaryResponse = await ServiceUnitOfWork.OrderSummaryService
-					.GetAsync(o => o.OrderHeaderId == id);
+					.GetAsync(o => o.OrderHeaderId == id, cancellationToken: cancellationToken);
 
 				if (orderSummaryResponse == null)
 				{
@@ -69,7 +70,7 @@ public class PaymentController : BaseController<PaymentController>
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Create([FromBody] JsonObject data)
+	public async Task<IActionResult> Create([FromBody] JsonObject data, CancellationToken cancellationToken)
 	{
 		if (!data.ContainsKey("amount") || !decimal.TryParse(data["amount"]?.ToString(), out decimal totalAmount))
 			return new JsonResult(new { Id = "", message = "Invalid amount or missing amount." });
@@ -94,7 +95,7 @@ public class PaymentController : BaseController<PaymentController>
 		};
 
 		string url = _paypal.Value.SandboxURL + "/v2/checkout/orders";
-		string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(_paypal.Value);
+		string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(_paypal.Value, cancellationToken);
 		var httpContent = new StringContent(createOrderRequest.ToString(), null, "application/json");
 
 		var jsonResponse = await ServiceUnitOfWork.PaymentService.SendRequestAsync(url, authHeaderValue, httpContent);
@@ -109,14 +110,14 @@ public class PaymentController : BaseController<PaymentController>
 		return new JsonResult(new { Id = "" });
 	}
 
-	public async Task<JsonResult> Complete([FromBody] JsonObject data)
+	public async Task<JsonResult> Complete([FromBody] JsonObject data, CancellationToken cancellationToken)
 	{
 		var orderId = data?["orderID"]?.ToString();
 		if (String.IsNullOrEmpty(orderId))
 			return new JsonResult("error");
 
 		string url = _paypal.Value.SandboxURL + $"/v2/checkout/orders/{orderId}/capture";
-		string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(_paypal.Value);
+		string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(_paypal.Value, cancellationToken);
 		var httpContent = new StringContent("", null, "application/json");
 
 		var jsonResponse = await ServiceUnitOfWork.PaymentService.SendRequestAsync(url, authHeaderValue, httpContent);
@@ -137,10 +138,11 @@ public class PaymentController : BaseController<PaymentController>
 		return new JsonResult(new { success = false, url = "" });
 	}
 
-	public async Task<IActionResult> OrderConfirmation(int? id)
+	public async Task<IActionResult> OrderConfirmation(int? id, CancellationToken cancellationToken)
 	{
 		var orderHeaderId = id ?? HttpContext.Session.GetInt32(SD.TEMPDATA_ORDERID);
-		OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(orderHeaderId);
+		OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService
+			.GetByIdAsync(orderHeaderId, cancellationToken: cancellationToken);
 		if (orderHeaderResponse == null)
 		{
 			Logger.LogWarning("Order not found");

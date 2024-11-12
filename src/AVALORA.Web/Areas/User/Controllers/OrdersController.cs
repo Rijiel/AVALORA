@@ -36,9 +36,9 @@ public class OrdersController : BaseController<OrdersController>
     }
 
     [Route("{id?}")]
-    public async Task<IActionResult> Edit(int? id)
+    public async Task<IActionResult> Edit(int? id, CancellationToken cancellationToken)
     {
-        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id);
+        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id, cancellationToken: cancellationToken);
         if (orderHeaderResponse == null)
         {
             Logger.LogWarning("Order not found.");
@@ -116,10 +116,10 @@ public class OrdersController : BaseController<OrdersController>
         return RedirectToAction(nameof(Edit), new { id = OrderVM.OrderHeaderResponse.Id });
     }
 
-    public async Task<IActionResult> Pay(int? id)
+    public async Task<IActionResult> Pay(int? id, CancellationToken cancellationToken)
     {
         // Check if orderheader user id is current user
-        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id);
+        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id, cancellationToken: cancellationToken);
         if (orderHeaderResponse == null)
         {
             Logger.LogWarning("Order not found.");
@@ -178,14 +178,14 @@ public class OrdersController : BaseController<OrdersController>
         return RedirectToAction(nameof(Edit), new { OrderVM.OrderHeaderResponse.Id });
     }
 
-    public async Task<IActionResult> Cancel(int? id, [FromServices] IOptions<PaypalSettings> paypal)
+    public async Task<IActionResult> Cancel(int? id, [FromServices] IOptions<PaypalSettings> paypal, CancellationToken cancellationToken)
     {
         // Issue a refund from PayPal
-        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id);
+        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id, cancellationToken: cancellationToken);
         if (orderHeaderResponse?.PaymentID != null)
         {
             string url = paypal.Value.SandboxURL + $"/v2/payments/captures/{orderHeaderResponse.PaymentID}/refund";
-            string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(paypal.Value);
+            string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(paypal.Value, cancellationToken);
             var httpContent = new StringContent("", null, "application/json");
 
             var jsonReponse = await ServiceUnitOfWork.PaymentService.SendRequestAsync(url, authHeaderValue, httpContent);
@@ -215,9 +215,10 @@ public class OrdersController : BaseController<OrdersController>
     }
 
     #region API CALLS
-    public async Task<IActionResult> GetAll(string? status)
+    public async Task<IActionResult> GetAll(string? status, CancellationToken cancellationToken)
     {
-        List<OrderHeaderResponse> orderHeaderResponseList = await ServiceUnitOfWork.OrderHeaderService.GetAllAsync();
+        List<OrderHeaderResponse> orderHeaderResponseList = await ServiceUnitOfWork.OrderHeaderService
+            .GetAllAsync(cancellationToken: cancellationToken);
 
         // Show carts only from user if not admin
         var userId = UserHelper.GetCurrentUserId(_contextAccessor);
@@ -246,7 +247,8 @@ public class OrdersController : BaseController<OrdersController>
             var orderVM = new OrderVM()
             {
                 OrderHeaderResponse = orderHeaderResponse,
-                OrderSummaryResponse = await ServiceUnitOfWork.OrderSummaryService.GetAsync(o => o.OrderHeaderId == orderHeaderResponse.Id)
+                OrderSummaryResponse = await ServiceUnitOfWork.OrderSummaryService
+                .GetAsync(o => o.OrderHeaderId == orderHeaderResponse.Id, cancellationToken: cancellationToken)
             };
 
             orderVMs.Add(orderVM);

@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9E6776B5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVALORA.ServiceTests", "..\tests\AVALORA.ServiceTests\AVALORA.ServiceTests.csproj", "{F5203A98-8971-47A1-93E9-BE0206A2F69D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVALORA.IntegrationTests", "..\tests\AVALORA.IntegrationTests\AVALORA.IntegrationTests.csproj", "{FB0490F1-7C70-45F8-A79A-571A6C83FF28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{F5203A98-8971-47A1-93E9-BE0206A2F69D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5203A98-8971-47A1-93E9-BE0206A2F69D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5203A98-8971-47A1-93E9-BE0206A2F69D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB0490F1-7C70-45F8-A79A-571A6C83FF28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB0490F1-7C70-45F8-A79A-571A6C83FF28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB0490F1-7C70-45F8-A79A-571A6C83FF28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB0490F1-7C70-45F8-A79A-571A6C83FF28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{87A71A40-D2AF-423C-BF83-EA47EBE32F0F} = {55375C69-6606-4406-940C-24431F4C1DFC}
 		{91EC41C0-4457-4FAF-A942-1D2ABAE85716} = {55375C69-6606-4406-940C-24431F4C1DFC}
 		{F5203A98-8971-47A1-93E9-BE0206A2F69D} = {9E6776B5-6819-47A9-840E-59226B6435E3}
+		{FB0490F1-7C70-45F8-A79A-571A6C83FF28} = {9E6776B5-6819-47A9-840E-59226B6435E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E35478E9-64A0-4E60-A045-DD019469F79D}

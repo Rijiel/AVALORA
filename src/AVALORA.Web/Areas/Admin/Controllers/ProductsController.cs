@@ -117,10 +117,10 @@ public class ProductsController : BaseController<ProductsController>
 	public async Task<JsonResult> GetAll(CancellationToken cancellationToken)
 	{
 		List<ProductResponse> productResponses = await ServiceUnitOfWork.ProductService
-			.GetAllAsync(cancellationToken: cancellationToken, includes: [nameof(ProductResponse.Category)]);
+			.GetAllAsync(includes: [nameof(ProductResponse.Category)], cancellationToken: cancellationToken);
 
 		foreach (var productResponse in productResponses)
-			productResponse.ProductImagesCount = await _productFacade.GetProductImageCount(productResponse.Id);
+			productResponse.ProductImagesCount = await _productFacade.GetProductImageCount(productResponse.Id, cancellationToken);
 
 		Logger.LogInformation("Retrieved all products with product images count.");
 		return Json(new { data = productResponses });

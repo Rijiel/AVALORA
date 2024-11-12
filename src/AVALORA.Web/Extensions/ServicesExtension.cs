@@ -9,6 +9,7 @@ using AVALORA.Infrastructure.DatabaseContext;
 using AVALORA.Infrastructure.DbInitializer;
 using AVALORA.Infrastructure.Repositories;
 using FoolProof.Core;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;

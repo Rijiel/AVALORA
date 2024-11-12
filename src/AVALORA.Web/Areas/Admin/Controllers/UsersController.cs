@@ -29,16 +29,16 @@ public class UsersController : BaseController<UsersController>
 
 	[HttpGet]
 	[Route("{id?}")]
-	public async Task<IActionResult> Edit(string? id)
+	public async Task<IActionResult> Edit(string? id, CancellationToken cancellationToken)
 	{
-		var applicationUserResponse = await ServiceUnitOfWork.ApplicationUserService.GetByIdAsync(id);
+		var applicationUserResponse = await ServiceUnitOfWork.ApplicationUserService.GetByIdAsync(id, cancellationToken: cancellationToken);
 		if (applicationUserResponse == null)
 		{
 			Logger.LogError($"User with id {id} not found.");
 			return NotFound("User not found!");
 		}
 
-		var userRole = await UserHelper.GetUserRoleAsync(id, _userManager);
+		var userRole = await UserHelper.GetUserRoleAsync(id, _userManager, cancellationToken);
 		applicationUserResponse.Role = userRole ?? string.Empty;
 
 		var applicationUserVM = Mapper.Map<ApplicationUserRoleVM>(applicationUserResponse);
@@ -63,7 +63,7 @@ public class UsersController : BaseController<UsersController>
 
 	[HttpPost]
 	[Route("{id?}")]
-	public async Task<IActionResult> Edit(ApplicationUserRoleVM applicationUserRoleVM)
+	public async Task<IActionResult> Edit(ApplicationUserRoleVM applicationUserRoleVM, CancellationToken cancellationToken)
 	{
 		if (ModelState.IsValid)
 		{
@@ -75,7 +75,7 @@ public class UsersController : BaseController<UsersController>
 			}
 
 			// Different input role: Remove current role and apply input role
-			string? oldRole = await UserHelper.GetUserRoleAsync(applicationUserRoleVM.Id, _userManager);
+			string? oldRole = await UserHelper.GetUserRoleAsync(applicationUserRoleVM.Id, _userManager, cancellationToken);
 			if (oldRole != applicationUserRoleVM.Role)
 			{
 				if (!String.IsNullOrEmpty(oldRole))
@@ -95,14 +95,15 @@ public class UsersController : BaseController<UsersController>
 	public IActionResult Create() => RedirectToPage("/Account/Register", new { area = "Identity" });
 
 	#region API CALLS
-	public async Task<IActionResult> GetAll()
+	public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
 	{
-		List<ApplicationUserResponse> applicationUserResponses = await ServiceUnitOfWork.ApplicationUserService.GetAllAsync();
+		List<ApplicationUserResponse> applicationUserResponses = await ServiceUnitOfWork.ApplicationUserService
+			.GetAllAsync(cancellationToken: cancellationToken);
 
 		// Initialize user roles
 		foreach (var user in applicationUserResponses)
 		{
-			string? userRole = await UserHelper.GetUserRoleAsync(user.Id, _userManager);
+			string? userRole = await UserHelper.GetUserRoleAsync(user.Id, _userManager, cancellationToken);
 			user.Role = userRole ?? string.Empty;
 		}
 

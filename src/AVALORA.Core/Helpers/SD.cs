@@ -15,5 +15,7 @@ public static class SD
 	public const string PAYMENT_CLIENT = "PaymentService";
 
 	public const string SESSION_CART = "CartCount";
+
+	public const string TEST_ENVIRONMENT = "Test";
 }
 

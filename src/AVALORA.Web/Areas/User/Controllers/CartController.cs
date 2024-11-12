@@ -28,9 +28,9 @@ public class CartController : BaseController<CartController>
 		_contextAccessor = contextAccessor;
 	}
 
-	public async Task<IActionResult> Index()
+	public async Task<IActionResult> Index(CancellationToken cancellationToken)
 	{
-		List<CartItemResponse> cartItemResponses = await _cartFacade.GetCurrentUserCartItemsAsync(true);
+		List<CartItemResponse> cartItemResponses = await _cartFacade.GetCurrentUserCartItemsAsync(true, cancellationToken);
 
 		// Initialize the total price for each cart item
 		foreach (var item in cartItemResponses)
@@ -108,8 +108,8 @@ public class CartController : BaseController<CartController>
 			OrderHeaderAddRequest orderHeaderAddRequest = Mapper.Map<OrderHeaderAddRequest>(checkoutVM);
 			OrderSummaryAddRequest orderSummaryAddRequest = Mapper.Map<OrderSummaryAddRequest>(checkoutVM);
 
-			OrderHeaderResponse orderHeaderResponse = await _orderFacade.PlaceOrderAsync(orderHeaderAddRequest,
-				orderSummaryAddRequest, this, cancellationToken);
+			OrderHeaderResponse orderHeaderResponse = await _orderFacade
+				.PlaceOrderAsync(orderHeaderAddRequest, orderSummaryAddRequest, this, cancellationToken);
 
 			// Redirect to payment gateway
 			TempData[SD.TEMPDATA_CLEARCART] = true;

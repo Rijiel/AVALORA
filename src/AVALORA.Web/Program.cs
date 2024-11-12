@@ -25,6 +25,9 @@ app.UseSession();
 app.MapControllers();
 app.MapRazorPages();
 
-app.UseDataSeedMiddleware();
+if (app.Environment.IsProduction() || app.Environment.IsStaging())
+{
+	app.UseDataSeedMiddleware();
+}
 
 app.Run();

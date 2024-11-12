@@ -105,12 +105,12 @@ public class CategoriesController : BaseController<CategoriesController>
 	#region API CALLS
 	[HttpDelete]
 	[Route("{id?}")]
-	public async Task<JsonResult> Delete(int? id)
+	public async Task<JsonResult> Delete(int? id, CancellationToken cancellationToken)
 	{
 		try
 		{
 			// Disable deletion if category is associated with any product
-			if (await ServiceUnitOfWork.ProductService.GetAsync(x => x.CategoryId == id) == null)
+			if (await ServiceUnitOfWork.ProductService.GetAsync(x => x.CategoryId == id, cancellationToken: cancellationToken) == null)
 			{
 				await ServiceUnitOfWork.CategoryService.RemoveAsync(id);
 
