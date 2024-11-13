@@ -25,6 +25,7 @@ public class CheckoutVM
 
 	[Required]
 	[Phone]
+	[RegularExpression(@"^[+]?\d{7,15}$", ErrorMessage = "Invalid phone number format.")]
 	[StringLength(15)]
 	[DisplayName("Phone Number")]
 	public string PhoneNumber { get; set; } = null!;

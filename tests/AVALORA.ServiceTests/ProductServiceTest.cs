@@ -84,7 +84,8 @@ public class ProductServiceTest
 
 		decimal expected = (decimal)productReviews.Average(r => r.Rating);
 
-		_productRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(product);
+		_productRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+			.ReturnsAsync(product);
 
 		// Act
 		var result = await _productService.GetTotalRatingAsync(id);

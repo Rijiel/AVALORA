@@ -85,7 +85,8 @@ public class OrderHeaderServiceTest
 		var expected = _mapper.Map<OrderHeaderResponse>(orderHeader);
 		expected.OrderStatus = orderStatus;
 
-		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(orderHeader);
+		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+			.ReturnsAsync(orderHeader);
 
 		// Act
 		var result = await _orderHeaderService.UpdateOrderStatusAsync(id, orderStatus);
@@ -107,7 +108,8 @@ public class OrderHeaderServiceTest
 		expected.OrderStatus = orderStatus;
 		expected.PaymentStatus = paymentStatus;
 
-		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(orderHeader);
+		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+			.ReturnsAsync(orderHeader);
 
 		// Act
 		var result = await _orderHeaderService.UpdateOrderStatusAsync(id, orderStatus, paymentStatus);
@@ -139,9 +141,11 @@ public class OrderHeaderServiceTest
 		// Arrange
 		int? id = _fixture.Create<int>();
 		string? paymentId = String.Empty;
-		OrderHeader orderHeader = _fixture.Build<OrderHeader>().With(o => o.ApplicationUser, null as ApplicationUser).Create();
+		OrderHeader orderHeader = _fixture.Build<OrderHeader>()
+			.With(o => o.ApplicationUser, null as ApplicationUser).Create();
 
-		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(orderHeader);
+		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+			.ReturnsAsync(orderHeader);
 
 		// Act
 		Func<Task> result = async () => await _orderHeaderService.UpdatePaymentIdAsync(id, paymentId);
@@ -156,13 +160,15 @@ public class OrderHeaderServiceTest
 		// Arrange
 		int? id = _fixture.Create<int>();
 		string paymentId = _fixture.Create<string>();
-		OrderHeader orderHeader = _fixture.Build<OrderHeader>().With(o => o.ApplicationUser, null as ApplicationUser).Create();
+		OrderHeader orderHeader = _fixture.Build<OrderHeader>()
+			.With(o => o.ApplicationUser, null as ApplicationUser).Create();
 		OrderHeaderResponse expected = _mapper.Map<OrderHeaderResponse>(orderHeader);
 		expected.PaymentID = paymentId;
 		expected.PaymentDate = DateTime.Now;
 		expected.PaymentDueDate = null;
 
-		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(orderHeader);
+		_orderHeaderRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+			.ReturnsAsync(orderHeader);
 
 		// Act
 		var result = await _orderHeaderService.UpdatePaymentIdAsync(id, paymentId);

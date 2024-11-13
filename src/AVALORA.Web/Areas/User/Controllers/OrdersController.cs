@@ -29,19 +29,25 @@ public class OrdersController : BaseController<OrdersController>
         _contextAccessor = contextAccessor;
     }
 
-    [Breadcrumb("Orders", FromController = typeof(HomeController), FromAction = nameof(HomeController.Index), AreaName = nameof(Role.User))]
+    // GET: /Orders/Index
+    [Breadcrumb("Orders", FromController = typeof(HomeController), FromAction = nameof(HomeController.Index), 
+        AreaName = nameof(Role.User))]
     public IActionResult Index()
     {
         return View();
     }
 
+    // GET: /Orders/Edit/{id}
     [Route("{id?}")]
     public async Task<IActionResult> Edit(int? id, CancellationToken cancellationToken)
     {
-        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id, cancellationToken: cancellationToken);
+        // Get order header to edit
+        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService
+            .GetByIdAsync(id, cancellationToken: cancellationToken);
+
         if (orderHeaderResponse == null)
         {
-            Logger.LogWarning("Order not found.");
+            Logger.LogWarning("Order {orderId} not found.", id);
             return NotFound("Order not found.");
         }
 
@@ -65,30 +71,20 @@ public class OrdersController : BaseController<OrdersController>
         // Receive model state errors from other actions' redirection to this controller action.
         ValidationHelper.AddModelState(this, nameof(OrderHeaderResponse));
 
-		// Setup breadcrumb
-		var breadCrumbNode = new MvcBreadcrumbNode(nameof(Index), "Orders", "Orders", areaName: Role.User.ToString());
-		var breadCrumbNode1 = new MvcBreadcrumbNode(nameof(Edit), "Orders", "Edit", areaName: Role.User.ToString())
-		{
-			OverwriteTitleOnExactMatch = true,
-			Parent = breadCrumbNode
-		};
-		var breadCrumbNode2 = new MvcBreadcrumbNode(nameof(Edit), "Orders", id?.ToString(), areaName: Role.User.ToString())
-		{
-			OverwriteTitleOnExactMatch = true,
-			Parent = breadCrumbNode1
-		};
-		ViewData["BreadcrumbNode"] = breadCrumbNode2;
+        ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Orders", 
+            controllerActions: [nameof(Index), nameof(Edit), nameof(Edit)], titles: ["Orders", "Edit", id?.ToString()]);
 
 		return View(OrderVM);
     }
 
+    // POST: /Orders/UpdateDetails
     [Authorize(Roles = nameof(Role.Admin))]
     [HttpPost]
     public async Task<IActionResult> UpdateDetails()
     {
         if (OrderVM == null)
         {
-            Logger.LogWarning("Order not found.");
+            Logger.LogWarning("Order {orderId} not found.", OrderVM?.OrderHeaderResponse.Id);
             return NotFound("Order not found!");
         }
 
@@ -112,28 +108,37 @@ public class OrdersController : BaseController<OrdersController>
             return RedirectToAction(nameof(Edit), new { id = OrderVM.OrderHeaderResponse.Id });
         }
 
-        Logger.LogWarning("Pickup details update failed.");
-        return RedirectToAction(nameof(Edit), new { id = OrderVM.OrderHeaderResponse.Id });
+        Logger.LogWarning("Pickup details update failed. Request details: {updateRequest}", nameof(OrderVM));
+
+		// If we got this far, something failed, redisplay form
+		return RedirectToAction(nameof(Edit), new { id = OrderVM.OrderHeaderResponse.Id });
     }
 
+    // GET: /Orders/Pay?id={id}
     public async Task<IActionResult> Pay(int? id, CancellationToken cancellationToken)
     {
         // Check if orderheader user id is current user
-        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id, cancellationToken: cancellationToken);
+        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService
+            .GetByIdAsync(id, cancellationToken: cancellationToken);
+
         if (orderHeaderResponse == null)
         {
-            Logger.LogWarning("Order not found.");
+            Logger.LogWarning("Order {orderId} not found.", id);
             return NotFound("Order not found!");
         }
 
         // Only allow payment for current user's orders
         if (orderHeaderResponse.ApplicationUserId == UserHelper.GetCurrentUserId(_contextAccessor))
             return RedirectToAction("Index", "Payment", new { id });
-
+                
         ErrorMessage = "Cannot pay at this moment.";
+        Logger.LogWarning("Cannot pay at this moment. Order ID: {orderId}", id);
+
+        // If we got this far, something failed, redisplay form
         return RedirectToAction(nameof(Edit), new { id });
     }
 
+    // GET: /Orders/Process?id={id}
     public async Task<IActionResult> Process(int id)
     {
         await ServiceUnitOfWork.OrderHeaderService.UpdateOrderStatusAsync(id, OrderStatus.Processing);
@@ -142,11 +147,12 @@ public class OrdersController : BaseController<OrdersController>
         return RedirectToAction(nameof(Edit), new { id });
     }
 
+    // GET: /Orders/Ship
     public async Task<IActionResult> Ship()
     {
         if (OrderVM == null)
         {
-            Logger.LogWarning("Order not found!");
+            Logger.LogWarning("Order {orderId} not found!", OrderVM?.OrderHeaderResponse.Id);
             return NotFound("Order not found!");
         }
 
@@ -168,7 +174,9 @@ public class OrdersController : BaseController<OrdersController>
                     nameof(OrderHeaderUpdateRequest.TrackingNumber)
                 ]);
 
-            await ServiceUnitOfWork.OrderHeaderService.UpdateOrderStatusAsync(OrderVM.OrderHeaderResponse.Id, OrderStatus.Shipped);
+            await ServiceUnitOfWork.OrderHeaderService.UpdateOrderStatusAsync(OrderVM.OrderHeaderResponse.Id, 
+                OrderStatus.Shipped);
+
             SuccessMessage = "Order status updated successfully";
 
             return RedirectToAction(nameof(Edit), new { OrderVM.OrderHeaderResponse.Id });
@@ -178,43 +186,56 @@ public class OrdersController : BaseController<OrdersController>
         return RedirectToAction(nameof(Edit), new { OrderVM.OrderHeaderResponse.Id });
     }
 
-    public async Task<IActionResult> Cancel(int? id, [FromServices] IOptions<PaypalSettings> paypal, CancellationToken cancellationToken)
+    // GET: /Orders/Cancel?id={id}
+    public async Task<IActionResult> Cancel(int? id, [FromServices] IOptions<PaypalSettings> paypal, 
+        CancellationToken cancellationToken)
     {
         // Issue a refund from PayPal
-        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.GetByIdAsync(id, cancellationToken: cancellationToken);
+        OrderHeaderResponse? orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService
+            .GetByIdAsync(id, cancellationToken: cancellationToken);
+
         if (orderHeaderResponse?.PaymentID != null)
         {
             string url = paypal.Value.SandboxURL + $"/v2/payments/captures/{orderHeaderResponse.PaymentID}/refund";
-            string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService.GetPaypalAccessTokenAsync(paypal.Value, cancellationToken);
+            string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService
+                .GetPaypalAccessTokenAsync(paypal.Value, cancellationToken);
+
             var httpContent = new StringContent("", null, "application/json");
 
-            var jsonReponse = await ServiceUnitOfWork.PaymentService.SendRequestAsync(url, authHeaderValue, httpContent);
+            var jsonReponse = await ServiceUnitOfWork.PaymentService
+                .SendRequestAsync(url, authHeaderValue, httpContent);
+
             if (jsonReponse != null)
             {
                 // Refund success
-                await ServiceUnitOfWork.OrderHeaderService.UpdateOrderStatusAsync(id, OrderStatus.Cancelled, PaymentStatus.Refunded);
+                await ServiceUnitOfWork.OrderHeaderService.UpdateOrderStatusAsync(id, OrderStatus.Cancelled, 
+                    PaymentStatus.Refunded);
+
                 SuccessMessage = "Order has been cancelled and refunded.";
-                Logger.LogInformation($"Order has been cancelled and refunded: {orderHeaderResponse.PaymentID}.");
+                Logger.LogInformation("Order has been cancelled and refunded: {paymentId}.",
+                    orderHeaderResponse.PaymentID);
 
                 return RedirectToAction(nameof(Edit), new { id });
             }
             else
             {
                 ErrorMessage = "An error has occurred.";
-                Logger.LogWarning($"An error has occurred while refunding: {orderHeaderResponse.PaymentID}.");
+                Logger.LogWarning("An error has occurred while refunding {paymentId}.", orderHeaderResponse.PaymentID);
 
                 return RedirectToAction(nameof(Edit), new { id });
             }
         }
 
         // If order has not been paid yet, just cancel order
-        await ServiceUnitOfWork.OrderHeaderService.UpdateOrderStatusAsync(id, OrderStatus.Cancelled, PaymentStatus.Cancelled);
+        await ServiceUnitOfWork.OrderHeaderService.UpdateOrderStatusAsync(id, OrderStatus.Cancelled, 
+            PaymentStatus.Cancelled);
         SuccessMessage = "Order has been cancelled.";
 
         return RedirectToAction(nameof(Edit), new { id });
     }
 
     #region API CALLS
+    // GET: /Orders/GetAll
     public async Task<IActionResult> GetAll(string? status, CancellationToken cancellationToken)
     {
         List<OrderHeaderResponse> orderHeaderResponseList = await ServiceUnitOfWork.OrderHeaderService
@@ -228,11 +249,19 @@ public class OrdersController : BaseController<OrdersController>
         // Filter orders by status (if provided)
         orderHeaderResponseList = status switch
         {
-            nameof(OrderStatus.Processing) => orderHeaderResponseList.Where(o => o.OrderStatus == OrderStatus.Processing).ToList(),
-            nameof(OrderStatus.Shipped) => orderHeaderResponseList.Where(o => o.OrderStatus == OrderStatus.Shipped).ToList(),
-            nameof(OrderStatus.Approved) => orderHeaderResponseList.Where(o => o.OrderStatus == OrderStatus.Approved).ToList(),
+            nameof(OrderStatus.Processing) => orderHeaderResponseList
+            .Where(o => o.OrderStatus == OrderStatus.Processing).ToList(),
+
+            nameof(OrderStatus.Shipped) => orderHeaderResponseList
+            .Where(o => o.OrderStatus == OrderStatus.Shipped).ToList(),
+
+            nameof(OrderStatus.Approved) => orderHeaderResponseList
+            .Where(o => o.OrderStatus == OrderStatus.Approved).ToList(),
+
             nameof(PaymentStatus.Pending) => orderHeaderResponseList
-                .Where(o => o.PaymentStatus == PaymentStatus.Pending || o.PaymentStatus == PaymentStatus.DelayedPayment).ToList(),
+                .Where(o => o.PaymentStatus == PaymentStatus.Pending 
+                || o.PaymentStatus == PaymentStatus.DelayedPayment).ToList(),
+
             _ => orderHeaderResponseList
         };
 

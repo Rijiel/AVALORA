@@ -31,8 +31,10 @@ public static class UserHelper
 	/// </summary>
 	/// <param name="accessor">The IHttpContextAccessor instance used to access the current HTTP context.</param>
 	/// <param name="userManager">The UserManager instance used to manage IdentityUser instances.</param>
-	/// <returns>A Task that represents the asynchronous operation, containing the IdentityUser instance if found, or null otherwise.</returns>
-	public static async Task<IdentityUser?> GetIdentityUserAsync(IHttpContextAccessor accessor, UserManager<IdentityUser> userManager, CancellationToken cancellationToken = default)
+	/// <returns>A Task that represents the asynchronous operation, containing the IdentityUser instance if found, or null
+    /// otherwise.</returns>
+	public static async Task<IdentityUser?> GetIdentityUserAsync(IHttpContextAccessor accessor, 
+        UserManager<IdentityUser> userManager, CancellationToken cancellationToken = default)
 	{
 		string userId = GetCurrentUserId(accessor)!;
 
@@ -65,8 +67,10 @@ public static class UserHelper
 	/// </summary>
 	/// <param name="userId">The ID of the user to retrieve the role for.</param>
 	/// <param name="userManager">The UserManager instance used to manage IdentityUser instances.</param>
-	/// <returns>A Task that represents the asynchronous operation, containing the user's role if found, or null otherwise.</returns>
-	public static async Task<string?> GetUserRoleAsync(string? userId, UserManager<IdentityUser> userManager, CancellationToken cancellationToken = default)
+	/// <returns>A Task that represents the asynchronous operation, containing the user's role if found, or null 
+    /// otherwise.</returns>
+	public static async Task<string?> GetUserRoleAsync(string? userId, UserManager<IdentityUser> userManager, 
+        CancellationToken cancellationToken = default)
 	{
 		if (userId != null)
 		{

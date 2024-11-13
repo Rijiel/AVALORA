@@ -7,9 +7,11 @@ using AVALORA.Core.ServiceContracts;
 
 namespace AVALORA.Core.Services;
 
-public class OrderHeaderService : GenericService<OrderHeader, OrderHeaderAddRequest, OrderHeaderUpdateRequest, OrderHeaderResponse>, IOrderHeaderService
+public class OrderHeaderService : GenericService<OrderHeader, OrderHeaderAddRequest, OrderHeaderUpdateRequest, 
+    OrderHeaderResponse>, IOrderHeaderService
 {
-	public OrderHeaderService(IOrderHeaderRepository repository, IMapper mapper, IUnitOfWork unitOfWork) : base(repository, mapper, unitOfWork)
+	public OrderHeaderService(IOrderHeaderRepository repository, IMapper mapper, IUnitOfWork unitOfWork) 
+        : base(repository, mapper, unitOfWork)
     {
 	}
 
@@ -23,13 +25,15 @@ public class OrderHeaderService : GenericService<OrderHeader, OrderHeaderAddRequ
 		return addRequest;
 	}
 
-	public async Task<OrderHeaderResponse> UpdateOrderStatusAsync(int? id, OrderStatus status, PaymentStatus? paymentStatus = null)
+	public async Task<OrderHeaderResponse> UpdateOrderStatusAsync(int? id, OrderStatus status, 
+        PaymentStatus? paymentStatus = null)
 	{
 		OrderHeaderResponse? orderHeaderResponse = await GetByIdAsync(id)
 			?? throw new KeyNotFoundException("Order header not found.");
 
 		// Set order status and payment status of order from db
 		orderHeaderResponse.OrderStatus = status;
+
 		if (status == OrderStatus.Shipped)
 			orderHeaderResponse.ShippingDate = DateTime.Now;
 

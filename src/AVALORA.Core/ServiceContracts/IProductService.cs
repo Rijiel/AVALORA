@@ -10,7 +10,8 @@ public interface IProductService : IGenericService<Product, ProductAddRequest, P
 	/// </summary>
 	/// <param name="id">The ID of the product.</param>
 	/// <param name="cancellationToken">The cancellation token. Defaults to <see cref="CancellationToken.None"/>.</param>
-	/// <returns>A task that represents the asynchronous operation. The task result contains the total rating as a decimal value.</returns>
+	/// <returns>A task that represents the asynchronous operation. The task result contains the total rating as a decimal 
+    /// value.</returns>
 	Task<decimal> GetTotalRatingAsync(int? id, CancellationToken cancellationToken = default);
 }
 

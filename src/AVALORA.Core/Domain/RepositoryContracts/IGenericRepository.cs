@@ -18,7 +18,8 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// <param name="filter">The filter expression used to find the entity.</param>
     /// <param name="includes">An optional list of navigation properties to include in the result.</param>
     /// <param name="tracked">Specifies whether the entity should be tracked by the context. Default is false.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the retrieved entity, or null if no entity is found.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the retrieved entity, or null 
+    /// if no entity is found.</returns>
     Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> filter, bool tracked = false, params string[] includes);
 
     /// <summary>
@@ -27,7 +28,8 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// <param name="id">The ID of the entity to retrieve.</param>
     /// <param name="includes">An optional list of navigation properties to include in the result.</param>
     /// <param name="tracked">Specifies whether the entity should be tracked by the context. Default is false.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the retrieved entity, or null if no entity is found.</returns>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the retrieved entity, or null 
+    /// if no entity is found.</returns>
     Task<TEntity?> GetByIdAsync(object id, bool tracked = false, params string[] includes);
 
     /// <summary>

@@ -3,7 +3,8 @@ using AVALORA.Core.Dto.OrderSummaryDtos;
 
 namespace AVALORA.Core.ServiceContracts;
 
-public interface IOrderSummaryService : IGenericService<OrderSummary, OrderSummaryAddRequest, OrderSummaryUpdateRequest, OrderSummaryResponse>
+public interface IOrderSummaryService : IGenericService<OrderSummary, OrderSummaryAddRequest, OrderSummaryUpdateRequest, 
+    OrderSummaryResponse>
 {
 }
 

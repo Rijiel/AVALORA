@@ -20,6 +20,7 @@ public class BaseFacade<TService> where TService : BaseFacade<TService>
 
     protected ILogger<TService> Logger
         => _logger ??= _serviceProvider.GetRequiredService<ILogger<TService>>();
+
     protected IMapper Mapper
         => _mapper ??= _serviceProvider.GetRequiredService<IMapper>();
 

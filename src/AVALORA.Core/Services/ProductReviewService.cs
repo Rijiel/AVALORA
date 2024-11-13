@@ -6,9 +6,11 @@ using AVALORA.Core.ServiceContracts;
 
 namespace AVALORA.Core.Services;
 
-public class ProductReviewService : GenericService<ProductReview, ProductReviewAddRequest, ProductReviewUpdateRequest, ProductReviewResponse>, IProductReviewService
+public class ProductReviewService : GenericService<ProductReview, ProductReviewAddRequest, ProductReviewUpdateRequest, 
+    ProductReviewResponse>, IProductReviewService
 {
-    public ProductReviewService(IProductReviewRepository repository, IMapper mapper, IUnitOfWork unitOfWork) : base(repository, mapper, unitOfWork)
+    public ProductReviewService(IProductReviewRepository repository, IMapper mapper, IUnitOfWork unitOfWork) 
+        : base(repository, mapper, unitOfWork)
 	{        
     }
 }

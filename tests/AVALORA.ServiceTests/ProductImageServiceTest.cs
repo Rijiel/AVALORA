@@ -141,7 +141,8 @@ public class ProductImageServiceTest
 		var product = _fixture.Build<Product>()
 			.With(p => p.ProductImages, null as List<ProductImage>)
 			.With(p => p.ProductReviews, null as List<ProductReview>).Create();
-		_unitOfWorkMock.Setup(x => x.Products.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(product);
+		_unitOfWorkMock.Setup(x => x.Products.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+			.ReturnsAsync(product);
 
 		// Act
 		Func<Task> result = async () =>
@@ -172,7 +173,8 @@ public class ProductImageServiceTest
 		var product = _fixture.Build<Product>()
 			.With(p => p.ProductImages, null as List<ProductImage>)
 			.With(p => p.ProductReviews, null as List<ProductReview>).Create();
-		_unitOfWorkMock.Setup(x => x.Products.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(product);
+		_unitOfWorkMock.Setup(x => x.Products.GetByIdAsync(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<string[]>()))
+			.ReturnsAsync(product);
 
 		// Act
 		List<ProductImageResponse> result = await _productImageService.CreateImagesAsync(productId, imageFiles);
@@ -230,7 +232,8 @@ public class ProductImageServiceTest
 			.With(p => p.Path, "test.jpg").Create();
 
 		_webHostEnvironmentMock.Setup(w => w.WebRootPath).Returns(Path.GetTempPath());
-		_productImageRepositoryMock.Setup(x => x.GetByIdAsync(id, It.IsAny<bool>(), It.IsAny<string[]>())).ReturnsAsync(productImage);
+		_productImageRepositoryMock.Setup(x => x.GetByIdAsync(id, It.IsAny<bool>(), It.IsAny<string[]>()))
+			.ReturnsAsync(productImage);
 
 		// Act
 		await _productImageService.DeleteImageAsync(id);

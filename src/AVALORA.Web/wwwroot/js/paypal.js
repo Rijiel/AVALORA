@@ -1,9 +1,12 @@
 ﻿$(function () {
+	const token = $('input[name="__RequestVerificationToken"]').val();
+
 	paypal.Buttons({
 		async createOrder() {
 			const response = await fetch('/Payment/Create', {
 				method: "POST",
 				headers: {
+					'RequestVerificationToken': token,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
@@ -21,6 +24,7 @@
 			const response = await fetch('/Payment/Complete', {
 				method: "POST",
 				headers: {
+					'RequestVerificationToken': token,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({

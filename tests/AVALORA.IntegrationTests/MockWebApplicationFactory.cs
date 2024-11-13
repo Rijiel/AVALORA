@@ -2,6 +2,7 @@
 using AVALORA.Infrastructure.DatabaseContext;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,13 @@ internal class MockWebApplicationFactory : WebApplicationFactory<Program>
 				option.UseInMemoryDatabase("InMemoryDbForTesting");
 			});
 
+			// Disable Antiforgery
+			services.PostConfigure<MvcOptions>(options =>
+			{
+				options.Filters.Remove(new AutoValidateAntiforgeryTokenAttribute());
+			});
+
+			// Override Authentication
 			services.AddTransient<IAuthenticationSchemeProvider, MockSchemeProvider>();
 		});
 	}

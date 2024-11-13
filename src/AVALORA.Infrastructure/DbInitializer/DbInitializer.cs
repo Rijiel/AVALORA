@@ -12,7 +12,8 @@ public class DbInitializer : IDbInitializer
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public DbInitializer(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+    public DbInitializer(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager, 
+        UserManager<IdentityUser> userManager)
     {
         _dbContext = dbContext;
         _roleManager = roleManager;

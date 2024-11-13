@@ -17,7 +17,8 @@ internal class MockSchemeProvider : AuthenticationSchemeProvider
 
     public override Task<AuthenticationScheme?> GetSchemeAsync(string name)
     {
-		AuthenticationScheme mockScheme = new(IdentityConstants.ApplicationScheme, IdentityConstants.ApplicationScheme, typeof(MockAuthHandler));
+		AuthenticationScheme mockScheme = new(IdentityConstants.ApplicationScheme, IdentityConstants.ApplicationScheme, 
+            typeof(MockAuthHandler));
 
 		return Task.FromResult(mockScheme)!;
 	}

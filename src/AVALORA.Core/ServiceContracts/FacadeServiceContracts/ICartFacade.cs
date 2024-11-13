@@ -32,7 +32,8 @@ public interface ICartFacade
 	/// <param name="cancellationToken">A cancellation token that can be used by 
 	/// other objects or threads to receive notice of cancellation.</param>
 	/// <returns>A task representing the asynchronous operation, containing a list of CartItemResponse objects.</returns>
-	Task<List<CartItemResponse>> GetCurrentUserCartItemsAsync(bool includeImages = false, CancellationToken cancellationToken = default);
+	Task<List<CartItemResponse>> GetCurrentUserCartItemsAsync(bool includeImages = false, 
+        CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Clears the cart items of the current user asynchronously.
@@ -47,7 +48,7 @@ public interface ICartFacade
 	/// Updates the cart session count asynchronously.
 	/// </summary>
 	/// <param name="controller">The controller instance to get and send the session count.</param>
-	/// <param name="quantity">The new quantity of the cart item.</param>
+	/// <param name="quantity">The added/subtracted quantity of the cart item (0 clears the cart).</param>
 	/// <returns>A task representing the asynchronous operation.</returns>
 	void UpdateCartSessionCount(Controller controller, int quantity);
 }

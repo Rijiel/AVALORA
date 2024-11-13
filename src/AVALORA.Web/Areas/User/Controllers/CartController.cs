@@ -28,6 +28,7 @@ public class CartController : BaseController<CartController>
 		_contextAccessor = contextAccessor;
 	}
 
+	// GET: /Cart/Index
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
 	{
 		List<CartItemResponse> cartItemResponses = await _cartFacade.GetCurrentUserCartItemsAsync(true, cancellationToken);
@@ -46,6 +47,7 @@ public class CartController : BaseController<CartController>
 		return View(cartItemResponsesVM);
 	}
 
+	// GET: /Cart/Subtract/{id}
 	[Route("{id?}")]
 	public async Task<IActionResult> Subtract(int? id)
 	{
@@ -54,6 +56,7 @@ public class CartController : BaseController<CartController>
 		return RedirectToAction(nameof(Index));
 	}
 
+	// GET: /Cart/Add/{id}
 	[Route("{id?}")]
 	public async Task<IActionResult> Add(int? id)
 	{
@@ -62,18 +65,20 @@ public class CartController : BaseController<CartController>
 		return RedirectToAction(nameof(Index));
 	}
 
+	// GET: /Cart/Remove/{id}
 	[Route("{id?}")]
 	public async Task<IActionResult> Remove(int? id)
 	{
 		await ServiceUnitOfWork.CartItemService.RemoveAsync(id);
+
 		SuccessMessage = "Product removed from cart.";
-		Logger.LogInformation($"Removed cart item: {id}");
 
 		_cartFacade.UpdateCartSessionCount(this, -1);
 
 		return RedirectToAction(nameof(Index));
 	}
 
+	// GET: /Cart/Checkout
 	[HttpGet]
 	public async Task<IActionResult> Checkout(CancellationToken cancellationToken)
 	{
@@ -84,7 +89,8 @@ public class CartController : BaseController<CartController>
 			return RedirectToAction(nameof(Index));
 		}
 
-		List<CartItemResponse> cartItemResponses = await _cartFacade.GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
+		List<CartItemResponse> cartItemResponses = await _cartFacade
+            .GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
 
 		// Initialize the total price for each cart item
 		foreach (var item in cartItemResponses)
@@ -100,6 +106,7 @@ public class CartController : BaseController<CartController>
 		return View(checkoutVM);
 	}
 
+	// POST: /Cart/Checkout
 	[HttpPost]
 	public async Task<IActionResult> Checkout(CheckoutVM checkoutVM, CancellationToken cancellationToken)
 	{
@@ -113,10 +120,16 @@ public class CartController : BaseController<CartController>
 
 			// Redirect to payment gateway
 			TempData[SD.TEMPDATA_CLEARCART] = true;
+
 			return RedirectToAction("Index", "Payment", new { id = orderHeaderResponse.Id });
 		}
 
+        Logger.LogWarning("Checkout failed. Request details: {request}", nameof(CheckoutVM));
+
+		// Repopulate the cart items
 		checkoutVM.CartItemResponses = await _cartFacade.GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
+
+		// If we got this far, something failed, redisplay form
 		return View(checkoutVM);
 	}
 }

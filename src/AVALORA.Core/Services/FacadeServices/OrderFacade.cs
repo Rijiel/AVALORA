@@ -14,75 +14,92 @@ namespace AVALORA.Core.Services.FacadeServices;
 
 public class OrderFacade : BaseFacade<OrderFacade>, IOrderFacade
 {
-	private readonly IHttpContextAccessor _contextAccessor;
-	private readonly ICartFacade _cartFacade;
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly ICartFacade _cartFacade;
 
-	public OrderFacade(IHttpContextAccessor contextAccessor, IServiceProvider serviceProvider, ICartFacade cartFacade) : base(serviceProvider)
+    public OrderFacade(IHttpContextAccessor contextAccessor, IServiceProvider serviceProvider, ICartFacade cartFacade)
+        : base(serviceProvider)
     {
-		_contextAccessor = contextAccessor;
-		_cartFacade = cartFacade;
-	}
+        _contextAccessor = contextAccessor;
+        _cartFacade = cartFacade;
+    }
 
     public async Task<OrderHeaderAddRequest> CreateOrderHeaderAsync(CancellationToken cancellationToken = default)
-	{
-		string userId = UserHelper.GetCurrentUserId(_contextAccessor)!;
-		ApplicationUserResponse? applicationUser = await ServiceUnitOfWork.ApplicationUserService
-			.GetByIdAsync(userId, cancellationToken: cancellationToken)
-			?? throw new KeyNotFoundException($"Application user not found with id {userId}");
+    {
+        string userId = UserHelper.GetCurrentUserId(_contextAccessor)!;
 
-		// Match user information to order header request
-		var orderHeaderAddRequest = Mapper.Map<OrderHeaderAddRequest>(applicationUser);
+        ApplicationUserResponse? applicationUser = await ServiceUnitOfWork.ApplicationUserService
+            .GetByIdAsync(userId, cancellationToken: cancellationToken);
 
-		// Users have a default 7-day estimated delivery date
-		orderHeaderAddRequest.EstimatedFromDate = DateTime.Now.AddDays(7);
-		orderHeaderAddRequest.EstimatedToDate = DateTime.Now.AddDays(14);
+        if (applicationUser == null)
+        {
+            Logger.LogWarning("Application user not found with id {userId}", userId);
+            throw new KeyNotFoundException($"Application user not found with id {userId}");
+        }
 
-		Logger.LogInformation($"Created order header");
-		return orderHeaderAddRequest;
-	}
+        // Match user information to order header request
+        var orderHeaderAddRequest = Mapper.Map<OrderHeaderAddRequest>(applicationUser);
 
-	public async Task<OrderHeaderResponse> PlaceOrderAsync(OrderHeaderAddRequest orderHeaderAddRequest, 
-		OrderSummaryAddRequest orderSummaryAddRequest, Controller controller, CancellationToken cancellationToken = default)
-	{
-		// Populate order header properties
-		orderHeaderAddRequest = ServiceUnitOfWork.OrderHeaderService.SetOrderHeaderDefaults(orderHeaderAddRequest);
+        // Users have a default 7-day estimated delivery date
+        orderHeaderAddRequest.EstimatedFromDate = DateTime.Now.AddDays(7);
+        orderHeaderAddRequest.EstimatedToDate = DateTime.Now.AddDays(14);
 
-		OrderHeaderResponse orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.AddAsync(orderHeaderAddRequest);
+        Logger.LogInformation("Created order header for user {userId}", userId);
 
-		await CreateOrderSummaryAsync(orderSummaryAddRequest, orderHeaderResponse.Id, cancellationToken);
-		controller.TempData[SD.TEMPDATA_SUCCESS] = "Order has been placed!";
+        return orderHeaderAddRequest;
+    }
 
-		Logger.LogInformation($"Placed order for user: {UserHelper.GetCurrentUserId(_contextAccessor)}");
-		return orderHeaderResponse;
-	}
+    public async Task<OrderHeaderResponse> PlaceOrderAsync(OrderHeaderAddRequest orderHeaderAddRequest,
+        OrderSummaryAddRequest orderSummaryAddRequest, Controller controller, CancellationToken cancellationToken = default)
+    {
+        // Populate order header properties
+        orderHeaderAddRequest = ServiceUnitOfWork.OrderHeaderService.SetOrderHeaderDefaults(orderHeaderAddRequest);
 
-	public async Task<OrderSummaryResponse> CreateOrderSummaryAsync(OrderSummaryAddRequest addRequest, 
-		int? orderHeaderId = null, CancellationToken cancellationToken = default)
-	{
-		// Ensure order header ID and add order summary
-		addRequest.OrderHeaderId = orderHeaderId ?? throw new ArgumentNullException(nameof(orderHeaderId));
-		OrderSummaryResponse orderSummaryResponse = await ServiceUnitOfWork.OrderSummaryService.AddAsync(addRequest);
+        OrderHeaderResponse orderHeaderResponse = await ServiceUnitOfWork.OrderHeaderService.AddAsync(orderHeaderAddRequest);
 
-		// Map order summary response to update request and associate with cart items
-		var orderSummaryUpdateRequest = Mapper.Map<OrderSummaryUpdateRequest>(orderSummaryResponse);
-		List<CartItemResponse> cartItemResponseList = await _cartFacade
-			.GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
+        await CreateOrderSummaryAsync(orderSummaryAddRequest, orderHeaderResponse.Id, cancellationToken);
 
-		// Add order summary items and update order summary
-		var orderSummaryItemAddList = Mapper.Map<List<OrderSummaryItemAddRequest>>(cartItemResponseList);
-		foreach (var orderSummaryItemAdd in orderSummaryItemAddList)
-			orderSummaryItemAdd.OrderSummaryId = orderSummaryResponse.Id;
+        controller.TempData[SD.TEMPDATA_SUCCESS] = "Order has been placed!";
+        Logger.LogInformation("Placed order for user: {userId}", UserHelper.GetCurrentUserId(_contextAccessor));
 
-		List<OrderSummaryItemResponse> orderSummaryItemResponseList = await ServiceUnitOfWork.OrderSummaryItemService
-			.AddRangeAsync(orderSummaryItemAddList);
+        return orderHeaderResponse;
+    }
 
-		var orderSummaryItems = Mapper.Map<List<OrderSummaryItem>>(orderSummaryItemResponseList);
-		orderSummaryUpdateRequest.OrderSummaryItems = orderSummaryItems;
+    public async Task<OrderSummaryResponse> CreateOrderSummaryAsync(OrderSummaryAddRequest addRequest,
+        int? orderHeaderId = null, CancellationToken cancellationToken = default)
+    {
+        // Ensure order header ID and add order summary
+        addRequest.OrderHeaderId = orderHeaderId;
+        if (addRequest.OrderHeaderId == null)
+        {
+            Logger.LogWarning("Order header ID not found. Request details: {addRequest}", nameof(addRequest));
+            throw new ArgumentNullException(nameof(orderHeaderId));
+        }
 
-		await ServiceUnitOfWork.OrderSummaryService.UpdateAsync(orderSummaryUpdateRequest);
+        OrderSummaryResponse orderSummaryResponse = await ServiceUnitOfWork.OrderSummaryService.AddAsync(addRequest);
 
-		Logger.LogInformation($"Created order summary for order: {orderHeaderId}");
-		return orderSummaryResponse;
-	}
+        // Map order summary response to update request and associate with cart items
+        var orderSummaryUpdateRequest = Mapper.Map<OrderSummaryUpdateRequest>(orderSummaryResponse);
+
+        List<CartItemResponse> cartItemResponseList = await _cartFacade
+            .GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
+
+        // Add order summary items and update order summary
+        var orderSummaryItemAddList = Mapper.Map<List<OrderSummaryItemAddRequest>>(cartItemResponseList);
+        foreach (var orderSummaryItemAdd in orderSummaryItemAddList)
+            orderSummaryItemAdd.OrderSummaryId = orderSummaryResponse.Id;
+
+        List<OrderSummaryItemResponse> orderSummaryItemResponseList = await ServiceUnitOfWork.OrderSummaryItemService
+            .AddRangeAsync(orderSummaryItemAddList);
+
+        var orderSummaryItems = Mapper.Map<List<OrderSummaryItem>>(orderSummaryItemResponseList);
+        orderSummaryUpdateRequest.OrderSummaryItems = orderSummaryItems;
+
+        await ServiceUnitOfWork.OrderSummaryService.UpdateAsync(orderSummaryUpdateRequest);
+
+        Logger.LogInformation("Created order summary for order {orderHeaderId}", orderHeaderId);
+
+        return orderSummaryResponse;
+    }
 }
 

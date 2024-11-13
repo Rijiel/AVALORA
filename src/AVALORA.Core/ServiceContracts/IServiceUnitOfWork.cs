@@ -16,5 +16,6 @@ public interface IServiceUnitOfWork
     public IProductReviewService ProductReviewService { get; }
     public IPagerService PagerService { get; }
     public IPaymentService PaymentService { get; }
+    public IBreadcrumbService BreadcrumbService { get; }
 }
 

@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace AVALORA.Core.ServiceContracts;
 
-public interface IOrderHeaderService : IGenericService<OrderHeader, OrderHeaderAddRequest, OrderHeaderUpdateRequest, OrderHeaderResponse>
+public interface IOrderHeaderService : IGenericService<OrderHeader, OrderHeaderAddRequest, OrderHeaderUpdateRequest, 
+    OrderHeaderResponse>
 {
 	/// <summary>
 	/// Sets the default values for the order header.

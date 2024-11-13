@@ -23,6 +23,7 @@ public class ServiceUnitOfWork : IServiceUnitOfWork
     public IProductReviewService ProductReviewService { get; private set; }
 	public IPagerService PagerService { get; private set; }
     public IPaymentService PaymentService { get; private set; }
+    public IBreadcrumbService BreadcrumbService { get; private set; }
 
 	public ServiceUnitOfWork(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, 
         IHttpClientFactory httpClientFactory, RoleManager<IdentityRole> roleManager)
@@ -38,6 +39,7 @@ public class ServiceUnitOfWork : IServiceUnitOfWork
 		ProductReviewService = new ProductReviewService(unitOfWork.ProductReviews, mapper, unitOfWork);
 		PagerService = new PagerService();
 		PaymentService = new PaymentService(httpClientFactory.CreateClient(SD.PAYMENT_CLIENT));
+        BreadcrumbService = new BreadcrumbService();
     }
 }
 

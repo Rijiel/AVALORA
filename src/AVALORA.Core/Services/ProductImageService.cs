@@ -9,11 +9,13 @@ using System.Net;
 
 namespace AVALORA.Core.Services;
 
-public class ProductImageService : GenericService<ProductImage, ProductImageAddRequest, ProductImageUpdateRequest, ProductImageResponse>, IProductImageService
+public class ProductImageService : GenericService<ProductImage, ProductImageAddRequest, ProductImageUpdateRequest, 
+    ProductImageResponse>, IProductImageService
 {
 	private readonly IWebHostEnvironment _webHostEnvironment;
 
-	public ProductImageService(IProductImageRepository repository, IMapper mapper, IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment) : base(repository, mapper, unitOfWork)
+	public ProductImageService(IProductImageRepository repository, IMapper mapper, IUnitOfWork unitOfWork, 
+        IWebHostEnvironment webHostEnvironment) : base(repository, mapper, unitOfWork)
 	{
 		_webHostEnvironment = webHostEnvironment;
 	}
@@ -99,6 +101,7 @@ public class ProductImageService : GenericService<ProductImage, ProductImageAddR
 		if (Directory.Exists(completePath))
 		{
 			var filePaths = Directory.GetFiles(completePath);
+
 			foreach (var filePath in filePaths)
 				System.IO.File.Delete(filePath);
 

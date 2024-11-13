@@ -6,9 +6,11 @@ using AVALORA.Core.ServiceContracts;
 
 namespace AVALORA.Core.Services;
 
-public class OrderSummaryItemService : GenericService<OrderSummaryItem, OrderSummaryItemAddRequest, OrderSummaryItemUpdateRequest, OrderSummaryItemResponse>, IOrderSummaryItemService
+public class OrderSummaryItemService : GenericService<OrderSummaryItem, OrderSummaryItemAddRequest, 
+    OrderSummaryItemUpdateRequest, OrderSummaryItemResponse>, IOrderSummaryItemService
 {
-    public OrderSummaryItemService(IOrderSummaryItemRepository repository, IMapper mapper, IUnitOfWork unitOfWork) : base(repository, mapper, unitOfWork)
+    public OrderSummaryItemService(IOrderSummaryItemRepository repository, IMapper mapper, IUnitOfWork unitOfWork) 
+        : base(repository, mapper, unitOfWork)
     {        
     }
 }

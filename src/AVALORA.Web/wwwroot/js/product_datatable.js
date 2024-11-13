@@ -43,6 +43,8 @@ function dataTables() {
 }
 
 function Delete(url) {
+    const token = $('input[name="__RequestVerificationToken"]').val();
+
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -56,6 +58,9 @@ function Delete(url) {
             $.ajax({
                 url: url,
                 type: 'DELETE',
+                headers: {
+                    'RequestVerificationToken': token
+                },
                 success: function (data) {
                     if (data) {
                         location.reload(true);

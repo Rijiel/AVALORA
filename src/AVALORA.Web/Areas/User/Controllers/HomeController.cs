@@ -21,212 +21,207 @@ namespace AVALORA.Web.Areas.User.Controllers;
 [DefaultBreadcrumb("AVALORA", AreaName = nameof(Role.User))]
 public class HomeController : BaseController<HomeController>
 {
-	private readonly ICartFacade _cartFacade;
-	private readonly IHttpContextAccessor _contextAccessor;
-	private readonly UserManager<IdentityUser> _userManager;
+    private readonly ICartFacade _cartFacade;
+    private readonly IProductFacade _productFacade;
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly UserManager<IdentityUser> _userManager;
 
-	public HomeController(ICartFacade cartFacade, IHttpContextAccessor contextAccessor, UserManager<IdentityUser> userManager)
-	{
-		_cartFacade = cartFacade;
-		_contextAccessor = contextAccessor;
-		_userManager = userManager;
-	}
-	[Route("/")]
-	[Route("/Home")]
-	public async Task<IActionResult> Index(CancellationToken cancellationToken, [FromQuery] string? category = null,
-		[FromQuery] string? color = null, [FromQuery] int page = 1, [FromQuery] string? search = null)
-	{
-		// Use unflitered product responses for sidebar
-		var productResponses = await ServiceUnitOfWork.ProductService
-			.GetAllAsync(cancellationToken: cancellationToken,
-			includes: [nameof(ProductResponse.ProductImages), nameof(ProductResponse.Category)]);
+    public HomeController(ICartFacade cartFacade, IProductFacade productFacade, IHttpContextAccessor contextAccessor, 
+        UserManager<IdentityUser> userManager)
+    {
+        _cartFacade = cartFacade;
+        _productFacade = productFacade;
+        _contextAccessor = contextAccessor;
+        _userManager = userManager;
+    }
 
-		// Populate total rating
-		foreach (var product in productResponses)
-			product.TotalRating = await ServiceUnitOfWork.ProductService
-				.GetTotalRatingAsync(product.Id, cancellationToken);
+    // GET: /?category={category}&color={color}&page={page}&search={search}
+    // GET: /Home?category={category}&color={color}&page={page}&search={search}
+    [Route("/")]
+    [Route("/Home")]
+    public async Task<IActionResult> Index(CancellationToken cancellationToken, [FromQuery] string? category = null,
+        [FromQuery] string? color = null, [FromQuery] string? search = null, [FromQuery] int page = 1)
+    {
+        // Use unflitered product responses for sidebar
+        var productResponses = await ServiceUnitOfWork.ProductService.GetAllAsync(cancellationToken: cancellationToken,
+            includes: [nameof(ProductResponse.ProductImages), nameof(ProductResponse.Category)]);
 
-		// Separate filtered products for searching, filtering and paging
-		var filteredProducts = productResponses;
+        // Populate total rating
+        foreach (var product in productResponses)
+            product.TotalRating = await ServiceUnitOfWork.ProductService.GetTotalRatingAsync(product.Id, cancellationToken);
 
-		// Filter by category
-		if (!String.IsNullOrEmpty(category))
-			filteredProducts = filteredProducts
-				.Where(p => p.Category?.Name == category).ToList();
+        // Separate filtered products for searching, filtering and paging
+        var filteredProducts = _productFacade.GetFilteredProducts(productResponses, category, color, search);
 
-		// Filter by color
-		if (!String.IsNullOrEmpty(color))
-			filteredProducts = filteredProducts
-				.Where(p => p.Colors.Contains(Enum.Parse<Color>(color))).ToList();
+        // Paging implementation
+        List<ProductResponse> pagedProductResponses = ServiceUnitOfWork.PagerService
+            .GetPagedItems(filteredProducts, page, pageSize: 12);
 
-		// Search implementation
-		if (!String.IsNullOrEmpty(search))
-			filteredProducts = filteredProducts
-				.Where(p => p.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase)).ToList();
+        ViewBag.Pager = ServiceUnitOfWork.PagerService;
+        ViewBag.Category = category;
+        ViewBag.Color = color;
+        ViewBag.Search = search;
 
-		// Paging implementation
-		List<ProductResponse> pagedProductResponses = ServiceUnitOfWork.PagerService
-			.GetPagedItems(filteredProducts, page, pageSize: 12);
-		ViewBag.Pager = ServiceUnitOfWork.PagerService;
-		ViewBag.Category = category;
-		ViewBag.Color = color;
-		ViewBag.Search = search;
+        Logger.LogInformation("Loaded {productsCount} products", pagedProductResponses.Count);
 
-		Logger.LogInformation($"Loaded {pagedProductResponses.Count} products");
+        // Get category counts ordered by number of products having the category name
+        var categoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync(cancellationToken: cancellationToken);
+        var categoryCounts = categoryResponses
+            .OrderByDescending(c => productResponses.Count(p => p.CategoryId == c.Id))
+            .ToDictionary(c => c.Name, c => productResponses.Count(p => p.CategoryId == c.Id));
 
-		// Get category counts ordered by number of products having the category name
-		var categoryResponses = await ServiceUnitOfWork.CategoryService.GetAllAsync(cancellationToken: cancellationToken);
-		var categoryCounts = categoryResponses.OrderByDescending(c => productResponses.Count(p => p.CategoryId == c.Id))
-			.ToDictionary(c => c.Name, c => productResponses.Count(p => p.CategoryId == c.Id));
+        // Use ProductsCategoriesVM to combine ProductResponses and CategoryResponses with total products per category
+        var productsCategoriesVM = new ProductsCategoriesVM
+        {
+            ProductResponses = productResponses,
+            FilteredProducts = pagedProductResponses,
+            CategoryCounts = categoryCounts
+        };
 
-		// Use ProductsCategoriesVM to combine ProductResponses and CategoryResponses with total products per category
-		var productsCategoriesVM = new ProductsCategoriesVM
-		{
-			ProductResponses = productResponses,
-			FilteredProducts = pagedProductResponses,
-			CategoryCounts = categoryCounts
-		};
+        return View(productsCategoriesVM);
+    }
 
-		return View(productsCategoriesVM);
-	}
+    // GET: /Home/Details/{id}?page={page}
+    [HttpGet("{id?}")]
+    public async Task<IActionResult> Details(int? id, CancellationToken cancellationToken, [FromQuery] int page = 1)
+    {
+        // Get product to show details
+        ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
+            .GetByIdAsync(id, cancellationToken: cancellationToken,
+            includes: [nameof(ProductResponse.Category),nameof(ProductResponse.ProductImages),
+                nameof(ProductResponse.ProductReviews)]);
 
-	[HttpGet]
-	[Route("{id?}")]
-	public async Task<IActionResult> Details(int? id, CancellationToken cancellationToken, [FromQuery] int page = 1)
-	{
-		ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
-			.GetByIdAsync(id, cancellationToken: cancellationToken,
-			includes: [nameof(ProductResponse.Category),
-				nameof(ProductResponse.ProductImages),
-				nameof(ProductResponse.ProductReviews)]);
+        if (productResponse == null)
+        {
+            Logger.LogWarning("Product {productId} not found", id);
+            return NotFound();
+        }
 
-		if (productResponse == null)
-		{
-			Logger.LogWarning("Product not found");
-			return NotFound();
-		}
+        productResponse.TotalRating = await ServiceUnitOfWork.ProductService
+            .GetTotalRatingAsync(productResponse.Id, cancellationToken);
 
-		productResponse.TotalRating = await ServiceUnitOfWork.ProductService.GetTotalRatingAsync(productResponse.Id, cancellationToken);
+        List<ProductReviewResponse> productReviewResponses = await ServiceUnitOfWork.ProductReviewService
+            .GetAllAsync(p => p.ProductId == productResponse.Id, cancellationToken: cancellationToken);
 
-		List<ProductReviewResponse> productReviewResponses = await ServiceUnitOfWork.ProductReviewService
-			.GetAllAsync(p => p.ProductId == productResponse.Id, cancellationToken: cancellationToken);
+        // Sort by comment length -> rating -> date posted
+        productReviewResponses = productReviewResponses
+            .OrderByDescending(p => p.Comment?.Length)
+            .ThenByDescending(p => p.Rating)
+            .ThenByDescending(p => p.DatePosted.Date).ToList();
 
-		// Sort by comment length -> rating -> date posted
-		productReviewResponses = productReviewResponses
-			.OrderByDescending(p => p.Comment?.Length)
-			.ThenByDescending(p => p.Rating)
-			.ThenByDescending(p => p.DatePosted.Date).ToList();
+        // Only show 3 most recent product reviews
+        List<ProductReviewResponse> pagedProductReviewResponses = ServiceUnitOfWork.PagerService
+            .GetPagedItems(productReviewResponses, page, pageSize: 3);
 
-		List<ProductReviewResponse> pagedProductReviewResponses = ServiceUnitOfWork.PagerService
-			.GetPagedItems(productReviewResponses, page, pageSize: 3);
+        ViewBag.Pager = ServiceUnitOfWork.PagerService;
 
-		ViewBag.Pager = ServiceUnitOfWork.PagerService;
+        // Use CartItemAddRequestVM to combine CartItemAddRequest and product responses
+        var cartItemAddRequestVM = new CartItemAddRequestVM()
+        {
+            ProductResponse = productResponse,
 
-		// Use CartItemAddRequestVM to combine CartItemAddRequest and product responses
-		var cartItemAddRequestVM = new CartItemAddRequestVM()
-		{
-			ProductResponse = productResponse,
+            // Provide a valid cart item for model validation with product id
+            CartItemAddRequest = new CartItemAddRequest()
+            {
+                ApplicationUserId = UserHelper.GetCurrentUserId(_contextAccessor)!,
+                ProductId = productResponse.Id
+            }
+        };
 
-			// Provide a valid cart item for model validation with product id
-			CartItemAddRequest = new CartItemAddRequest()
-			{
-				ApplicationUserId = UserHelper.GetCurrentUserId(_contextAccessor)!,
-				ProductId = productResponse.Id
-			}
-		};
+        // Use ProductReviewVM to combine ProductReviewAddRequest and product review responses
+        var productReviewVM = new ProductReviewVM()
+        {
+            ProductReviewAddRequest = new ProductReviewAddRequest()
+            {
+                ProductId = productResponse.Id,
+                DatePosted = DateTime.Now,
+                UserName = _userManager.GetUserName(User)!
+            },
+            ProductReviewResponses = pagedProductReviewResponses
+        };
 
-		// Use ProductReviewVM to combine ProductReviewAddRequest and product review responses
-		var productReviewVM = new ProductReviewVM()
-		{
-			ProductReviewAddRequest = new ProductReviewAddRequest()
-			{
-				ProductId = productResponse.Id,
-				DatePosted = DateTime.Now,
-				UserName = _userManager.GetUserName(User)!
-			},
-			ProductReviewResponses = pagedProductReviewResponses
-		};
+        // Use ProductDetailsVM to combine CartItemAddRequestVM and ProductReviewVM
+        var productDetailsVM = new ProductDetailsVM()
+        {
+            CartItemAddRequestVM = cartItemAddRequestVM,
+            ProductReviewVM = productReviewVM
+        };
 
-		// Use ProductDetailsVM to combine CartItemAddRequestVM and ProductReviewVM
-		var productDetailsVM = new ProductDetailsVM()
-		{
-			CartItemAddRequestVM = cartItemAddRequestVM,
-			ProductReviewVM = productReviewVM
-		};
+        ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Home",
+            controllerActions: [nameof(Index), nameof(Details)],
+            titles: [productResponse.Category.Name, productResponse.Name],
+            routeValues: [
+                new() { { "category", productResponse.Category.Name } },
+                ]);
 
-		// Setup breadcrumb
-		var breadCrumbNode = new MvcBreadcrumbNode(nameof(Index), "Home", productResponse.Category.Name, areaName: Role.User.ToString())
-		{
-			RouteValues = new { category = productResponse.Category.Name },
-		};
+        return View(productDetailsVM);
+    }
 
-		var breadCrumbNode1 = new MvcBreadcrumbNode(nameof(Details), "Home", productResponse.Name, areaName: Role.User.ToString())
-		{
-			OverwriteTitleOnExactMatch = true,
-			Parent = breadCrumbNode
-		};
-		ViewData["BreadcrumbNode"] = breadCrumbNode1;
+    // POST: /Home/Details/{id}
+    [Authorize]
+    [HttpPost("{id?}")]
+    [ActionName(nameof(Details))]
+    public async Task<IActionResult> AddToCart(CartItemAddRequestVM cartItemAddRequestVM, CancellationToken cancellationToken)
+    {
+        if (ModelState.IsValid)
+        {
+            await _cartFacade.AddToCartAsync(cartItemAddRequestVM.CartItemAddRequest, this);
+            return RedirectToAction(nameof(Index));
+        }
 
-		return View(productDetailsVM);
-	}
+        Logger.LogWarning("Invalid model state. Request details: {addRequest}", nameof(cartItemAddRequestVM));
 
-	[HttpPost]
-	[Authorize]
-	[Route("{id?}")]
-	[ActionName(nameof(Details))]
-	public async Task<IActionResult> AddToCart(CartItemAddRequestVM cartItemAddRequestVM, CancellationToken cancellationToken)
-	{
-		if (ModelState.IsValid)
-		{
-			await _cartFacade.AddToCartAsync(cartItemAddRequestVM.CartItemAddRequest, this);
-			return RedirectToAction(nameof(Index));
-		}
+        // Repopulate CartItemAddRequestVM product
+        ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
+            .GetByIdAsync(cartItemAddRequestVM.ProductResponse.Id, cancellationToken: cancellationToken,
+            includes: [nameof(ProductResponse.Category), nameof(ProductResponse.ProductImages)]);
 
-		Logger.LogWarning("Invalid model state");
-		ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
-			.GetByIdAsync(cartItemAddRequestVM.ProductResponse.Id, cancellationToken: cancellationToken,
-			includes: [nameof(ProductResponse.Category), nameof(ProductResponse.ProductImages)]);
+        cartItemAddRequestVM.ProductResponse = productResponse!;
 
-		cartItemAddRequestVM.ProductResponse = productResponse!;
+        // If we got this far, something failed, redisplay form
+        return View(cartItemAddRequestVM);
+    }
 
-		return View(cartItemAddRequestVM);
-	}
+    // POST: /Home/AddReview
+    [HttpPost]
+    public async Task<IActionResult> AddReview(ProductReviewVM productReviewVM, CancellationToken cancellationToken)
+    {
+        ProductReviewAddRequest productReviewAddRequest = productReviewVM.ProductReviewAddRequest;
 
-	[HttpPost]
-	public async Task<IActionResult> AddReview(ProductReviewVM productReviewVM, CancellationToken cancellationToken)
-	{
-		ProductReviewAddRequest productReviewAddRequest = productReviewVM.ProductReviewAddRequest;
+        if (ModelState.IsValid)
+        {
+            await ServiceUnitOfWork.ProductReviewService.AddAsync(productReviewAddRequest);
 
-		if (ModelState.IsValid)
-		{
-			await ServiceUnitOfWork.ProductReviewService.AddAsync(productReviewAddRequest);
+            // Update Product total rating and ratings count
+            var productUpdateRequest = new ProductUpdateRequest()
+            {
+                Id = productReviewAddRequest.ProductId,
+                TotalRating = await ServiceUnitOfWork.ProductService
+                .GetTotalRatingAsync(productReviewAddRequest.ProductId, cancellationToken)
+            };
 
-			// Update Product total rating and ratings count
-			var productUpdateRequest = new ProductUpdateRequest()
-			{
-				Id = productReviewAddRequest.ProductId,
-				TotalRating = await ServiceUnitOfWork.ProductService
-					.GetTotalRatingAsync(productReviewAddRequest.ProductId, cancellationToken)
-			};
+            await ServiceUnitOfWork.ProductService.UpdatePartialAsync(productUpdateRequest, nameof(Product.TotalRating));
 
-			await ServiceUnitOfWork.ProductService.UpdatePartialAsync(productUpdateRequest, nameof(Product.TotalRating));
-			SuccessMessage = "Review added, thanks!";
-			Logger.LogInformation($"Added review for product: {productReviewAddRequest.ProductId}");
-		}
-		else
-			ErrorMessage = "Please select your rating";
+            SuccessMessage = "Review added, thanks!";
+            Logger.LogInformation("Added review for product {productId}", productReviewAddRequest.ProductId);
+        }
+        else
+            ErrorMessage = "Please select your rating";
 
-		return RedirectToAction(nameof(Details), new { id = productReviewAddRequest.ProductId });
-	}
+        // If we got this far, something failed, redisplay form
+        return RedirectToAction(nameof(Details), new { id = productReviewAddRequest.ProductId });
+    }
 
-	public IActionResult Privacy()
-	{
-		return View();
-	}
+    // GET: /Home/Privacy
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-	public IActionResult Error()
-	{
-		return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-	}
+    // GET: /Home/Error
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
 }

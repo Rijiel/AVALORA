@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9E6776B5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVALORA.ServiceTests", "..\tests\AVALORA.ServiceTests\AVALORA.ServiceTests.csproj", "{F5203A98-8971-47A1-93E9-BE0206A2F69D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVALORA.IntegrationTests", "..\tests\AVALORA.IntegrationTests\AVALORA.IntegrationTests.csproj", "{FB0490F1-7C70-45F8-A79A-571A6C83FF28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVALORA.IntegrationTests", "..\tests\AVALORA.IntegrationTests\AVALORA.IntegrationTests.csproj", "{FB0490F1-7C70-45F8-A79A-571A6C83FF28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

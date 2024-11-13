@@ -29,6 +29,7 @@ public class BaseController<TController> : Controller where TController : BaseCo
 
     protected ILogger<TController> Logger
         => _logger ??= HttpContext.RequestServices.GetRequiredService<ILogger<TController>>();
+
     protected IMapper Mapper
         => _mapper ??= HttpContext.RequestServices.GetRequiredService<IMapper>();
 

@@ -1,5 +1,6 @@
 ﻿using AVALORA.Core.Domain.Models;
 using AVALORA.Core.ServiceContracts;
+using SerilogTimings;
 using System.Text;
 using System.Text.Json.Nodes;
 
@@ -18,10 +19,12 @@ public class PaymentService : IPaymentService
 	{
 		string accessToken = "";
 		string url = paypal.SandboxURL + "/v1/oauth2/token";
-		string authHeaderValue = "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(paypal.ClientID + ":" + paypal.SecretKey));
+		string authHeaderValue = "Basic " + Convert.ToBase64String(
+            Encoding.UTF8.GetBytes(paypal.ClientID + ":" + paypal.SecretKey));
 		var httpContent = new StringContent("grant_type=client_credentials", null, "application/x-www-form-urlencoded");
 
 		var jsonReponse = await SendRequestAsync(url, authHeaderValue, httpContent, cancellationToken);
+
 		if (jsonReponse != null)
 			accessToken = jsonReponse["access_token"]?.ToString() ?? "";
 
@@ -31,19 +34,23 @@ public class PaymentService : IPaymentService
 	public async Task<JsonNode?> SendRequestAsync(string url, string authHeaderValue, HttpContent httpContent,
 		CancellationToken cancellationToken = default)
 	{
-		_httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authHeaderValue);
+        using(Operation.Time("Send request to paypal"))
+        {
+            _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authHeaderValue);
 
-		var requestMessage = new HttpRequestMessage(HttpMethod.Post, url)
-		{
-			Content = httpContent
-		};
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = httpContent
+            };
 
-		var httpResponse = await _httpClient.SendAsync(requestMessage, cancellationToken);
-		if (httpResponse.IsSuccessStatusCode)
-		{
-			var response = await httpResponse.Content.ReadAsStringAsync();
-			return JsonNode.Parse(response);
-		}
+            var httpResponse = await _httpClient.SendAsync(requestMessage, cancellationToken);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                var response = await httpResponse.Content.ReadAsStringAsync();
+                return JsonNode.Parse(response);
+            }
+        }		
 
 		return null;
 	}

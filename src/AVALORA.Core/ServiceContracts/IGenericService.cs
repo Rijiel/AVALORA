@@ -13,8 +13,10 @@ public interface IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
     /// </summary>
     /// <param name="filter">An optional filter expression to filter the results.</param>
     /// <param name="includes">An optional list of navigation properties to include in the results.</param>
-    /// <returns>A Task that represents the asynchronous operation. The task result contains a list of the generic model type.</returns>
-    Task<List<TResponseDto>> GetAllAsync(Expression<Func<TModel, bool>>? filter = null, CancellationToken cancellationToken = default, params string[] includes);
+    /// <returns>A Task that represents the asynchronous operation. The task result contains a list of the generic model 
+    /// type.</returns>
+    Task<List<TResponseDto>> GetAllAsync(Expression<Func<TModel, bool>>? filter = null, 
+        CancellationToken cancellationToken = default, params string[] includes);
 
     /// <summary>
     /// Retrieves a single instance of the generic model type based on the provided filter.
@@ -22,8 +24,10 @@ public interface IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
     /// <param name="filter">The filter expression to find the model.</param>
     /// <param name="includes">An optional list of navigation properties to include in the result.</param>
     /// <param name="tracked">Whether to track the model in the context. Defaults to false.</param>
-    /// <returns>A Task that represents the asynchronous operation. The task result contains the found model or null if not found.</returns>
-    Task<TResponseDto?> GetAsync(Expression<Func<TModel, bool>> filter, bool tracked = false, CancellationToken cancellationToken = default, params string[] includes);
+    /// <returns>A Task that represents the asynchronous operation. The task result contains the found model or null if not 
+    /// found.</returns>
+    Task<TResponseDto?> GetAsync(Expression<Func<TModel, bool>> filter, bool tracked = false, 
+        CancellationToken cancellationToken = default, params string[] includes);
 
     /// <summary>
     /// Retrieves a single instance of the generic model type based on the provided ID.
@@ -31,14 +35,17 @@ public interface IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
     /// <param name="id">The ID of the model to retrieve.</param>
     /// <param name="includes">An optional list of navigation properties to include in the result.</param>
     /// <param name="tracked">Whether to track the model in the context. Defaults to false.</param>
-    /// <returns>A Task that represents the asynchronous operation. The task result contains the found model or null if not found.</returns>
-    Task<TResponseDto?> GetByIdAsync(object? id, bool tracked = false, CancellationToken cancellationToken = default, params string[] includes);
+    /// <returns>A Task that represents the asynchronous operation. The task result contains the found model or null if 
+    /// not found.</returns>
+    Task<TResponseDto?> GetByIdAsync(object? id, bool tracked = false, CancellationToken cancellationToken = default, 
+        params string[] includes);
 
     /// <summary>
     /// Asynchronously adds a new instance of the generic model type to the repository.
     /// </summary>
     /// <param name="addDto">The data transfer object containing the data for the new instance.</param>
-    /// <returns>A Task that represents the asynchronous operation. The task result contains the added instance of the generic model type.</returns>
+    /// <returns>A Task that represents the asynchronous operation. The task result contains the added instance of the 
+    /// generic model type.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the <paramref name="addDto"/> parameter is null.</exception>
     Task<TResponseDto> AddAsync(TAddDto? addDto);
 
@@ -46,7 +53,8 @@ public interface IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
     /// Asynchronously adds a list of new instances of the generic model type to the repository.
     /// </summary>
     /// <param name="addDtos">The list of data transfer objects containing the data for the new instances.</param>
-    /// <returns>A Task that represents the asynchronous operation. The task result contains a list of the added instances of the generic model type.</returns>
+    /// <returns>A Task that represents the asynchronous operation. The task result contains a list of the added instances 
+    /// of the generic model type.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the <paramref name="addDtos"/> parameter is null.</exception>
     Task<List<TResponseDto>> AddRangeAsync(List<TAddDto> addDtos);
 
@@ -54,7 +62,8 @@ public interface IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
     /// Asynchronously updates an existing instance of the generic model type in the repository.
     /// </summary>
     /// <param name="updateDto">The data transfer object containing the data for the updated instance.</param>
-    /// <returns>A Task that represents the asynchronous operation. The task result contains the updated instance of the generic model type.</returns>
+    /// <returns>A Task that represents the asynchronous operation. The task result contains the updated instance of the 
+    /// generic model type.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the <paramref name="updateDto"/> parameter is null.</exception>
     Task<TResponseDto> UpdateAsync(TUpdateDto? updateDto);
 
@@ -63,7 +72,8 @@ public interface IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
     /// </summary>
     /// <param name="updateDto">The data transfer object containing the data for the updated instance.</param>
     /// <param name="propertyNames">The names of the properties to update. All other properties will remain unchanged.</param>
-    /// <returns>A Task that represents the asynchronous operation. The task result contains the updated instance of the generic model type.</returns>
+    /// <returns>A Task that represents the asynchronous operation. The task result contains the updated instance of the 
+    /// generic model type.</returns>
     /// <exception cref="ArgumentNullException">Thrown when the <paramref name="updateDto"/> parameter is null.</exception>
     /// <exception cref="ArgumentException">Thrown when the <paramref name="propertyNames"/> parameter is empty.</exception>
     Task<TResponseDto> UpdatePartialAsync(TUpdateDto? updateDto, params string[] propertyNames);

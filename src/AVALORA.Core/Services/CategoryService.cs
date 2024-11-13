@@ -6,9 +6,11 @@ using AVALORA.Core.ServiceContracts;
 
 namespace AVALORA.Core.Services;
 
-public class CategoryService : GenericService<Category, CategoryAddRequest, CategoryUpdateRequest, CategoryResponse>, ICategoryService
+public class CategoryService : GenericService<Category, CategoryAddRequest, CategoryUpdateRequest, CategoryResponse>, 
+    ICategoryService
 {
-    public CategoryService(ICategoryRepository repository, IMapper mapper, IUnitOfWork unitOfWork) : base(repository, mapper, unitOfWork)
+    public CategoryService(ICategoryRepository repository, IMapper mapper, IUnitOfWork unitOfWork) 
+        : base(repository, mapper, unitOfWork)
     {        
     }
 }

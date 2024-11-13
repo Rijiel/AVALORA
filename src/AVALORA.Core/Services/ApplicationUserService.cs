@@ -13,8 +13,8 @@ public class ApplicationUserService : GenericService<ApplicationUser, Applicatio
 {
 	private readonly RoleManager<IdentityRole> _roleManager;
 
-	public ApplicationUserService(IApplicationUserRepository repository, IMapper mapper, IUnitOfWork unitOfWork, RoleManager<IdentityRole> roleManager)
-		: base(repository, mapper, unitOfWork)
+	public ApplicationUserService(IApplicationUserRepository repository, IMapper mapper, IUnitOfWork unitOfWork, 
+        RoleManager<IdentityRole> roleManager) : base(repository, mapper, unitOfWork)
     {
 		_roleManager = roleManager;
 	}

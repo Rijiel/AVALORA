@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AVALORA.Core.ServiceContracts;
 
-public interface IApplicationUserService : IGenericService<ApplicationUser, ApplicationUserAddRequest, ApplicationUserUpdateRequest, ApplicationUserResponse>
+public interface IApplicationUserService : IGenericService<ApplicationUser, ApplicationUserAddRequest, 
+    ApplicationUserUpdateRequest, ApplicationUserResponse>
 {
 	/// <summary>
 	/// Retrieves a list of role options for selection.

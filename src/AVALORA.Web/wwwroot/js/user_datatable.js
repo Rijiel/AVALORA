@@ -53,6 +53,8 @@ function dataTables() {
 }
 
 function lockUnlock(url) {
+    const token = $('input[name="__RequestVerificationToken"]').val();
+
     Swal.fire({
         title: "Lock/Unlock user account?",
         icon: "warning",
@@ -65,6 +67,9 @@ function lockUnlock(url) {
             $.ajax({
                 url: url,
                 type: 'POST',
+                headers: {
+                    'RequestVerificationToken': token
+                },
                 success: function () {
                     location.reload(true);
                 }

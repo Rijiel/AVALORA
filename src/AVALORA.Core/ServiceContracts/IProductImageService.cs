@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace AVALORA.Core.ServiceContracts;
 
-public interface IProductImageService : IGenericService<ProductImage, ProductImageAddRequest, ProductImageUpdateRequest, ProductImageResponse>
+public interface IProductImageService : IGenericService<ProductImage, ProductImageAddRequest, ProductImageUpdateRequest, 
+    ProductImageResponse>
 {
 	/// <summary>
 	/// Creates product images asynchronously, uploading and storing images in the webroot, 

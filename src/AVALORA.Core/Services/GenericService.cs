@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
 using AVALORA.Core.Domain.RepositoryContracts;
 using AVALORA.Core.ServiceContracts;
+using SerilogTimings;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 
 namespace AVALORA.Core.Services;
 
-public class GenericService<TModel, TAddDto, TUpdateDto, TResponseDto> : IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
+public class GenericService<TModel, TAddDto, TUpdateDto, TResponseDto> 
+    : IGenericService<TModel, TAddDto, TUpdateDto, TResponseDto>
 	where TModel : class
 	where TAddDto : class
 	where TUpdateDto : class
@@ -31,15 +33,22 @@ public class GenericService<TModel, TAddDto, TUpdateDto, TResponseDto> : IGeneri
 	/// </summary>
 	protected IUnitOfWork UnitOfWork => _unitOfWork;
 
-	public async Task<List<TResponseDto>> GetAllAsync(Expression<Func<TModel, bool>>? filter = null, CancellationToken cancellationToken = default, params string[] includes)
+	public async Task<List<TResponseDto>> GetAllAsync(Expression<Func<TModel, bool>>? filter = null, 
+        CancellationToken cancellationToken = default, params string[] includes)
 	{
-		IEnumerable<TModel> models = await _repository.GetAllAsync(filter, includes);
-		cancellationToken.ThrowIfCancellationRequested();
+        IEnumerable<TModel> models = [];
+
+        using (Operation.Time("Get all {model}", typeof(TModel).Name))
+        {
+            models = await _repository.GetAllAsync(filter, includes);
+            cancellationToken.ThrowIfCancellationRequested();
+        }		
 
 		return Mapper.Map<List<TResponseDto>>(models);
 	}
 
-	public async Task<TResponseDto?> GetAsync(Expression<Func<TModel, bool>> filter, bool tracked = false, CancellationToken cancellationToken = default, params string[] includes)
+	public async Task<TResponseDto?> GetAsync(Expression<Func<TModel, bool>> filter, bool tracked = false, 
+        CancellationToken cancellationToken = default, params string[] includes)
 	{
 		TModel? model = await _repository.GetAsync(filter, tracked, includes);
 		cancellationToken.ThrowIfCancellationRequested();
@@ -47,7 +56,8 @@ public class GenericService<TModel, TAddDto, TUpdateDto, TResponseDto> : IGeneri
 		return Mapper.Map<TResponseDto>(model);
 	}
 
-	public async Task<TResponseDto?> GetByIdAsync(object? id, bool tracked = false, CancellationToken cancellationToken = default, params string[] includes)
+	public async Task<TResponseDto?> GetByIdAsync(object? id, bool tracked = false, 
+        CancellationToken cancellationToken = default, params string[] includes)
 	{
 		if (id == null)
 			return null;

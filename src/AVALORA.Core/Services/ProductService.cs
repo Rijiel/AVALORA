@@ -6,9 +6,11 @@ using AVALORA.Core.ServiceContracts;
 
 namespace AVALORA.Core.Services;
 
-public class ProductService : GenericService<Product, ProductAddRequest, ProductUpdateRequest, ProductResponse>, IProductService
+public class ProductService : GenericService<Product, ProductAddRequest, ProductUpdateRequest, ProductResponse>, 
+    IProductService
 {
-	public ProductService(IProductRepository repository, IMapper mapper, IUnitOfWork unitOfWork) : base(repository, mapper, unitOfWork)
+	public ProductService(IProductRepository repository, IMapper mapper, IUnitOfWork unitOfWork) 
+        : base(repository, mapper, unitOfWork)
 	{
 	}
 
@@ -18,6 +20,7 @@ public class ProductService : GenericService<Product, ProductAddRequest, Product
 
 		ProductResponse? productResponse = await GetByIdAsync(id, includes: nameof(ProductResponse.ProductReviews), 
 			cancellationToken: cancellationToken);
+
 		if (productResponse != null)
 		{
 			if (productResponse.ProductReviews?.Count > 0)

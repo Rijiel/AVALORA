@@ -7,9 +7,11 @@ using System.Reflection;
 
 namespace AVALORA.Core.Services;
 
-public class CartItemService : GenericService<CartItem, CartItemAddRequest, CartItemUpdateRequest, CartItemResponse>, ICartItemService
+public class CartItemService : GenericService<CartItem, CartItemAddRequest, CartItemUpdateRequest, CartItemResponse>,
+    ICartItemService
 {
-	public CartItemService(ICartItemRepository repository, IMapper mapper, IUnitOfWork unitOfWork) : base(repository, mapper, unitOfWork)
+	public CartItemService(ICartItemRepository repository, IMapper mapper, IUnitOfWork unitOfWork) 
+        : base(repository, mapper, unitOfWork)
     {
 	}
 
