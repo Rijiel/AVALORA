@@ -19,7 +19,8 @@
 				<input asp-for="CartItemAddRequestVM.CartItemAddRequest.ApplicationUserId" hidden aria-hidden="true" />
 
 				<a asp-action="Index" class="btn btn-link text-decoration-none p-0 ms-n3" aria-label="Back to Home" title="Back to Home">
-					<i class="bi bi-caret-left-fill" aria-hidden="true"></i> Back to Home</a>
+					<i class="bi bi-caret-left-fill" aria-hidden="true"></i> Back to Home
+				</a>
 
 				<div class="row mt-4" aria-labelledby="product-carousel">
 					<!-- Left Column -->
@@ -29,9 +30,9 @@
 						}
 						@if (product.ProductImages?.Count > 1)
 						{
-							<div id="carousel" class="carousel slide carousel-dark" data-bs-ride="carousel" data-bs-theme="dark" 
-							aria-labelledby="carousel-label">
-							<div id="carousel-label" class="visually-hidden">Product Images Carousel</div>
+							<div id="carousel" class="carousel slide carousel-dark" data-bs-ride="carousel" data-bs-theme="dark"
+								 aria-labelledby="carousel-label">
+								<div id="carousel-label" class="visually-hidden">Product Images Carousel</div>
 								<div class="carousel-indicators">
 									@for (int i = 0; i < product.ProductImages.Count; i++)
 									{
@@ -43,13 +44,13 @@
 									@for (int i = 0; i < product.ProductImages.Count; i++)
 									{
 										<div class="carousel-item @(i == 0 ? "active" : "")" data-bs-interval="5000">
-											<img src="@product.ProductImages.ElementAt(i).Path" alt="Product image" 
-											title="Product image">
+											<img src="@product.ProductImages.ElementAt(i).Path" alt="Product image"
+												 title="Product image">
 										</div>
 									}
 								</div>
-								<button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev" 
-								aria-label="Previous Slide">
+								<button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev"
+										aria-label="Previous Slide">
 									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 									<span class="visually-hidden">Previous</span>
 								</button>
@@ -170,7 +171,8 @@
 			<div class="col-md-9 col-lg-8 mx-auto">
 				<header>
 					<h4 id="reviews-header" class="text-uppercase text-secondary" aria-live="polite">
-						Product Reviews <i class="bi bi-chat-square-dots" aria-hidden="true"></i></h4>
+						Product Reviews <i class="bi bi-chat-square-dots" aria-hidden="true"></i>
+					</h4>
 				</header>
 				<div>
 					@if (User.Identity!.IsAuthenticated)
@@ -196,15 +198,15 @@
 								</div>
 								<span asp-validation-for="@productReviewAddRequest.Rating" class="text-danger" role="alert"></span>
 								<!-- Comment -->
-								<textarea asp-for="@productReviewAddRequest.Comment" class="form-control" rows="3" placeholder="Type your review..." 
-									aria-describedby="review-comment-help"></textarea>
+								<textarea asp-for="@productReviewAddRequest.Comment" class="form-control" rows="3" placeholder="Type your review..."
+										  aria-describedby="review-comment-help"></textarea>
 								<span asp-validation-for="@productReviewAddRequest.Comment" class="text-danger" role="alert"></span>
 								<div class="d-flex align-items-center mt-2">
 									<button type="submit" class="btn btn-sm btn-secondary" aria-label="Submit your review" title="Submit your review">
 										Add Review
-										</button>
+									</button>
 									<input type="checkbox" onchange="changeUserName(this.checked)" class="form-check-input ms-2 me-1" id="anonymous"
-									aria-label="Submit as anonymous" title="Submit as anonymous" />
+										   aria-label="Submit as anonymous" title="Submit as anonymous" />
 									<label for="anonymous" class="form-check-label">Anonymous?</label>
 								</div>
 							}
@@ -235,7 +237,7 @@
 							{
 								<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
 									<a href="/Home/Details/@(Model.CartItemAddRequestVM.ProductResponse.Id)?page=@pge"
-											   class="page-link" aria-current="@(pge == pager.CurrentPage ? "page" : null)">@pge</a>
+									   class="page-link" aria-current="@(pge == pager.CurrentPage ? "page" : null)">@pge</a>
 								</li>
 							}
 						</ul>

@@ -1,9 +1,17 @@
 ﻿using AVALORA.Core.Domain.Models;
+using AVALORA.Core.Domain.Models.ViewModels;
+using AVALORA.Core.Dto.CartItemDtos;
 using AVALORA.Core.Dto.CategoryDtos;
 using AVALORA.Core.Dto.ProductDtos;
 using AVALORA.Core.Dto.ProductImageDtos;
+using AVALORA.Core.Dto.ProductReviewDtos;
 using AVALORA.Core.Enums;
+using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
@@ -11,8 +19,16 @@ namespace AVALORA.Core.Services.FacadeServices;
 
 public class ProductFacade : BaseFacade<ProductFacade>, IProductFacade
 {
-	public ProductFacade(IServiceProvider serviceProvider) : base(serviceProvider)
+	private readonly IPagerFacade _pagerFacade;
+	private readonly IHttpContextAccessor _contextAccessor;
+	private readonly UserManager<IdentityUser> _userManager;
+
+	public ProductFacade(IServiceProvider serviceProvider, IPagerFacade pagerFacade, 
+		IHttpContextAccessor contextAccessor, UserManager<IdentityUser> userManager) : base(serviceProvider)
 	{
+		_pagerFacade = pagerFacade;
+		_contextAccessor = contextAccessor;
+		_userManager = userManager;
 	}
 
 	public async Task CreateProductAsync(ProductAddRequest? productAddRequest)
@@ -110,5 +126,63 @@ public class ProductFacade : BaseFacade<ProductFacade>, IProductFacade
 
         return filteredProducts;
     }
+
+	public async Task<ProductDetailsVM> GetProductDetailsVMAsync(Controller controller, int? id, int page,
+		CancellationToken cancellationToken = default)
+	{
+		// Get product to show details
+		ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
+			.GetByIdAsync(id, cancellationToken: cancellationToken,
+			includes: [nameof(ProductResponse.Category),nameof(ProductResponse.ProductImages),
+				nameof(ProductResponse.ProductReviews)]);
+
+		if (productResponse == null)
+		{
+			Logger.LogWarning("Product {productId} not found", id);
+			throw new KeyNotFoundException("Product not found.");
+		}
+
+		productResponse.TotalRating = await ServiceUnitOfWork.ProductService
+			.GetTotalRatingAsync(productResponse.Id, cancellationToken);
+
+		var pagedProductReviewResponses = await _pagerFacade
+			.GetPagedProductReviews(page, 3, productResponse.Id, cancellationToken);
+
+		controller.ViewBag.Pager = ServiceUnitOfWork.PagerService;
+
+		// Use CartItemAddRequestVM to combine CartItemAddRequest and product responses
+		var cartItemAddRequestVM = new CartItemAddRequestVM()
+		{
+			ProductResponse = productResponse,
+
+			// Provide a valid cart item for model validation with product id
+			CartItemAddRequest = new CartItemAddRequest()
+			{
+				ApplicationUserId = UserHelper.GetCurrentUserId(_contextAccessor)!,
+				ProductId = productResponse.Id
+			}
+		};
+
+		// Use ProductReviewVM to combine ProductReviewAddRequest and product review responses
+		var productReviewVM = new ProductReviewVM()
+		{
+			ProductReviewAddRequest = new ProductReviewAddRequest()
+			{
+				ProductId = productResponse.Id,
+				DatePosted = DateTime.Now,
+				UserName = _userManager.GetUserName(controller.User)!
+			},
+			ProductReviewResponses = pagedProductReviewResponses
+		};
+
+		// Use ProductDetailsVM to combine CartItemAddRequestVM and ProductReviewVM
+		var productDetailsVM = new ProductDetailsVM()
+		{
+			CartItemAddRequestVM = cartItemAddRequestVM,
+			ProductReviewVM = productReviewVM
+		};
+
+		return productDetailsVM;
+	}
 }
 

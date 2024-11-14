@@ -25,7 +25,7 @@ public class CartItem
     public int Count { get; set; }
 
     [Required(ErrorMessage = "Please specify your preferred color")]
-    public Color Color { get; set; }
+    public Color? Color { get; set; }
 
 	[NotMapped]
 	public double TotalPrice { get; set; }

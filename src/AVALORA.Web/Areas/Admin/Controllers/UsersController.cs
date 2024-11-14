@@ -4,6 +4,7 @@ using AVALORA.Core.Enums;
 using AVALORA.Core.Helpers;
 using AVALORA.Web.Areas.User.Controllers;
 using AVALORA.Web.BaseController;
+using AVALORA.Web.Filters.ActionFilters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +26,8 @@ public class UsersController : BaseController<UsersController>
 	}
 
 	// GET: /Users/Index
-	[Breadcrumb("Users", FromController = typeof(HomeController), FromAction = nameof(HomeController.Index), 
-        AreaName = nameof(Role.Admin))]
+	[Breadcrumb("Users", FromController = typeof(HomeController), FromAction = nameof(HomeController.Index),
+		AreaName = nameof(Role.Admin))]
 	public IActionResult Index() => View();
 
 	// GET: /Users/Edit/{id}
@@ -35,7 +36,7 @@ public class UsersController : BaseController<UsersController>
 	{
 		// Get user to edit
 		var applicationUserResponse = await ServiceUnitOfWork.ApplicationUserService
-            .GetByIdAsync(id, cancellationToken: cancellationToken);
+			.GetByIdAsync(id, cancellationToken: cancellationToken);
 
 		if (applicationUserResponse == null)
 		{
@@ -50,51 +51,43 @@ public class UsersController : BaseController<UsersController>
 		var applicationUserVM = Mapper.Map<ApplicationUserRoleVM>(applicationUserResponse);
 		applicationUserVM.Roles = ServiceUnitOfWork.ApplicationUserService.GetRoleOptions(applicationUserResponse.Role);
 
-        ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Users", 
-            controllerActions: [nameof(Index), nameof(Edit), nameof(Edit)], titles: ["Users", "Edit", id.ToString()!]);
+		ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Users",
+			controllerActions: [nameof(Index), nameof(Edit), nameof(Edit)], titles: ["Users", "Edit", id?.ToString()!]);
 
 		return View(applicationUserVM);
 	}
 
 	// POST: /Users/Edit/{id}
 	[HttpPost("{id?}")]
-	public async Task<IActionResult> Edit(ApplicationUserRoleVM applicationUserRoleVM, 
-        CancellationToken cancellationToken)
+	[TypeFilter(typeof(ValidationActionFilter))]
+	public async Task<IActionResult> Edit(ApplicationUserRoleVM applicationUserRoleVM,
+		CancellationToken cancellationToken)
 	{
-		if (ModelState.IsValid)
+		// Get user to edit
+		IdentityUser? identityUser = await _userManager.FindByIdAsync(applicationUserRoleVM.Id);
+		if (identityUser == null)
 		{
-			// Get user to edit
-			IdentityUser? identityUser = await _userManager.FindByIdAsync(applicationUserRoleVM.Id);
-			if (identityUser == null)
-			{
-				Logger.LogWarning("User with id {userId} not found.", applicationUserRoleVM.Id);
-				return NotFound("User not found!");
-			}
-
-			// Different input role: Remove current role and apply input role
-			string? oldRole = await UserHelper.GetUserRoleAsync(applicationUserRoleVM.Id, 
-                _userManager, cancellationToken);
-
-			if (oldRole != applicationUserRoleVM.Role)
-			{
-				if (!String.IsNullOrEmpty(oldRole))
-					await _userManager.RemoveFromRoleAsync(identityUser, oldRole);
-
-				await _userManager.AddToRoleAsync(identityUser, applicationUserRoleVM.Role);
-
-				SuccessMessage = "Role updated successfully.";
-                Logger.LogInformation("User with id {userId} role updated to {userRole} successfully.", 
-                    applicationUserRoleVM.Id, applicationUserRoleVM.Role);
-			}
-
-			return RedirectToAction(nameof(Index));
+			Logger.LogWarning("User with id {userId} not found.", applicationUserRoleVM.Id);
+			return NotFound("User not found!");
 		}
 
-		Logger.LogWarning("Invalid model state. User not updated. Request details: {updateRequest}", 
-            nameof(applicationUserRoleVM));
+		// Different input role: Remove current role and apply input role
+		string? oldRole = await UserHelper.GetUserRoleAsync(applicationUserRoleVM.Id,
+			_userManager, cancellationToken);
 
-		// If we got this far, something failed, redisplay form
-		return View(applicationUserRoleVM);
+		if (oldRole != applicationUserRoleVM.Role)
+		{
+			if (!String.IsNullOrEmpty(oldRole))
+				await _userManager.RemoveFromRoleAsync(identityUser, oldRole);
+
+			await _userManager.AddToRoleAsync(identityUser, applicationUserRoleVM.Role);
+
+			SuccessMessage = "Role updated successfully.";
+			Logger.LogInformation("User with id {userId} role updated to {userRole} successfully.",
+				applicationUserRoleVM.Id, applicationUserRoleVM.Role);
+		}
+
+		return RedirectToAction(nameof(Index));
 	}
 
 	public IActionResult Create() => RedirectToPage("/Account/Register", new { area = "Identity" });

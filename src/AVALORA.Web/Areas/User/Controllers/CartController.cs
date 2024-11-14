@@ -7,6 +7,8 @@ using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.BaseController;
 using AVALORA.Web.Extensions;
+using AVALORA.Web.Filters.ActionFilters;
+using AVALORA.Web.Filters.ResultFIlters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +22,9 @@ public class CartController : BaseController<CartController>
 	private readonly ICartFacade _cartFacade;
 	private readonly IOrderFacade _orderFacade;
 	private readonly IHttpContextAccessor _contextAccessor;
+
+	[BindProperty]
+	public CheckoutVM CheckoutVM { get; set; } = null!;
 
 	public CartController(ICartFacade cartFacade, IOrderFacade orderFacade, IHttpContextAccessor contextAccessor)
 	{
@@ -90,7 +95,7 @@ public class CartController : BaseController<CartController>
 		}
 
 		List<CartItemResponse> cartItemResponses = await _cartFacade
-            .GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
+			.GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
 
 		// Initialize the total price for each cart item
 		foreach (var item in cartItemResponses)
@@ -99,37 +104,29 @@ public class CartController : BaseController<CartController>
 		OrderHeaderAddRequest orderHeaderAddRequest = await _orderFacade.CreateOrderHeaderAsync(cancellationToken);
 
 		// Populate the checkout view model with orderheader, cart items and total price
-		var checkoutVM = Mapper.Map<CheckoutVM>(orderHeaderAddRequest);
-		checkoutVM.CartItemResponses = cartItemResponses;
-		checkoutVM.TotalPrice = ServiceUnitOfWork.CartItemService.GetTotalPrice(cartItemResponses);
+		CheckoutVM = Mapper.Map<CheckoutVM>(orderHeaderAddRequest);
+		CheckoutVM.CartItemResponses = cartItemResponses;
+		CheckoutVM.TotalPrice = ServiceUnitOfWork.CartItemService.GetTotalPrice(cartItemResponses);
 
-		return View(checkoutVM);
+		return View(CheckoutVM);
 	}
 
 	// POST: /Cart/Checkout
 	[HttpPost]
-	public async Task<IActionResult> Checkout(CheckoutVM checkoutVM, CancellationToken cancellationToken)
+	[ActionName(nameof(Checkout))]
+	[TypeFilter(typeof(ValidationActionFilter))]
+	[TypeFilter(typeof(CartControllerResultFilter))]
+	public async Task<IActionResult> CheckoutPost(CancellationToken cancellationToken)
 	{
-		if (ModelState.IsValid)
-		{
-			OrderHeaderAddRequest orderHeaderAddRequest = Mapper.Map<OrderHeaderAddRequest>(checkoutVM);
-			OrderSummaryAddRequest orderSummaryAddRequest = Mapper.Map<OrderSummaryAddRequest>(checkoutVM);
+		OrderHeaderAddRequest orderHeaderAddRequest = Mapper.Map<OrderHeaderAddRequest>(CheckoutVM);
+		OrderSummaryAddRequest orderSummaryAddRequest = Mapper.Map<OrderSummaryAddRequest>(CheckoutVM);
 
-			OrderHeaderResponse orderHeaderResponse = await _orderFacade
-				.PlaceOrderAsync(orderHeaderAddRequest, orderSummaryAddRequest, this, cancellationToken);
+		OrderHeaderResponse orderHeaderResponse = await _orderFacade
+			.PlaceOrderAsync(orderHeaderAddRequest, orderSummaryAddRequest, this, cancellationToken);
 
-			// Redirect to payment gateway
-			TempData[SD.TEMPDATA_CLEARCART] = true;
+		// Redirect to payment gateway
+		TempData[SD.TEMPDATA_CLEARCART] = true;
 
-			return RedirectToAction("Index", "Payment", new { id = orderHeaderResponse.Id });
-		}
-
-        Logger.LogWarning("Checkout failed. Request details: {request}", nameof(CheckoutVM));
-
-		// Repopulate the cart items
-		checkoutVM.CartItemResponses = await _cartFacade.GetCurrentUserCartItemsAsync(cancellationToken: cancellationToken);
-
-		// If we got this far, something failed, redisplay form
-		return View(checkoutVM);
+		return RedirectToAction("Index", "Payment", new { id = orderHeaderResponse.Id });
 	}
 }

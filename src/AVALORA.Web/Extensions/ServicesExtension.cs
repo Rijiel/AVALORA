@@ -95,6 +95,7 @@ public static class ServicesExtension
         services.AddScoped<IProductFacade, ProductFacade>();
         services.AddScoped<ICartFacade, CartFacade>();
         services.AddScoped<IOrderFacade, OrderFacade>();
+        services.AddScoped<IPagerFacade, PagerFacade>();
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<IDbInitializer, DbInitializer>();
         #endregion

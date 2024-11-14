@@ -5,6 +5,8 @@ using AVALORA.Core.Enums;
 using AVALORA.Core.Services;
 using AVALORA.Web.Areas.User.Controllers;
 using AVALORA.Web.BaseController;
+using AVALORA.Web.Filters.ActionFilters;
+using AVALORA.Web.Filters.ResultFIlters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartBreadcrumbs.Attributes;
@@ -16,125 +18,110 @@ namespace AVALORA.Web.Areas.Admin.Controllers;
 [Route("[controller]/[action]")]
 public class CategoriesController : BaseController<CategoriesController>
 {
-    // GET: /Categories/Index
-    [HttpGet]
-    [Breadcrumb("Categories", FromAction = nameof(Index), FromController = typeof(HomeController),
-        AreaName = nameof(Role.Admin))]
-    public async Task<IActionResult> Index(CancellationToken cancellationToken)
-    {
-        // Provide list of category responses for editing
-        var categoriesVM = new CategoriesVM()
-        {
-            CategoryResponses = await ServiceUnitOfWork.CategoryService
-            .GetAllAsync(cancellationToken: cancellationToken)
-        };
+	[BindProperty]
+	public CategoriesVM CategoriesVM { get; set; } = null!;
 
-        ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Categories", 
-            controllerActions: [nameof(Index), nameof(Create)], titles: ["Categories", "Create"]);
+	// GET: /Categories/Index
+	[HttpGet]
+	[Breadcrumb("Categories", FromAction = nameof(Index), FromController = typeof(HomeController),
+		AreaName = nameof(Role.Admin))]
+	public async Task<IActionResult> Index(CancellationToken cancellationToken)
+	{
+		// Provide list of category responses for editing
+		CategoriesVM = new CategoriesVM()
+		{
+			CategoryResponses = await ServiceUnitOfWork.CategoryService
+			.GetAllAsync(cancellationToken: cancellationToken)
+		};
 
-        return View(categoriesVM);
-    }
+		ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Categories",
+			controllerActions: [nameof(Index), nameof(Create)], titles: ["Categories", "Create"]);
 
-    // POST: /Categories/Index
-    [HttpPost]
-    [ActionName(nameof(Index))]
-    public async Task<IActionResult> Create(CategoriesVM categoriesVM, CancellationToken cancellationToken)
-    {
-        if (ModelState.IsValid)
-        {
-            // Persist new category to database
-            CategoryResponse categoryResponse = await ServiceUnitOfWork.CategoryService
-                .AddAsync(categoriesVM.CategoryAddRequest);
+		return View(CategoriesVM);
+	}
 
-            SuccessMessage = "Category created successfully";
-            Logger.LogInformation("Category {categoryId} created successfully.", categoryResponse.Id);
+	// POST: /Categories/Index
+	[HttpPost]
+	[ActionName(nameof(Index))]
+	[TypeFilter(typeof(ValidationActionFilter))]
+	[TypeFilter(typeof(CategoriesControllerResultFilter))]
+	public async Task<IActionResult> Create(CancellationToken cancellationToken)
+	{
+		// Persist new category to database
+		CategoryResponse categoryResponse = await ServiceUnitOfWork.CategoryService
+			.AddAsync(CategoriesVM.CategoryAddRequest);
 
-            return RedirectToAction(nameof(Index));
-        }
+		SuccessMessage = "Category created successfully";
+		Logger.LogInformation("Category {categoryId} created successfully.", categoryResponse.Id);
 
-        Logger.LogWarning("Invalid model state. Product not created. Request details: {addRequest}", 
-            nameof(categoriesVM));
+		return RedirectToAction(nameof(Index));
+	}
 
-        // Re-populate category list for re-display on validation failure
-        categoriesVM.CategoryResponses = await ServiceUnitOfWork.CategoryService
-            .GetAllAsync(cancellationToken: cancellationToken);
+	// GET: /Categories/Edit/{id}
+	[HttpGet("{id?}")]
+	public async Task<IActionResult> Edit(int? id, CancellationToken cancellationToken)
+	{
+		// Get category to edit
+		CategoryResponse? categoryResponse = await ServiceUnitOfWork.CategoryService
+			.GetByIdAsync(id, cancellationToken: cancellationToken);
 
-        // If we got this far, something failed, redisplay form
-        return View(categoriesVM);
-    }
+		if (categoryResponse == null)
+		{
+			Logger.LogWarning("Category {categoryId} not found.", id);
+			return NotFound("Category not found.");
+		}
 
-    // GET: /Categories/Edit/{id}
-    [HttpGet("{id?}")]
-    public async Task<IActionResult> Edit(int? id, CancellationToken cancellationToken)
-    {
-        // Get category to edit
-        CategoryResponse? categoryResponse = await ServiceUnitOfWork.CategoryService
-            .GetByIdAsync(id, cancellationToken: cancellationToken);
+		ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Categories", controllerActions:
+			[nameof(Index), nameof(Edit), nameof(Edit)], titles: ["Categories", "Edit", id.ToString()!]);
 
-        if (categoryResponse == null)
-        {
-            Logger.LogWarning("Category {categoryId} not found.", id);
-            return NotFound("Category not found.");
-        }
+		return View(Mapper.Map<CategoryUpdateRequest>(categoryResponse));
+	}
 
-        ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Categories", controllerActions: 
-            [nameof(Index), nameof(Edit), nameof(Edit)], titles: ["Categories", "Edit", id.ToString()!]);
+	// POST: /Categories/Edit/{id}
+	[HttpPost("{id?}")]
+	[TypeFilter(typeof(ValidationActionFilter))]
+	public async Task<IActionResult> Edit(CategoryUpdateRequest updateRequest)
+	{
+		// Persist updated category to database
+		await ServiceUnitOfWork.CategoryService.UpdateAsync(updateRequest);
 
-        return View(Mapper.Map<CategoryUpdateRequest>(categoryResponse));
-    }
+		Logger.LogInformation("Category {categoryId} updated successfully.", updateRequest.Id);
+		SuccessMessage = "Category updated successfully";
 
-    // POST: /Categories/Edit/{id}
-    [HttpPost("{id?}")]
-    public async Task<IActionResult> Edit(CategoryUpdateRequest updateRequest)
-    {
-        if (ModelState.IsValid)
-        {
-            // Persist updated category to database
-            await ServiceUnitOfWork.CategoryService.UpdateAsync(updateRequest);
+		return RedirectToAction(nameof(Index));
+	}
 
-            Logger.LogInformation("Category {categoryId} updated successfully.", updateRequest.Id);
-            SuccessMessage = "Category updated successfully";
+	#region API CALLS
+	// DELETE: /Categories/Delete/{id}
+	[HttpDelete("{id?}")]
+	public async Task<JsonResult> Delete(int? id, CancellationToken cancellationToken)
+	{
+		try
+		{
+			// Disable deletion if category is associated with any product
+			if (await ServiceUnitOfWork.ProductService.GetAsync(x => x.CategoryId == id,
+				cancellationToken: cancellationToken) == null)
+			{
+				await ServiceUnitOfWork.CategoryService.RemoveAsync(id);
 
-            return RedirectToAction(nameof(Index));
-        }
+				SuccessMessage = "Category deleted successfully.";
+				Logger.LogInformation("Category {categoryId} deleted successfully.", id);
 
-        Logger.LogWarning("Invalid model state. Product {productId} not created.", updateRequest.Id);
+				// Enable client-side redirect after deletion
+				return Json(new { success = true, redirectUrl = Url.Action(nameof(Index)) });
+			}
 
-        // If we got this far, something failed, redisplay form
-        return View(updateRequest);
-    }
+			Logger.LogWarning("Category {categoryId} is associated with one or more products.", id);
 
-    #region API CALLS
-    // DELETE: /Categories/Delete/{id}
-    [HttpDelete("{id?}")]
-    public async Task<JsonResult> Delete(int? id, CancellationToken cancellationToken)
-    {
-        try
-        {
-            // Disable deletion if category is associated with any product
-            if (await ServiceUnitOfWork.ProductService.GetAsync(x => x.CategoryId == id, 
-                cancellationToken: cancellationToken) == null)
-            {
-                await ServiceUnitOfWork.CategoryService.RemoveAsync(id);
+			throw new Exception("Category is associated with one or more products.");
+		}
+		catch (Exception e)
+		{
+			ErrorMessage = e.Message;
+			Logger.LogError(e.Message);
 
-                SuccessMessage = "Category deleted successfully.";
-                Logger.LogInformation("Category {categoryId} deleted successfully.", id);
-
-                // Enable client-side redirect after deletion
-                return Json(new { success = true, redirectUrl = Url.Action(nameof(Index)) });
-            }
-
-            Logger.LogWarning("Category {categoryId} is associated with one or more products.", id);
-
-            throw new Exception("Category is associated with one or more products.");
-        }
-        catch (Exception e)
-        {
-            ErrorMessage = e.Message;
-            Logger.LogError(e.Message);
-
-            return Json(new { success = false });
-        }
-    }
-    #endregion
+			return Json(new { success = false });
+		}
+	}
+	#endregion
 }

@@ -5,11 +5,11 @@ using AVALORA.Core.Enums;
 using AVALORA.Core.ServiceContracts.FacadeServiceContracts;
 using AVALORA.Web.Areas.User.Controllers;
 using AVALORA.Web.BaseController;
+using AVALORA.Web.Filters.ActionFilters;
+using AVALORA.Web.Filters.ResultFIlters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmartBreadcrumbs;
 using SmartBreadcrumbs.Attributes;
-using SmartBreadcrumbs.Nodes;
 
 namespace AVALORA.Web.Areas.Admin.Controllers;
 
@@ -18,161 +18,141 @@ namespace AVALORA.Web.Areas.Admin.Controllers;
 [Route("[controller]/[action]")]
 public class ProductsController : BaseController<ProductsController>
 {
-    private readonly IProductFacade _productFacade;
+	private readonly IProductFacade _productFacade;
 
-    [BindProperty]
-    public ProductUpsertVM ProductUpsertVM { get; set; } = null!;
+	[BindProperty]
+	public ProductUpsertVM ProductUpsertVM { get; set; } = null!;
 
-    public ProductsController(IProductFacade productFacade)
-    {
-        _productFacade = productFacade;
-    }
+	public ProductsController(IProductFacade productFacade)
+	{
+		_productFacade = productFacade;
+	}
 
-    // GET: /Products/Index
-    [Breadcrumb("Products", FromController = typeof(HomeController), FromAction = nameof(HomeController.Index),
-        AreaName = nameof(Role.Admin))]
-    public IActionResult Index() => View();
+	// GET: /Products/Index
+	[Breadcrumb("Products", FromController = typeof(HomeController), FromAction = nameof(HomeController.Index),
+		AreaName = nameof(Role.Admin))]
+	public IActionResult Index() => View();
 
-    // GET: /Products/Create
-    [HttpGet]
-    [Breadcrumb("Create", FromAction = nameof(Index))]
-    public async Task<IActionResult> Create(CancellationToken cancellationToken)
-    {
-        // Initialize ProductUpsertVM
-        ProductUpsertVM = new ProductUpsertVM()
-        {
-            Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken: cancellationToken)
-        };
+	// GET: /Products/Create
+	[HttpGet]
+	[Breadcrumb("Create", FromAction = nameof(Index))]
+	public async Task<IActionResult> Create(CancellationToken cancellationToken)
+	{
+		// Initialize ProductUpsertVM
+		ProductUpsertVM = new ProductUpsertVM()
+		{
+			Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken: cancellationToken)
+		};
 
-        return View(ProductUpsertVM);
-    }
+		return View(ProductUpsertVM);
+	}
 
-    // POST: /Products/Create
-    [HttpPost]
-    [ActionName(nameof(Create))]
-    public async Task<IActionResult> CreatePOST(CancellationToken cancellationToken)
-    {
-        if (ModelState.IsValid)
-        {
-            var productAddRequest = Mapper.Map<ProductAddRequest>(ProductUpsertVM);
-            await _productFacade.CreateProductAsync(productAddRequest);
+	// POST: /Products/Create
+	[HttpPost]
+	[ActionName(nameof(Create))]
+	[TypeFilter(typeof(ValidationActionFilter))]
+	[TypeFilter(typeof(ProductsControllerResultFilter))]
+	public async Task<IActionResult> CreatePOST(CancellationToken cancellationToken)
+	{
+		var productAddRequest = Mapper.Map<ProductAddRequest>(ProductUpsertVM);
+		await _productFacade.CreateProductAsync(productAddRequest);
 
-            SuccessMessage = "Product created successfully.";
-            Logger.LogInformation(SuccessMessage);
+		SuccessMessage = "Product created successfully.";
+		Logger.LogInformation(SuccessMessage);
 
-            return RedirectToAction(nameof(Index));
-        }
+		return RedirectToAction(nameof(Index));
+	}
 
-        Logger.LogWarning("Invalid model state. Product not created. Request details: {addRequest}", 
-            nameof(ProductUpsertVM));
+	// GET: /Products/Edit/{id}
+	[HttpGet("{id?}")]
+	public async Task<IActionResult> Edit(int? id, CancellationToken cancellationToken)
+	{
+		// Get product to edit
+		ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
+			.GetByIdAsync(id, cancellationToken: cancellationToken, includes: nameof(ProductResponse.ProductImages));
 
-        // Re-populate category list
-        ProductUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken: cancellationToken);
+		if (productResponse == null)
+		{
+			Logger.LogWarning("Product {productId} not found.", id);
+			return NotFound("Product not found.");
+		}
 
-        // If we got this far, something failed, redisplay form
-        return View(ProductUpsertVM);
-    }
+		var productUpsertVM = Mapper.Map<ProductUpsertVM>(productResponse);
+		productUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken);
 
-    // GET: /Products/Edit/{id}
-    [HttpGet("{id?}")]
-    public async Task<IActionResult> Edit(int? id, CancellationToken cancellationToken)
-    {
-        // Get product to edit
-        ProductResponse? productResponse = await ServiceUnitOfWork.ProductService
-            .GetByIdAsync(id, cancellationToken: cancellationToken, includes: nameof(ProductResponse.ProductImages));
+		ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Products",
+			controllerActions: [nameof(Index), nameof(Edit), nameof(Edit)], titles: ["Products", "Edit", id.ToString()!]);
 
-        if (productResponse == null)
-        {
-            Logger.LogWarning("Product {productId} not found.", id);
-            return NotFound("Product not found.");
-        }
+		return View(productUpsertVM);
+	}
 
-        var productUpsertVM = Mapper.Map<ProductUpsertVM>(productResponse);
-        productUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken);
+	// POST: /Products/Edit/{id}
+	[HttpPost("{id?}")]
+	[TypeFilter(typeof(ValidationActionFilter))]
+	[TypeFilter(typeof(ProductsControllerResultFilter))]
+	public async Task<IActionResult> Edit(CancellationToken cancellationToken)
+	{
+		var productUpdateRequest = Mapper.Map<ProductUpdateRequest>(ProductUpsertVM);
+		await _productFacade.UpdateProductAsync(productUpdateRequest);
 
-        ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Products", 
-            controllerActions: [nameof(Index), nameof(Edit), nameof(Edit)], titles: ["Products", "Edit", id.ToString()!]);
+		SuccessMessage = "Product updated successfully.";
+		Logger.LogInformation(SuccessMessage);
 
-        return View(productUpsertVM);
-    }
+		return RedirectToAction(nameof(Index));
+	}
 
-    // POST: /Products/Edit/{id}
-    [HttpPost("{id?}")]
-    public async Task<IActionResult> Edit(CancellationToken cancellationToken)
-    {
-        if (ModelState.IsValid)
-        {
-            var productUpdateRequest = Mapper.Map<ProductUpdateRequest>(ProductUpsertVM);
-            await _productFacade.UpdateProductAsync(productUpdateRequest);
+	#region API CALLS
+	// GET: /Products/GetAll
+	public async Task<JsonResult> GetAll(CancellationToken cancellationToken)
+	{
+		List<ProductResponse> productResponses = await ServiceUnitOfWork.ProductService
+			.GetAllAsync(includes: [nameof(ProductResponse.Category)], cancellationToken: cancellationToken);
 
-            SuccessMessage = "Product updated successfully.";
-            Logger.LogInformation(SuccessMessage);
+		// Initialize product images count for each product
+		foreach (var productResponse in productResponses)
+		{
+			productResponse.ProductImagesCount = await _productFacade
+				.GetProductImageCount(productResponse.Id, cancellationToken);
+		}
 
-            return RedirectToAction(nameof(Index));
-        }
+		Logger.LogInformation("Retrieved all products with product images count.");
+		return Json(new { data = productResponses });
+	}
 
-        Logger.LogWarning("Invalid model state. Product not created. Request details: {updateRequest}", 
-            nameof(ProductUpsertVM));
+	// DELETE: /Products/Delete?id={id}
+	[HttpDelete]
+	public async Task<JsonResult> Delete(int? id)
+	{
+		try
+		{
+			await _productFacade.DeleteProductAsync(id);
 
-        // Re-populate category list
-        ProductUpsertVM.Categories = await _productFacade.GetCategoriesSelectListAsync(cancellationToken);
+			SuccessMessage = "Product deleted successfully.";
+			Logger.LogInformation($"Product {id} deleted successfully.");
 
-        // If we got this far, something failed, redisplay form
-        return View(ProductUpsertVM);
-    }
+			return Json(new { success = true });
+		}
+		catch (Exception e)
+		{
+			ErrorMessage = e.Message;
+			Logger.LogError(e.Message);
 
-    #region API CALLS
-    // GET: /Products/GetAll
-    public async Task<JsonResult> GetAll(CancellationToken cancellationToken)
-    {
-        List<ProductResponse> productResponses = await ServiceUnitOfWork.ProductService
-            .GetAllAsync(includes: [nameof(ProductResponse.Category)], cancellationToken: cancellationToken);
+			return Json(new { success = false });
+		}
+	}
 
-        // Initialize product images count for each product
-        foreach (var productResponse in productResponses)
-        {
-            productResponse.ProductImagesCount = await _productFacade
-                .GetProductImageCount(productResponse.Id, cancellationToken);
-        }
+	// GET: /Products/DeleteImage/{id}
+	[Route("{id?}")]
+	public async Task<IActionResult> DeleteImage(int? id, CancellationToken cancellationToken)
+	{
+		await ServiceUnitOfWork.ProductImageService.RemoveAsync(id);
+		SuccessMessage = "Product image deleted successfully.";
 
-        Logger.LogInformation("Retrieved all products with product images count.");
-        return Json(new { data = productResponses });
-    }
+		// Get product id from product image
+		ProductImageResponse? productImageResponse = await ServiceUnitOfWork.ProductImageService
+			.GetByIdAsync(id, cancellationToken: cancellationToken);
 
-    // DELETE: /Products/Delete?id={id}
-    [HttpDelete]
-    public async Task<JsonResult> Delete(int? id)
-    {
-        try
-        {
-            await _productFacade.DeleteProductAsync(id);
-
-            SuccessMessage = "Product deleted successfully.";
-            Logger.LogInformation($"Product {id} deleted successfully.");
-
-            return Json(new { success = true });
-        }
-        catch (Exception e)
-        {
-            ErrorMessage = e.Message;
-            Logger.LogError(e.Message);
-
-            return Json(new { success = false });
-        }
-    }
-
-    // GET: /Products/DeleteImage/{id}
-    [Route("{id?}")]
-    public async Task<IActionResult> DeleteImage(int? id, CancellationToken cancellationToken)
-    {
-        await ServiceUnitOfWork.ProductImageService.RemoveAsync(id);
-        SuccessMessage = "Product image deleted successfully.";
-
-        // Get product id from product image
-        ProductImageResponse? productImageResponse = await ServiceUnitOfWork.ProductImageService
-            .GetByIdAsync(id, cancellationToken: cancellationToken);
-
-        return RedirectToAction(nameof(Edit), new { id = productImageResponse?.ProductId });
-    }
-    #endregion
+		return RedirectToAction(nameof(Edit), new { id = productImageResponse?.ProductId });
+	}
+	#endregion
 }

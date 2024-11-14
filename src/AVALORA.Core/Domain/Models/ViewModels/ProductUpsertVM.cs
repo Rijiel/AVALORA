@@ -21,6 +21,7 @@ public class ProductUpsertVM
 	public string Name { get; set; } = null!;
 
 	[Required]
+	[MinLength(50, ErrorMessage = "Description must be at least {1} characters long")]
 	public string Description { get; set; } = null!;
 
 	[Range(0, 5000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
@@ -35,6 +36,7 @@ public class ProductUpsertVM
 	public double Price { get; set; }
 
 	[Required(ErrorMessage = "Please select a category")]
+	[Range(1, int.MaxValue, ErrorMessage = "Please select a category")]
 	[DisplayName("Category")]
 	public int CategoryId { get; set; }
 
