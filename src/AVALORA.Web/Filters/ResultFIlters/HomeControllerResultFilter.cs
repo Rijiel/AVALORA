@@ -26,19 +26,16 @@ public class HomeControllerResultFilter : IAsyncResultFilter
 		if (!context.ModelState.IsValid)
 		{
 			var controller = (HomeController)context.Controller;
-			var actionArguments = (IDictionary<string, object>?) context.HttpContext.Items["ActionArguments"];
+			var actionArguments = (IDictionary<string, object>?)context.HttpContext.Items["ActionArguments"];
 
-			if (actionArguments != null)
-			{
-				var cartItemAddRequestVM = (CartItemAddRequestVM?) actionArguments?
-					.FirstOrDefault(r => r.Value is not CancellationToken).Value;
-				int id = cartItemAddRequestVM?.CartItemAddRequest?.ProductId ?? 0;
-				var cancellationToken = context.HttpContext.RequestAborted;
-				
-				var productDetailsVM = await _productFacade.GetProductDetailsVMAsync(controller, id, 1, cancellationToken);
+			var cartItemAddRequestVM = (CartItemAddRequestVM?)actionArguments?
+				.FirstOrDefault(r => r.Value is not CancellationToken).Value;
+			int id = cartItemAddRequestVM?.CartItemAddRequest?.ProductId ?? 0;
+			var cancellationToken = context.HttpContext.RequestAborted;
 
-				context.Result = controller.View(productDetailsVM);
-			} 
+			var productDetailsVM = await _productFacade.GetProductDetailsVMAsync(controller, id, 1, cancellationToken);
+
+			context.Result = controller.View(productDetailsVM);
 		}
 
 		await next();

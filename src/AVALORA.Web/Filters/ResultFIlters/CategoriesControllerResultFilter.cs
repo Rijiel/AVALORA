@@ -2,6 +2,7 @@
 using AVALORA.Core.ServiceContracts;
 using AVALORA.Core.Services;
 using AVALORA.Web.Areas.Admin.Controllers;
+using AVALORA.Web.Areas.User.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Threading;
 
@@ -25,13 +26,19 @@ public class CategoriesControllerResultFilter : IAsyncResultFilter
 		if (!context.ModelState.IsValid)
 		{
 			var controller = (CategoriesController)context.Controller;
-			CategoriesVM categoriesVM = controller.CategoriesVM;
+			var actionArguments = (IDictionary<string, object>?)context.HttpContext.Items["ActionArguments"];
+
+			var categoriesVM = (CategoriesVM?)actionArguments?
+				.FirstOrDefault(r => r.Value is not CancellationToken).Value;
 			var cancellationToken = context.HttpContext.RequestAborted;
 
-			categoriesVM.CategoryResponses = await _serviceUnitOfWork.CategoryService
+			if (categoriesVM != null)
+			{
+				categoriesVM.CategoryResponses = await _serviceUnitOfWork.CategoryService
 				.GetAllAsync(cancellationToken: cancellationToken);
 
-			context.Result = controller.View(categoriesVM);
+				context.Result = controller.View(categoriesVM);
+			}
 		}
 
 		await next();

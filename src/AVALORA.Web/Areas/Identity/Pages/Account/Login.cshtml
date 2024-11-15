@@ -43,7 +43,7 @@
 			</div>
 		</form>
 		<!-- External Login -->
-		<div>
+		<div class="mt-5">
 			<section>
 				<p class="divider-text d-flex mt-2">or</p>
 				@{
@@ -65,7 +65,15 @@
 								<p>
 									@foreach (var provider in Model.ExternalLogins!)
 									{
-										<button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+										if (provider.DisplayName?.ToLower() == "facebook")
+										{
+											<button type="submit" class="btn btn-facebook rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="bi bi-facebook" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
+										}
+
+										if (provider.DisplayName?.ToLower() == "google")
+										{
+											<button type="submit" class="btn btn-outline-muted rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="bi bi-google" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
+										}
 									}
 								</p>
 							</div>

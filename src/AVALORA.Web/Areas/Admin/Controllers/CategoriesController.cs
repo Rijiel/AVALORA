@@ -18,9 +18,6 @@ namespace AVALORA.Web.Areas.Admin.Controllers;
 [Route("[controller]/[action]")]
 public class CategoriesController : BaseController<CategoriesController>
 {
-	[BindProperty]
-	public CategoriesVM CategoriesVM { get; set; } = null!;
-
 	// GET: /Categories/Index
 	[HttpGet]
 	[Breadcrumb("Categories", FromAction = nameof(Index), FromController = typeof(HomeController),
@@ -28,7 +25,7 @@ public class CategoriesController : BaseController<CategoriesController>
 	public async Task<IActionResult> Index(CancellationToken cancellationToken)
 	{
 		// Provide list of category responses for editing
-		CategoriesVM = new CategoriesVM()
+		var categoriesVM = new CategoriesVM()
 		{
 			CategoryResponses = await ServiceUnitOfWork.CategoryService
 			.GetAllAsync(cancellationToken: cancellationToken)
@@ -37,7 +34,7 @@ public class CategoriesController : BaseController<CategoriesController>
 		ServiceUnitOfWork.BreadcrumbService.SetCustomNodes(this, "Categories",
 			controllerActions: [nameof(Index), nameof(Create)], titles: ["Categories", "Create"]);
 
-		return View(CategoriesVM);
+		return View(categoriesVM);
 	}
 
 	// POST: /Categories/Index
@@ -45,11 +42,11 @@ public class CategoriesController : BaseController<CategoriesController>
 	[ActionName(nameof(Index))]
 	[TypeFilter(typeof(ValidationActionFilter))]
 	[TypeFilter(typeof(CategoriesControllerResultFilter))]
-	public async Task<IActionResult> Create(CancellationToken cancellationToken)
+	public async Task<IActionResult> Create(CategoriesVM categoriesVM, CancellationToken cancellationToken)
 	{
 		// Persist new category to database
 		CategoryResponse categoryResponse = await ServiceUnitOfWork.CategoryService
-			.AddAsync(CategoriesVM.CategoryAddRequest);
+			.AddAsync(categoriesVM.CategoryAddRequest);
 
 		SuccessMessage = "Category created successfully";
 		Logger.LogInformation("Category {categoryId} created successfully.", categoryResponse.Id);

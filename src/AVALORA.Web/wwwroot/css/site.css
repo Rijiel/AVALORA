@@ -191,6 +191,23 @@ body {
     --bs-gradient: none
 }
 
+.btn-facebook {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #0866ff;
+    --bs-btn-border-color: #0866ff;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #0866ffcf;
+    --bs-btn-hover-border-color: #0866ffcf;
+    --bs-btn-focus-shadow-rgb: 117,153,255;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #095be1;
+    --bs-btn-active-border-color: #095be1;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #0e5ddc;
+    --bs-btn-disabled-border-color: #0e5ddc;
+}
+
 .border-light-gray {
     --bs-border-opacity: 1;
     border-color: var(--custom-light-gray) !important

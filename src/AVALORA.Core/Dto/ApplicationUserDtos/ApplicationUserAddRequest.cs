@@ -7,9 +7,10 @@ public class ApplicationUserAddRequest
 {
     [Required]
     [StringLength(50)]
-    [RegularExpression("^[a-zA-Z]+$", ErrorMessage = "Name can only contain letters")]
-    [DisplayName("Full Name")]
-    public string Name { get; set; } = null!;
+	[RegularExpression(@"^[a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$", ErrorMessage = "Name can only contain letters, " +
+	"spaces, and periods, and must be at least 4 characters long.")]
+	[DisplayName("Full Name")]
+	public string Name { get; set; } = null!;
 
     [Required]
 	[EmailAddress]

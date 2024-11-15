@@ -117,7 +117,8 @@ namespace AVALORA.Web.Areas.Identity.Pages.Account
 			// ApplicationUser
 			[Required]
 			[StringLength(50)]
-			[RegularExpression("^[a-zA-Z]+$", ErrorMessage = "Name can only contain letters")]
+			[RegularExpression(@"^[a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$", ErrorMessage = "Name can only contain letters, " +
+				"spaces, and periods, and must be at least 4 characters long.")]
 			public string Name { get; set; }
 
 			[StringLength(50)]
@@ -190,7 +191,7 @@ namespace AVALORA.Web.Areas.Identity.Pages.Account
 							await _signInManager.SignInAsync(user, isPersistent: false);
 							return LocalRedirect(returnUrl);
 						}
-						
+
 						return RedirectToAction("Index", "Users", new { area = Role.Admin.ToString() });
 					}
 				}
