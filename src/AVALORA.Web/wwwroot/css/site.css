@@ -556,6 +556,13 @@ input[type="radio"]:checked + .color-option {
 
 
 
+.toast-success {
+    background-color: #B68158 !important
+}
+
+.toast-error {
+    background-color: #8B4545 !important
+}
 
 .pagination {
     --bs-pagination-active-bg: #519C8A;

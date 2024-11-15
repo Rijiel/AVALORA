@@ -145,12 +145,12 @@ public class ProductsController : BaseController<ProductsController>
 	[Route("{id?}")]
 	public async Task<IActionResult> DeleteImage(int? id, CancellationToken cancellationToken)
 	{
-		await ServiceUnitOfWork.ProductImageService.RemoveAsync(id);
-		SuccessMessage = "Product image deleted successfully.";
-
-		// Get product id from product image
+		// Get the product image's product id before deleting it
 		ProductImageResponse? productImageResponse = await ServiceUnitOfWork.ProductImageService
 			.GetByIdAsync(id, cancellationToken: cancellationToken);
+
+		await ServiceUnitOfWork.ProductImageService.RemoveAsync(id);
+		SuccessMessage = "Product image deleted successfully.";
 
 		return RedirectToAction(nameof(Edit), new { id = productImageResponse?.ProductId });
 	}

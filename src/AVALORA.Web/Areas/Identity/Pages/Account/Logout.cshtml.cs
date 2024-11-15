@@ -5,6 +5,7 @@
 using System;
 using System.Threading.Tasks;
 using AVALORA.Core.Enums;
+using AVALORA.Core.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,8 @@ namespace AVALORA.Web.Areas.Identity.Pages.Account
 		public async Task<IActionResult> OnPost(string returnUrl = null)
 		{
 			await _signInManager.SignOutAsync();
+			HttpContext.Session.Remove(SD.SESSION_CART);
+
 			_logger.LogInformation("User logged out.");
 
 			return RedirectToAction("Index", "Home", new { area = Role.User.ToString() });
