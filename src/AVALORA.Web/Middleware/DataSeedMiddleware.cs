@@ -13,7 +13,7 @@ public class DataSeedMiddleware
 
 	public Task Invoke(HttpContext httpContext, IDbInitializer dbInitializer)
 	{
-		dbInitializer.InitializeAsync().GetAwaiter().GetResult();
+		//dbInitializer.InitializeAsync().GetAwaiter().GetResult();
 
 		return _next(httpContext);
 	}

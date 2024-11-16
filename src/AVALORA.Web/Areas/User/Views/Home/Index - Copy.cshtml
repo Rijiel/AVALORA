@@ -1,0 +1,218 @@
+﻿@model ProductsCategoriesVM
+@{
+	ViewData["Title"] = "Home";
+
+	var pager = ViewBag.Pager as PagerService;
+	var products = Model.ProductResponses;
+	var filteredProducts = Model.FilteredProducts;
+	var categoryCounts = Model.CategoryCounts;
+}
+
+<div class="row pt-4">
+	<!-- Sidebar -->
+	<aside class="col-12 col-lg-2 bg-light-gray" role="complementary" aria-labelledby="sidebar-title">
+		<nav class="row gy-4 px-2">
+			<h2 id="sidebar-title" class="visually-hidden">Sidebar Navigation</h2>
+			<!-- Search -->
+			<section class="pt-4 d-none d-lg-block px-0" aria-labelledby="search-title">
+				<form asp-area="@Role.User" asp-controller="Home" asp-action="Index" method="get" role="search">
+					<h6 id="search-title" class="text-body">Search an Item</h6>
+					<div class="input-group" role="group">
+						@if (!String.IsNullOrEmpty(ViewBag.Category))
+						{
+							<input type="hidden" name="category" value="@ViewBag.Category" aria-hidden="true" />
+						}
+						@if (!String.IsNullOrEmpty(ViewBag.Color))
+						{
+							<input type="hidden" name="color" value="@ViewBag.Color" aria-hidden="true" />
+						}
+						<label for="search-input" class="visually-hidden">Search items</label>
+						<input id="search-input" type="search" name="search" class="form-control" placeholder="Search" aria-label="Search field" />
+						<button type="submit" class="input-group-text border border-light-gray text-body text-opacity-75" aria-label="Submit search" title="Submit search">
+							<i class="bi bi-search" aria-hidden="true"></i>
+						</button>
+					</div>
+				</form>
+			</section>
+			<!-- Top Rated Products -->
+			<section class="px-0" aria-labelledby="top-rated-title">
+				<h6 id="top-rated-title" class="text-body my-2">Top Rated Products</h6>
+				<!-- LG -->
+				<ul class="list-group d-none d-lg-block" aria-labelledby="top-rated-title">
+					@foreach (var product in products.OrderByDescending(p => p.TotalRating).Take(5))
+					{
+						<li class="list-group-item" role="listitem">
+							<a asp-action="Details" asp-route-id="@product.Id" class="text-body text-decoration-none"
+							   aria-label="View details for @product.Name" title="@product.Name">
+								<div class="row align-items-center">
+									<figure class="col-12 col-xl-4 mb-0">
+										@{
+											ViewBag.ImgSidebar = new ViewDataDictionary(ViewData) { { "CustomClass", "img-sidebar" } };
+										}
+										<partial name="_ProductImagePartial" model="product" view-data="ViewBag.ImgSidebar" />
+									</figure>
+									<div class="col-12 col-xl-8 text-center text-xl-start">
+										<small class="text-break text-truncate-multiline">@product.Name</small>
+										<small>
+											<partial name="_ProductRatingPartial" model="product" />
+										</small>
+										<div>
+											@if (product.ListPrice.GetValueOrDefault() > 0 && product.ListPrice != product.Price)
+											{
+												<small class="text-decoration-line-through text-black-50">@product.ListPrice!.Value.ToString("c")</small>
+											}
+											<small class="fw-semibold">@product.Price.ToString("c")</small>
+										</div>
+									</div>
+								</div>
+							</a>
+						</li>
+					}
+				</ul>
+				<!-- MD -->
+				<ul class="list-group list-group-horizontal d-flex d-lg-none" aria-labelledby="top-rated-title">
+					@foreach (var product in products.OrderByDescending(p => p.TotalRating).Take(5))
+					{
+						<li class="card list-group-item col p-0 m-0 py-2 shadow-none rounded-0" role="listitem">
+							<a asp-action="Details" asp-route-id="@product.Id" class="text-body text-decoration-none"
+							   aria-label="View details for @product.Name" title="@product.Name">
+								<div class="d-flex flex-column align-items-center justify-content-center">
+									<figure class="m-0">
+										@{
+											ViewBag.CardImgTop = new ViewDataDictionary(ViewData) { { "CustomClass", "card-img-top" } };
+										}
+										<partial name="_ProductImagePartial" model="product" view-data="ViewBag.CardImgTop" />
+									</figure>
+									<div class="text-center px-2">
+										<small class="text-break text-truncate-multiline">@product.Name</small>
+										<small>
+											<partial name="_ProductRatingPartial" model="product" />
+										</small>
+										<div>
+											@if (product.ListPrice.GetValueOrDefault() > 0 && product.ListPrice != product.Price)
+											{
+												<small class="text-decoration-line-through text-black-50">@product.ListPrice!.Value.ToString("c")</small>
+											}
+											<small class="fw-semibold">@product.Price.ToString("c")</small>
+										</div>
+									</div>
+								</div>
+							</a>
+						</li>
+					}
+				</ul>
+			</section>
+			<!-- Categories -->
+			<section class="col-9 col-sm-10 col-lg-12" aria-labelledby="categories-title">
+				<h6 id="categories-title" class="text-body ms-n2">Categories</h6>
+				<div class="row" role="list">
+					<ul class="list-group col col-lg-12 w-50 w-lg-100 p-0">
+						@foreach (var (category, productsCount) in categoryCounts.Take(5))
+						{
+							<li class="list-group-item d-flex justify-content-between align-items-center px-1 px-xl-3" role="listitem">
+								<a href="/Home?category=@category" class="text-body text-truncate" aria-label="Category @category" title="@category">@category</a>
+								<small class="badge-sm bg-secondary">@productsCount</small>
+							</li>
+						}
+					</ul>
+					<ul class="list-group col col-lg-12 w-50 mx-2 mx-md-0 d-block d-lg-none px-0 px-md-2">
+						@foreach (var (category, productsCount) in categoryCounts.Skip(5).Take(5))
+						{
+							<li class="list-group-item d-flex justify-content-between align-items-center px-1 px-xl-3" role="listitem">
+								<a href="/Home?category=@category" class="text-body text-truncate" aria-label="Category @category" title="@category">@category</a>
+								<small class="badge-sm bg-secondary">@productsCount</small>
+							</li>
+						}
+					</ul>
+				</div>
+			</section>
+			<!-- Colors -->
+			<section class="col-3 col-sm-2 col-lg-auto px-0" aria-labelledby="colors-title">
+				<h6 id="colors-title" class="text-body">Colors</h6>
+				<div class="bg-white border border-light-gray rounded">
+					<div class="mt-1 d-flex flex-wrap align-self-center justify-content-center px-0 px-xxl-2 py-2 py-md-3 py-lg-0" role="list">
+						@for (int i = 1; i < Enum.GetValues(typeof(Color)).Length; i++)
+						{
+							Color color = (Color)Enum.GetValues(typeof(Color)).GetValue(i)!;
+							<div class="d-inline-block my-1 my-sm-0 my-lg-1 mx-2 mx-lg-1" role="listitem">
+								<a href="/Home?color=@color" class="color-option bg-@color.ToString().ToLower()" title="@color"
+								   aria-label="Filter by color @color"></a>
+							</div>
+						}
+					</div>
+				</div>
+			</section>
+		</nav>
+	</aside>
+	<!-- Cards -->
+	<section class="col-lg-10 mt-5 mt-lg-0" aria-labelledby="product-cards-title">
+		<h2 id="product-cards-title" class="visually-hidden">Product Cards</h2>
+		<div class="row" role="list">
+			@if (ViewBag.Search != null)
+			{
+				<div class="fs-4 fst-italic" aria-live="polite">
+					<p>Products found containing: <span class="fw-bold">'@ViewBag.Search'</span></p>
+				</div>
+			}
+			@foreach (var product in filteredProducts)
+			{
+				<div class="col-4 col-md-3 d-flex align-items-stretch" role="listitem">
+					<article class="card w-100" aria-labelledby="product-@product.Id-name">
+						<header class="card-header border-0 pb-0 px-4 px-md-3 px-lg-4">
+							<figure>
+								@{
+									ViewBag.CardImgTop = new ViewDataDictionary(ViewData) { { "CustomClass", "card-img-top" } };
+								}
+								<partial name="_ProductImagePartial" model="product" view-data="ViewBag.CardImgTop" />
+							</figure>
+						</header>
+						<div class="card-body text-center p-0 d-flex flex-column justify-content-between">
+							<div>
+								<div class="mb-1" aria-label="Rating">
+									<partial name="_ProductRatingPartial" model="product" />
+								</div>
+								<p class="mb-1 p-card-text text-truncate-multiline">@product.Name</p>
+							</div>
+							<div>
+								<p class="card-text">
+									@if (product.ListPrice.GetValueOrDefault() > 0 && product.ListPrice != product.Price)
+									{
+										<span class="text-decoration-line-through">@product.ListPrice!.Value.ToString("c")</span>
+									}
+									<span class="fw-semibold text-dark-primary fs-4" aria-label="Price">
+										@product.Price.ToString("c")
+									</span>
+								</p>
+							</div>
+						</div>
+						<div class="card-footer text-center border-0">
+							<a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary w-100 btn-sm" aria-label="View details"
+							   title="View details">Details</a>
+						</div>
+					</article>
+				</div>
+			}
+		</div>
+		<!-- Pagination -->
+		<nav class="container" aria-label="Product pagination">
+			@if (pager!.TotalPages > 0)
+			{
+				<ul class="pagination justify-content-end">
+					@{
+						string category = !String.IsNullOrEmpty(ViewBag.Category) ? $"category={ViewBag.Category}&" : string.Empty;
+						string color = !String.IsNullOrEmpty(ViewBag.Color) ? $"color={ViewBag.Color}&" : string.Empty;
+						string amp = !String.IsNullOrEmpty(ViewBag.Search) ? "&" : string.Empty;
+						string search = !String.IsNullOrEmpty(ViewBag.Search) ? $"search={ViewBag.Search}" : string.Empty;
+					}
+					@for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+					{
+						<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+							<a href="/Home?@(category+color)page=@(pge+amp+search)" class="page-link"
+							   aria-label="Page @pge" aria-current="@(pge == pager.CurrentPage ? "page" : null)">@pge</a>
+						</li>
+					}
+				</ul>
+			}
+		</nav>
+	</section>
+</div>

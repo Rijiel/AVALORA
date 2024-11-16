@@ -36,7 +36,10 @@ public static class ServicesExtension
 		services.AddRazorPages();
 
 		services.AddDbContext<ApplicationDbContext>(options => options
-		.UseSqlServer(cfg.GetConnectionString("DefaultConnection")));
+		.UseSqlServer(cfg.GetConnectionString("DefaultConnection"), builder =>
+		{
+			builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+		}));
 
 		services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 

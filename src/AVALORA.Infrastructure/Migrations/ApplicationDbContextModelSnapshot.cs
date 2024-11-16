@@ -49,7 +49,7 @@ namespace AVALORA.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("AVALORA.Core.Domain.Models.Category", b =>
@@ -69,7 +69,7 @@ namespace AVALORA.Infrastructure.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -172,7 +172,7 @@ namespace AVALORA.Infrastructure.Migrations
                         .IsUnique()
                         .HasFilter("[TrackingNumber] IS NOT NULL");
 
-                    b.ToTable("OrderHeaders");
+                    b.ToTable("OrderHeaders", (string)null);
                 });
 
             modelBuilder.Entity("AVALORA.Core.Domain.Models.OrderSummary", b =>
@@ -193,7 +193,7 @@ namespace AVALORA.Infrastructure.Migrations
 
                     b.HasIndex("OrderHeaderId");
 
-                    b.ToTable("OrderSummaries");
+                    b.ToTable("OrderSummaries", (string)null);
                 });
 
             modelBuilder.Entity("AVALORA.Core.Domain.Models.OrderSummaryItem", b =>
@@ -222,7 +222,7 @@ namespace AVALORA.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderSummaryItems");
+                    b.ToTable("OrderSummaryItems", (string)null);
                 });
 
             modelBuilder.Entity("AVALORA.Core.Domain.Models.Product", b =>
@@ -261,7 +261,7 @@ namespace AVALORA.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
 
                     b.HasData(
                         new
@@ -318,7 +318,7 @@ namespace AVALORA.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("AVALORA.Core.Domain.Models.ProductReview", b =>
@@ -351,7 +351,7 @@ namespace AVALORA.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductReviews");
+                    b.ToTable("ProductReviews", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
