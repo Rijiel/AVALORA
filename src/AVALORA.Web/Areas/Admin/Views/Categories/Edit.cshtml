@@ -18,7 +18,7 @@
 				<input asp-for="Id" hidden aria-hidden="true" />
 				<!-- Name -->
 				<div class="form-floating">
-					<input asp-for="Name" class="form-control text-center" placeholder="Enter category name" aria-required="true" />
+					<input asp-for="Name" class="form-control text-center" oninput="capitalizeFirstLetter(this)" placeholder="Enter category name" aria-required="true" />
 					<label asp-for="Name" class="text-center"></label>
 					<span asp-validation-for="Name" class="text-danger" role="alert"></span>
 				</div>
@@ -38,5 +38,6 @@
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/category_upsert.js"></script>
 	<script src="~/js/category_delete.js"></script>
 }

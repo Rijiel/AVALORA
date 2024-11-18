@@ -6,6 +6,6 @@ public interface IDbInitializer
     /// Initializes the database with migrations and default user/s.
     /// </summary>
     /// <returns></returns>
-    void InitializeAsync();
+    Task InitializeAsync();
 }
 

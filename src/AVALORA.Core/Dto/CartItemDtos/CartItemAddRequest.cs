@@ -1,4 +1,5 @@
 ﻿using AVALORA.Core.Enums;
+using FoolProof.Core;
 using System.ComponentModel.DataAnnotations;
 
 namespace AVALORA.Core.Dto.CartItemDtos;
@@ -15,7 +16,7 @@ public class CartItemAddRequest
     [Range(1, 20, ErrorMessage = "You can only order maximum 20 items at a time")]
     public int Count { get; set; }
 
-	[Required(ErrorMessage = "Please specify your preferred color")]
-	public Color? Color { get; set; }
+    [Required(ErrorMessage = "Please specify your preferred color")]
+    public Color? Color { get; set; }
 }
 

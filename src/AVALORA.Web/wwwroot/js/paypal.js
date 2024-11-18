@@ -1,65 +1,65 @@
 ﻿$(function () {
-	const token = $('input[name="__RequestVerificationToken"]').val();
+    const token = $('input[name="__RequestVerificationToken"]').val();
 
-	paypal.Buttons({
-		async createOrder() {
-			const response = await fetch('/Payment/Create', {
-				method: "POST",
-				headers: {
-					'RequestVerificationToken': token,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					amount: document.getElementById('totalAmount').value
-				})
-			});
+    paypal.Buttons({
+        async createOrder() {
+            const response = await fetch('/Payment/Create', {
+                method: "POST",
+                headers: {
+                    'RequestVerificationToken': token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    amount: document.getElementById('totalAmount').value
+                })
+            });
 
-			const order = await response.json();
+            const order = await response.json();
 
-			return order.id;
-		},
+            return order.id;
+        },
 
-		async onApprove(data) {
-			// Capture the funds from the transaction.
-			const response = await fetch('/Payment/Complete', {
-				method: "POST",
-				headers: {
-					'RequestVerificationToken': token,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					orderID: data.orderID
-				})
-			})
+        async onApprove(data) {
+            // Capture the funds from the transaction.
+            const response = await fetch('/Payment/Complete', {
+                method: "POST",
+                headers: {
+                    'RequestVerificationToken': token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    orderID: data.orderID
+                })
+            })
 
-			const details = await response.json();
+            const details = await response.json();
 
-			// Show success message to buyer
-			if (details.success) {
-				window.location.href = details.url;
-			}
-			else {
-				document.getElementById("notification-container").innerHTML = `
-									<div class="alert alert-danger alert-dismissible fade show" role="alert">
-										<strong>Transaction Error!</strong>
-										<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-									</div>`
-			}
-		},
+            // Show success message to buyer
+            if (details.success) {
+                window.location.href = details.url;
+            }
+            else {
+                document.getElementById("notification-container").innerHTML = `
+					<div class="alert alert-danger alert-dismissible fade show" role="alert">
+						<strong>Transaction Error!</strong>
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>`
+            }
+        },
 
-		onCancel(data) {
-			document.getElementById("notification-container").innerHTML = `
-							<div class="alert alert-danger alert-dismissible fade show" role="alert">
-								<strong>Payment Canceled!</strong>
-								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-							</div>`
-		},
-		onError(err) {
-			document.getElementById("notification-container").innerHTML = `
-							<div class="alert alert-danger alert-dismissible fade show" role="alert">
-								<strong>An error occurred!</strong>
-								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-							</div>`
-		}
-	}).render('#paypal-button-container');
+        onCancel(data) {
+            document.getElementById("notification-container").innerHTML = `
+				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+					<strong>Payment Cancelled!</strong>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>`
+        },
+        onError(err) {
+            document.getElementById("notification-container").innerHTML = `
+				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+					<strong>An error occurred!</strong>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>`
+        }
+    }).render('#paypal-button-container');
 })

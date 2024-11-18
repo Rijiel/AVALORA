@@ -117,7 +117,7 @@ public class UsersController : BaseController<UsersController>
 		{
 			// Get user to lock/unlock
 			IdentityUser? identityUser = await _userManager.FindByIdAsync(id);
-			if (identityUser != null)
+			if (identityUser != null && identityUser.LockoutEnabled)
 			{
 				// Unlock user if currently locked
 				if (await _userManager.IsLockedOutAsync(identityUser))
@@ -138,10 +138,11 @@ public class UsersController : BaseController<UsersController>
 
 				return Json(new { success = true });
 			}
+			else
+				ErrorMessage = "User cannot be locked.";
 		}
 
 		Logger.LogWarning("An error occurred while locking/unlocking user with id {userId}", id);
-		ErrorMessage = "An error occurred while locking/unlocking user.";
 
 		return Json(new { success = false });
 	}

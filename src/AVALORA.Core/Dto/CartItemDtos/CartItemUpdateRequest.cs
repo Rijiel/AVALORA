@@ -11,7 +11,7 @@ public class CartItemUpdateRequest
     [Range(1, 20, ErrorMessage = "You can only order maximum 20 items at a time")]
     public int Count { get; set; }
 
-    [Required(ErrorMessage = "Please specify your preferred color")]
+	[Required(ErrorMessage = "Please specify your preferred color")]
 	public Color? Color { get; set; }
 }
 

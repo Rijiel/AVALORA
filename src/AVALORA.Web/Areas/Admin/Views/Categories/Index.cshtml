@@ -14,7 +14,7 @@
 			</header>
 			<!-- Name -->
 			<div class="mt-4">
-				<input asp-for="CategoryAddRequest.Name" class="form-control text-center w-75 mx-auto" placeholder="Enter category name" aria-label="Category Name" aria-required="true" />
+				<input asp-for="CategoryAddRequest.Name" oninput="capitalizeFirstLetter(this)" class="form-control text-center w-75 mx-auto" placeholder="Enter category name" aria-label="Category Name" aria-required="true" />
 				<span asp-validation-for="CategoryAddRequest.Name" class="text-danger" role="alert"></span>
 			</div>
 			<!-- Buttons -->
@@ -53,4 +53,5 @@
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/category_upsert.js"></script>
 }

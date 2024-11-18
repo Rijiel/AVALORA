@@ -10,7 +10,7 @@
 <div class="content-lg">
 	<div class="col-12 row gap-11">
 		<!-- Product Details -->
-		<section class="bg-details rounded rounded-3 ps-5 py-3" aria-labelledby="product-details-header">
+		<section class="shadow shadow-lg rounded rounded-3 ps-5 py-3" aria-labelledby="product-details-header">
 			<header id="product-details-header" class="visually-hidden">Product Details</header>
 			@using (Html.BeginForm("Details", "Home", FormMethod.Post))
 			{
@@ -133,6 +133,9 @@
 									</div>
 									<span asp-validation-for="CartItemAddRequestVM.CartItemAddRequest.Color" class="text-danger" role="alert"></span>
 								</div>
+							}
+							else{
+								<input asp-for="CartItemAddRequestVM.CartItemAddRequest.Color" value="@Color.None" hidden aria-hidden="true" />
 							}
 							<!-- Buttons -->
 							<div class="row mt-5">

@@ -52,15 +52,16 @@ public static class ServicesExtension
 
 		services.Configure<IdentityOptions>(options =>
 		{
-			options.Password.RequireDigit = false;
-			options.Password.RequireLowercase = false;
+			options.Password.RequireDigit = true;
+			options.Password.RequireLowercase = true;
 			options.Password.RequireNonAlphanumeric = false;
 			options.Password.RequireUppercase = false;
-			options.Password.RequiredLength = 4;
+			options.Password.RequiredLength = 6;
 
 			options.SignIn.RequireConfirmedAccount = false;
 			options.SignIn.RequireConfirmedEmail = false;
 
+			options.Lockout.AllowedForNewUsers = false;
 			options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(7);
 			options.Lockout.MaxFailedAccessAttempts = 3;
 		});

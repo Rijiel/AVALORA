@@ -19,7 +19,7 @@ public class ProductAddRequest
 	public string Description { get; set; } = null!;
 
 	[Range(0, 5000, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
-	[LessThan(nameof(Price), ErrorMessage = "{0} must be less than the {1}.")]
+	[GreaterThan(nameof(Price), PassOnNull = true, ErrorMessage = "Value for {0} must be greater than {1}.")]
 	[DataType(DataType.Currency)]
 	[DisplayName("List Price")]
 	public double? ListPrice { get; set; } = 0;

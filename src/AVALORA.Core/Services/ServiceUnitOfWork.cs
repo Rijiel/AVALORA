@@ -4,6 +4,7 @@ using AVALORA.Core.Helpers;
 using AVALORA.Core.ServiceContracts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace AVALORA.Core.Services;
 
@@ -26,11 +27,11 @@ public class ServiceUnitOfWork : IServiceUnitOfWork
     public IBreadcrumbService BreadcrumbService { get; private set; }
 
 	public ServiceUnitOfWork(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment webHostEnvironment, 
-        IHttpClientFactory httpClientFactory, RoleManager<IdentityRole> roleManager)
+        IHttpClientFactory httpClientFactory, RoleManager<IdentityRole> roleManager, ILogger<ProductImageService> productImageLogger)
     {
         CategoryService = new CategoryService(unitOfWork.Categories, mapper, unitOfWork);
         ProductService = new ProductService(unitOfWork.Products, mapper, unitOfWork);
-		ProductImageService = new ProductImageService(unitOfWork.ProductImages, mapper, unitOfWork, webHostEnvironment);
+		ProductImageService = new ProductImageService(unitOfWork.ProductImages, mapper, unitOfWork, webHostEnvironment, productImageLogger);
         ApplicationUserService = new ApplicationUserService(unitOfWork.ApplicationUsers, mapper, unitOfWork, roleManager);
         CartItemService = new CartItemService(unitOfWork.CartItems, mapper, unitOfWork);
         OrderHeaderService = new OrderHeaderService(unitOfWork.OrderHeaders, mapper, unitOfWork);

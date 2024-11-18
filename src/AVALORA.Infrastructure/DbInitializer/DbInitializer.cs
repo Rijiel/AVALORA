@@ -20,43 +20,7 @@ public class DbInitializer : IDbInitializer
 		_userManager = userManager;
 	}
 
-	//public async Task InitializeAsync()
-	//{
-	//    // apply migrations
-	//    try
-	//    {
-	//        if (_dbContext.Database.GetPendingMigrations().Count() > 0)
-	//            _dbContext.Database.Migrate();
-	//    }
-	//    catch (Exception)
-	//    {
-	//        throw;
-	//    }
-
-	//    // initialize roles
-	//    if (!await _roleManager.RoleExistsAsync(Role.Admin.ToString()))
-	//    {
-	//        await _roleManager.CreateAsync(new IdentityRole(Role.Admin.ToString()));
-	//        await _roleManager.CreateAsync(new IdentityRole(Role.User.ToString()));
-
-	//        // create admin role
-	//        var adminUser = new ApplicationUser()
-	//        {
-	//            Name = "Admin",
-	//            UserName = "admin@app.com",
-	//            Email = "admin@app.com",
-	//            Address = "admin st.",
-	//            EmailConfirmed = true
-	//        };
-
-	//        var result = await _userManager.CreateAsync(adminUser, password: "admin");
-
-	//        if (result.Succeeded)
-	//            await _userManager.AddToRoleAsync(adminUser, Role.Admin.ToString());
-	//    }
-	//}
-
-	public void InitializeAsync()
+	public async Task InitializeAsync()
 	{
 		// apply migrations
 		try
@@ -70,26 +34,30 @@ public class DbInitializer : IDbInitializer
 		}
 
 		// initialize roles
-		if (!_roleManager.RoleExistsAsync(Role.Admin.ToString()).GetAwaiter().GetResult())
+		if (!await _roleManager.RoleExistsAsync(Role.Admin.ToString()))
 		{
-			_roleManager.CreateAsync(new IdentityRole(Role.Admin.ToString())).GetAwaiter().GetResult();
-			_roleManager.CreateAsync(new IdentityRole(Role.User.ToString())).GetAwaiter().GetResult();
+			await _roleManager.CreateAsync(new IdentityRole(Role.Admin.ToString()));
+			await _roleManager.CreateAsync(new IdentityRole(Role.User.ToString()));
+		}
 
+		if (await _userManager.FindByEmailAsync("admin@avalora.com") == null)
+		{
 			// create admin role
 			var adminUser = new ApplicationUser()
 			{
 				Name = "Admin",
-				UserName = "admin@app.com",
-				Email = "admin@app.com",
-				Address = "admin st.",
-				EmailConfirmed = true
+				UserName = "admin@avalora.com",
+				Email = "admin@avalora.com",
+				Address = "4068 Olen Thomas Drive",
+				EmailConfirmed = true,
+				LockoutEnabled = false
 			};
 
-			var result = _userManager.CreateAsync(adminUser, password: "admin").GetAwaiter().GetResult();
+			var result = await _userManager.CreateAsync(adminUser, password: "admin123");
 
 			if (result.Succeeded)
-				_userManager.AddToRoleAsync(adminUser, Role.Admin.ToString()).GetAwaiter().GetResult();
-		}
+				await _userManager.AddToRoleAsync(adminUser, Role.Admin.ToString());
+		}		
 	}
 }
 

@@ -11,9 +11,13 @@ public class DataSeedMiddleware
 		_next = next;
 	}
 
-	public Task Invoke(HttpContext httpContext, IDbInitializer dbInitializer)
+	public Task Invoke(HttpContext httpContext, IDbInitializer dbInitializer, 
+		ILogger<DataSeedMiddleware> logger)
 	{
-		//dbInitializer.InitializeAsync().GetAwaiter().GetResult();
+		dbInitializer.InitializeAsync().GetAwaiter().GetResult();
+
+		logger.LogInformation("Completed the database seeding from the {middleware}.", 
+			nameof(DataSeedMiddleware));
 
 		return _next(httpContext);
 	}

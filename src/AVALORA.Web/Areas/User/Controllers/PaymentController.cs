@@ -35,15 +35,15 @@ public class PaymentController : BaseController<PaymentController>
 			.GetByIdAsync(id ?? 0, cancellationToken: cancellationToken);
 
 		// Only allow payment for current user's orders
-		if (orderHeaderResponse != null 
-            && orderHeaderResponse.ApplicationUserId == UserHelper.GetCurrentUserId(_contextAccessor))
+		if (orderHeaderResponse != null
+			&& orderHeaderResponse.ApplicationUserId == UserHelper.GetCurrentUserId(_contextAccessor))
 		{
 			// Only allow payment for pending, cancelled and delayed payment orders
 			if (orderHeaderResponse.OrderStatus == OrderStatus.Pending
-			|| (orderHeaderResponse.PaymentStatus == PaymentStatus.Cancelled 
-            && orderHeaderResponse.OrderStatus != OrderStatus.Cancelled)
-			|| (orderHeaderResponse.OrderStatus == OrderStatus.Shipped 
-            && orderHeaderResponse.PaymentStatus == PaymentStatus.DelayedPayment))
+			|| (orderHeaderResponse.PaymentStatus == PaymentStatus.Cancelled
+			&& orderHeaderResponse.OrderStatus != OrderStatus.Cancelled)
+			|| (orderHeaderResponse.OrderStatus == OrderStatus.Shipped
+			&& orderHeaderResponse.PaymentStatus == PaymentStatus.DelayedPayment))
 			{
 				HttpContext.Session.SetInt32(SD.TEMPDATA_ORDERID, id ?? 0);
 
@@ -79,13 +79,13 @@ public class PaymentController : BaseController<PaymentController>
 	public async Task<IActionResult> Create([FromBody] JsonObject data, CancellationToken cancellationToken)
 	{
 		if (!data.ContainsKey("amount") || !decimal.TryParse(data["amount"]?.ToString(), out decimal totalAmount))
-        {
-            Logger.LogWarning("Payment failed. Invalid or missing amount.");
-            return new JsonResult(new { Id = "", message = "Invalid amount or missing amount." });
-        }
+		{
+			Logger.LogWarning("Payment failed. Invalid or missing amount.");
+			return new JsonResult(new { Id = "", message = "Invalid amount or missing amount." });
+		}
 
-        // create request body
-        var createOrderRequest = new JsonObject
+		// create request body
+		var createOrderRequest = new JsonObject
 		{
 			{ "intent", "CAPTURE" },
 			{ "purchase_units", new JsonArray
@@ -100,17 +100,17 @@ public class PaymentController : BaseController<PaymentController>
 						}
 					}
 				}
-			}
+			}			
 		};
 
 		string url = _paypal.Value.SandboxURL + "/v2/checkout/orders";
 		string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService
-            .GetPaypalAccessTokenAsync(_paypal.Value, cancellationToken);
+			.GetPaypalAccessTokenAsync(_paypal.Value, cancellationToken);
 
 		var httpContent = new StringContent(createOrderRequest.ToString(), null, "application/json");
 
 		var jsonResponse = await ServiceUnitOfWork.PaymentService
-            .SendRequestAsync(url, authHeaderValue, httpContent, cancellationToken);
+			.SendRequestAsync(url, authHeaderValue, httpContent, cancellationToken);
 
 		if (jsonResponse != null)
 		{
@@ -119,7 +119,7 @@ public class PaymentController : BaseController<PaymentController>
 			return new JsonResult(new { Id = paypalOrderId });
 		}
 
-        Logger.LogWarning("Payment failed. An error occurred with PayPal.");
+		Logger.LogWarning("Payment failed. An error occurred with PayPal.");
 
 		// If we got this far, something failed, return empty
 		return new JsonResult(new { Id = "" });
@@ -135,12 +135,12 @@ public class PaymentController : BaseController<PaymentController>
 
 		string url = _paypal.Value.SandboxURL + $"/v2/checkout/orders/{orderId}/capture";
 		string authHeaderValue = "Bearer " + await ServiceUnitOfWork.PaymentService
-            .GetPaypalAccessTokenAsync(_paypal.Value, cancellationToken);
+			.GetPaypalAccessTokenAsync(_paypal.Value, cancellationToken);
 
 		var httpContent = new StringContent("", null, "application/json");
 
 		var jsonResponse = await ServiceUnitOfWork.PaymentService
-            .SendRequestAsync(url, authHeaderValue, httpContent, cancellationToken);
+			.SendRequestAsync(url, authHeaderValue, httpContent, cancellationToken);
 
 		if (jsonResponse != null)
 		{
@@ -155,7 +155,7 @@ public class PaymentController : BaseController<PaymentController>
 			}
 		}
 
-        Logger.LogWarning("Payment failed. An error occurred with PayPal.");
+		Logger.LogWarning("Payment failed. An error occurred with PayPal.");
 
 		// If we got this far, something failed, return empty
 		return new JsonResult(new { success = false, url = "" });
@@ -182,7 +182,7 @@ public class PaymentController : BaseController<PaymentController>
 		await ServiceUnitOfWork.OrderHeaderService.UpdatePaymentIdAsync(orderHeaderId, paymentId);
 
 		await ServiceUnitOfWork.OrderHeaderService
-            .UpdateOrderStatusAsync(orderHeaderId, OrderStatus.Approved, PaymentStatus.Approved);
+			.UpdateOrderStatusAsync(orderHeaderId, OrderStatus.Approved, PaymentStatus.Approved);
 
 		return View(orderHeaderResponse);
 	}

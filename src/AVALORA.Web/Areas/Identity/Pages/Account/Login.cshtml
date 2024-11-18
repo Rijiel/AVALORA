@@ -63,16 +63,19 @@
 						<form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
 							<div>
 								<p>
+									@{
+										string disable = HttpContext.Request.IsHttps ? "" : "disabled";
+									}
 									@foreach (var provider in Model.ExternalLogins!)
 									{
 										if (provider.DisplayName?.ToLower() == "facebook")
 										{
-											<button type="submit" class="btn btn-facebook rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="bi bi-facebook" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
+											<button type="submit" class="btn btn-facebook rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" @disable><i class="bi bi-facebook" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
 										}
 
 										if (provider.DisplayName?.ToLower() == "google")
 										{
-											<button type="submit" class="btn btn-outline-muted rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="bi bi-google" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
+											<button type="submit" class="btn btn-outline-muted rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" @disable><i class="bi bi-google" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
 										}
 									}
 								</p>

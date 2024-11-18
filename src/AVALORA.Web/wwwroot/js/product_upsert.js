@@ -2,6 +2,7 @@
     modules: {
         'toolbar': [
             [{ 'font': [] }, { 'size': [] }],
+            [{ 'align': [] }],
             ['bold', 'italic', 'underline', 'strike'],
             [{ 'color': [] }, { 'background': [] }],
             [{ 'header': '1' }, { 'header': '2' }, 'blockquote', 'code-block'],
@@ -15,9 +16,4 @@
 
 function handleSubmit() {
     document.getElementById('Description').value = quill.root.innerHTML;
-
-    var input = document.getElementById('ListPrice');
-    if (input.value.trim().length == 0) {
-        input.value = 0;
-    }
 };
