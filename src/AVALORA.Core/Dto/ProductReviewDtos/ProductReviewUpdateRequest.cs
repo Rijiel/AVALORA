@@ -6,7 +6,7 @@ public class ProductReviewUpdateRequest
 {
 	public int Id { get; set; }
 
-	[StringLength(200)]
+	[StringLength(1000)]
 	public string? Comment { get; set; }
 
 	[Required]

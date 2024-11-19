@@ -64,23 +64,32 @@
 							<div>
 								<p>
 									@{
-										string disable = HttpContext.Request.IsHttps ? "" : "disabled";
+										string hidden = HttpContext.Request.IsHttps ? "" : "hidden";
 									}
 									@foreach (var provider in Model.ExternalLogins!)
 									{
 										if (provider.DisplayName?.ToLower() == "facebook")
 										{
-											<button type="submit" class="btn btn-facebook rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" @disable><i class="bi bi-facebook" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
+											<button type="submit" class="btn btn-facebook rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" @hidden><i class="bi bi-facebook" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
 										}
 
 										if (provider.DisplayName?.ToLower() == "google")
 										{
-											<button type="submit" class="btn btn-outline-muted rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" @disable><i class="bi bi-google" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
+											<button type="submit" class="btn btn-outline-muted rounded-1 w-25 mx-2" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account" @hidden><i class="bi bi-google" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;@provider.DisplayName</button>
 										}
 									}
 								</p>
 							</div>
 						</form>
+						@if (!HttpContext.Request.IsHttps)
+						{
+							<!-- Admin Login Form -->
+							<form id="account" method="post">
+								<input asp-for="Input.Email" class="form-control text-center" value="admin@avalora.com" hidden aria-hidden="true" />
+								<input asp-for="Input.Password" class="form-control text-center" value="admin123" hidden aria-hidden="true" />
+								<button id="login-submit" type="submit" class="w-40 btn btn-outline-secondary">Admin Login</button>
+							</form>
+						}
 					}
 				}
 			</section>

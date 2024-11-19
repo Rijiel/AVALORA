@@ -22,7 +22,7 @@
 	</p>
 	@if (!String.IsNullOrEmpty(Model.Comment))
 	{
-		<input asp-for="@Model.Comment" class="form-control mt-3" disabled />
+		<textarea asp-for="@Model.Comment" class="form-control textarea-review mt-3" disabled></textarea>
 	}
 </div>
 

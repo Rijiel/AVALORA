@@ -59,6 +59,10 @@ body {
     min-height: 7vw
 }
 
+.min-vh-50{
+    min-height: 50vh
+}
+
 .w-2r {
     width: 2rem;
 }
@@ -103,8 +107,8 @@ body {
     --bs-btn-active-border-color: #8f6647;
     --bs-btn-active-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
     --bs-btn-disabled-color: #fff;
-    --bs-btn-disabled-bg: #8a6f5bff;
-    --bs-btn-disabled-border-color: #8a6f5bff;
+    --bs-btn-disabled-bg: #835c3f;
+    --bs-btn-disabled-border-color: #835c3f;
 }
 
 .btn-success {
@@ -392,6 +396,14 @@ body {
     width: 70%
 }
 
+.dt-buttons {
+    width: 50% !important
+}
+
+.dt-order-buttons {
+    font-size: 0.65rem
+}
+
 /* Forms */
 
 .form-floating > .form-control:focus ~ label,
@@ -419,6 +431,11 @@ body {
 
 .label-start{
     margin-left: -32px !important
+}
+
+.textarea-review {
+    field-sizing: content;
+    resize: none
 }
 
 /* Cards */
@@ -616,14 +633,6 @@ input[type="radio"]:checked + .color-option {
     width: 84%;
     margin: var(--bs-dropdown-divider-margin-y) auto;
     border-top: 1px solid var(--custom-light-gray);
-}
-
-.dt-buttons {
-    width: 50% !important
-}
-
-.dt-order-buttons {
-    font-size: 0.65rem
 }
 
 

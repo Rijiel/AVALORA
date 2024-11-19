@@ -1,18 +1,24 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using AVALORA.Core.ServiceContracts
 
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject IServiceUnitOfWork serviceUnitOfWork
 
 <ul class="navbar-nav">
 	@if (SignInManager.IsSignedIn(User))
 	{
 		<li class="nav-item btn-group dropdown ps-0" id="login-dropdown">
 			<a class="nav-link text-dark fs-5 d-none d-lg-block" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
-			   aria-label="Account" title="Account">
+			aria-label="Account" title="Account">
 				<i class="bi bi-person" aria-hidden="true"></i>
 			</a>
 			<div class="dropdown-menu dropdown-menu-end" id="login-dropdown-menu">
-				<a class="dropdown-item text-lg-body" id="manage" asp-area="Identity" asp-page="/Account/Manage/Index" aria-label="Manage Account" title="Manage Account">
+				@{
+					var user = await serviceUnitOfWork.ApplicationUserService.GetByIdAsync(UserManager.GetUserId(User));
+					string disabled = user!.Email == "admin@avalora.com" ? "disabled opacity-50" : "";
+				}
+				<a class="dropdown-item @disabled" id="manage" asp-area="Identity" asp-page="/Account/Manage/Index" aria-label="Manage Account" title="Manage Account">
 					Manage Account
 				</a>
 				<form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">

@@ -4,7 +4,7 @@ namespace AVALORA.Core.Dto.ProductReviewDtos;
 
 public class ProductReviewAddRequest
 {
-	[StringLength(200)]
+	[StringLength(1000)]
 	public string? Comment { get; set; }
 
 	[Required]

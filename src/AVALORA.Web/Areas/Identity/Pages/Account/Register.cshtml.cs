@@ -110,6 +110,7 @@ namespace AVALORA.Web.Areas.Identity.Pages.Account
 
 			[Required]
 			[Phone]
+			[RegularExpression(@"^[+]?\d{7,15}$", ErrorMessage = "Invalid phone number format.")]
 			[StringLength(15)]
 			[Display(Name = "Phone Number")]
 			public string PhoneNumber { get; set; }

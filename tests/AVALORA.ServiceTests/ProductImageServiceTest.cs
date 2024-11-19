@@ -42,7 +42,7 @@ public class ProductImageServiceTest
 		_unitOfWork = _unitOfWorkMock.Object;
 		_productImageRepository = _productImageRepositoryMock.Object;
 
-		_productImageService = new ProductImageService(_productImageRepository, _mapper, _unitOfWork, _webHostEnvironment);
+		_productImageService = new ProductImageService(_productImageRepository, _mapper, _unitOfWork, _webHostEnvironment, null);
 	}
 
 	#region CreateImagesAsync

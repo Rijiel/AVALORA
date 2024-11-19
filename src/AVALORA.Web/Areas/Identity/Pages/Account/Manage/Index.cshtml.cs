@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using AVALORA.Core.ServiceContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,14 +17,17 @@ namespace AVALORA.Web.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+		private readonly IServiceUnitOfWork _serviceUnitOfWork;
 
-        public IndexModel(
+		public IndexModel(
             UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            IServiceUnitOfWork serviceUnitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-        }
+			_serviceUnitOfWork = serviceUnitOfWork;
+		}
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -51,17 +55,24 @@ namespace AVALORA.Web.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+			/// <summary>
+			///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+			///     directly from your code. This API may change or be removed in future releases.
+			/// </summary>
+			[Required]
+			[Phone]
+			[RegularExpression(@"^[+]?\d{7,15}$", ErrorMessage = "Invalid phone number format.")]
+			[StringLength(15)]
+			[Display(Name = "Phone Number")]
+			public string PhoneNumber { get; set; }
         }
 
         private async Task LoadAsync(IdentityUser user)
         {
+            var account = await _serviceUnitOfWork.ApplicationUserService.GetByIdAsync(user.Id);
+            if (account.Email == "admin@avalora.com")
+                throw new InvalidOperationException("Admin account cannot be edited.");
+
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
