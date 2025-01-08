@@ -3,7 +3,7 @@
 ## Introduction
 AVALORA is a responsive modern e-commerce website created using ASP.NET Core MVC. It features complete functionality, including the ability to browse products, post reviews, check out, create purchase orders, and ship client orders. 
 It was developed using the TDD (Test-Driven Development) methodology. Currently hosted by AWS Elastic Beanstalk, it stores data using AWS RDS.
-</br></br>Live site: [http://avalora.ap-southeast-1.elasticbeanstalk.com](http://avalora.ap-southeast-1.elasticbeanstalk.com)  &ensp;&ensp;** *Please disable your ad-blocker for site to work properly* **
+</br></br>Live site: [http://avalora.runasp.net](http://avalora.runasp.net)  &ensp;&ensp;** *Please disable your ad-blocker for site to work properly* **
 
 ## Technology Used
 - ASP.NET Core
